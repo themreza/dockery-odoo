@@ -1,0 +1,22 @@
+# CI for o9 repo.
+image: $CI_REGISTRY_IMAGE:runner
+cache:
+  key: $CI_COMMIT_REF_NAME
+stages: [build, deploy]
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+
+build_runner:
+  stage: build
+  except: [master]
+  script:
+    - docker-compose build > /dev/null
+
+deploy_images:
+  stage: deploy
+  only: [master]
+  script:
+    - docker push $CI_REGISTRY_IMAGE:runner > /dev/null
+    - docker push $CI_REGISTRY_IMAGE:latest > /dev/null
+    - docker push $CI_REGISTRY_IMAGE:devel > /dev/null
+    - docker push $CI_REGISTRY_IMAGE:base > /dev/null
