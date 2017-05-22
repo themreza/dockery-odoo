@@ -20,7 +20,7 @@ apt_deps="$apt_deps libldap2-dev libsasl2-dev"
 
 apt-get install -y --no-install-recommends $apt_deps
 
-pip_deps="psutil==4.3.1 pydot==1.2.3"
+pip_deps="psutil==4.3.1 pydot==1.2.3 ofxparse==0.16"
 
 pip install --no-cache-dir $pip_deps
 pip install --no-cache-dir --requirement $reqs
