@@ -1,0 +1,23 @@
+services:
+  squid:
+      build: squid/.
+      environment:
+          - "DISK_CACHE_SIZE=5000"
+          - "MAX_CACHE_OBJECT=1000"
+          # - "SQUID_DIRECTIVES_ONLY=true"
+          # - "SQUID_DIRECTIVES='refresh_pattern . 0 0 1 refresh-ims'"
+      network_mode: "host"
+      # If you use docker for Windows or Mac
+      extra_hosts:
+        - "moby:127.0.0.1"
+      volumes:
+        - squid-cache:/var/cache/squid3
+
+  tproxy:
+      build: iptables_docker/.
+      network_mode: "host"
+      privileged: true
+
+version: "2"
+volumes:
+  squid-cache: {driver: local}

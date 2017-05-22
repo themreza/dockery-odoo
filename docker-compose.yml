@@ -1,0 +1,17 @@
+services:
+  odoo-base:
+    build: {context: ./. , dockerfile: 00-base.Dockerfile}
+    image: registry.gitlab.com/devco-odoo/docker-odoo-base:base
+  odoo-deploy:
+    depends_on: [odoo-base]
+    build: {context: ./. , dockerfile: 11-prod.Dockerfile}
+    image: registry.gitlab.com/devco-odoo/docker-odoo-base:latest
+  odoo-develop:
+    depends_on: [odoo-base]
+    build: {context: ./. , dockerfile: 12-devel.Dockerfile}
+    image: registry.gitlab.com/devco-odoo/docker-odoo-base:devel
+  odoo-runner:
+    depends_on: [odoo-base]
+    build: {context: ./. , dockerfile: 13-runner.Dockerfile}
+    image: registry.gitlab.com/devco-odoo/docker-odoo-base:runner
+version: '2'
