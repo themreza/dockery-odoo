@@ -22,8 +22,8 @@ apt-get install -y --no-install-recommends $apt_deps
 
 pip_deps="psutil==4.3.1 pydot==1.2.3 ofxparse==0.16"
 
-pip install --no-cache-dir $pip_deps
 pip install --no-cache-dir --requirement $reqs
+pip install --no-cache-dir $pip_deps
 
 # Remove all installed garbage
 apt-get -y purge $apt_deps
