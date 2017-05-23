@@ -13,7 +13,6 @@ set -x \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
     && npm install -g less \
     && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version '<4' \
-    && npm install -g phantomjs-prebuilt \
     && rm -Rf ~/.gem /var/lib/gems/*/cache/ \
     && rm -Rf ~/.npm /tmp/* \
     && rm -rf /var/lib/apt/lists/* \
