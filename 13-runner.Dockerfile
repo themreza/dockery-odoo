@@ -24,7 +24,7 @@ RUN chmod +x /tmp/command && sync && /tmp/command
 ENV RANCHER_CLI_VERSION v0.6.0
 ADD https://github.com/rancher/cli/releases/download/v0.6.0/rancher-linux-arm-${RANCHER_CLI_VERSION}.tar.gz /tmp/rancher-cli.tar.gz
 RUN tar -zxf /tmp/rancher-cli.tar.gz -C /usr/local/bin/ && chmod -R +x /usr/local/bin
-RUN pip install click hammock
+RUN pip install click hammock odoorpc
 
 ENTRYPOINT []
 CMD []
