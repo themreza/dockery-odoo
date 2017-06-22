@@ -26,6 +26,10 @@ RUN chmod +x /tmp/command && sync && /tmp/command
 ADD build/13-grab-web-stack.sh /tmp/command
 RUN chmod +x /tmp/command && sync && /tmp/command
 
+# grab web stack / Install node 6.x less, sass & phantomjs
+ADD build/14-grab-locales.sh /tmp/command
+RUN chmod +x /tmp/command && sync && /tmp/command
+
 # Add odoo user and var/lib/odoo, ownership
 ADD build/20-create-user-and-var-lib-odoo.sh /tmp/command
 RUN chmod +x /tmp/command && sync && /tmp/command

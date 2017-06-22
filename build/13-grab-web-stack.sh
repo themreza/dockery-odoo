@@ -19,5 +19,4 @@ set -x \
     && apt-get purge -y --auto-remove \
         bzip2 \
         curl \
-        gem \
-    && rm /etc/apt/sources.list.d/nodesource.list
+        gem
