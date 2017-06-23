@@ -14,8 +14,8 @@ RUN chmod +x /tmp/command && sync && /tmp/command
 ADD build/10-grap-odoo-system-libraries.sh /tmp/command
 RUN chmod +x /tmp/command && sync && /tmp/command
 
-# grab latest postgres-client
-ADD build/11-grab-latest-postgres-client.sh /tmp/command
+# grab postgres-client-9.5
+ADD build/11-grab-postgres-client-9.5.sh /tmp/command
 RUN chmod +x /tmp/command && sync && /tmp/command
 
 # grab wkhtmltopdf
