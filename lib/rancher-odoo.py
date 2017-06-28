@@ -59,22 +59,22 @@ def serve(rancher, hostname, service_id):
         "hostname": hostname,
         "path": "",
         "selector": None,
-        'priority': 1,
+        'priority': None,
         'serviceId': service_id,
         'protocol': 'http',
         'type': 'portRule',
-        'sourcePort': 80,
+        'sourcePort': 8069,
         'targetPort': 8069
     }, {
         "backendName": None,
         "hostname": hostname,
-        "path": "",
+        "path": "/longpolling",
         "selector": None,
-        'priority': 1,
+        'priority': None,
         'serviceId': service_id,
         'protocol': 'http',
         'type': 'portRule',
-        'sourcePort': 8072,
+        'sourcePort': 8069,
         'targetPort': 8072
     }])
     rancher.loadbalancerservices(rancher.lb_json['id']).PUT(params=rancher.lb_json)
