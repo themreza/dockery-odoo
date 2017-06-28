@@ -22,8 +22,8 @@ ADD build/90-linting-tools.sh /tmp/command
 RUN chmod +x /tmp/command && sync && /tmp/command
 
 # Install rancher Cli
-ENV RANCHER_CLI_VERSION v0.6.0
-ADD https://github.com/rancher/cli/releases/download/v0.6.0/rancher-linux-amd64-${RANCHER_CLI_VERSION}.tar.gz /tmp/rancher-cli.tar.gz
+ENV RANCHER_CLI_VERSION v0.6.2-rc2
+ADD https://github.com/rancher/cli/releases/download/${RANCHER_CLI_VERSION}/rancher-linux-amd64-${RANCHER_CLI_VERSION}.tar.gz /tmp/rancher-cli.tar.gz
 RUN tar -zxf /tmp/rancher-cli.tar.gz -C /tmp
 RUN chmod +x /tmp/rancher-${RANCHER_CLI_VERSION} && cp /tmp/rancher-${RANCHER_CLI_VERSION}/rancher /usr/local/bin/
 RUN pip install click hammock odoorpc
