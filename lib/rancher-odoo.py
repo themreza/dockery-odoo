@@ -38,7 +38,7 @@ cli.add_command(lb)
 
 def _clean_rules(rules, hostname, service_id):
     return [rule for rule in rules if
-            (rule['hostname'] != hostname and rule['serviceId'] != service_id)]
+            (rule.get('hostname', False) != hostname and rule.get('serviceId', False) != service_id)]
 
 
 @click.command()
