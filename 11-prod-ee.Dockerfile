@@ -22,8 +22,4 @@ ONBUILD COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
 ONBUILD COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
 # Make files odoo's
 ONBUILD RUN chown -R odoo:odoo /opt/odoo /var/lib/odoo
-ONBUILD ARG CI_BUILD_REF
-ONBUILD ARG CI_BUILD_REF_NAME
-ONBUILD LABEL co.devco.repo.felicity.commit=$CI_BUILD_REF
-ONBUILD LABEL co.devco.repo.felicity.tag=$CI_BUILD_REF_NAME
 
