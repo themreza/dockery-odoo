@@ -1,6 +1,10 @@
 services:
   odoo-base:
-    build: {context: ./. , dockerfile: 00-base.Dockerfile}
+    build: 
+      context: ./.
+      dockerfile: 00-base.Dockerfile
+      labels:
+        co.devco.repo.docker-odoo-base.commit: $CI_BUILD_REF
     image: $CI_REGISTRY_IMAGE:base
   odoo-cc-deploy:
     depends_on: [odoo-base]
@@ -18,4 +22,4 @@ services:
     depends_on: [odoo-base]
     build: {context: ./. , dockerfile: 13-runner.Dockerfile}
     image: $CI_REGISTRY_IMAGE:runner
-version: '2'
+version: '2.1'
