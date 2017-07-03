@@ -9,11 +9,11 @@ services:
   odoo-cc-deploy:
     depends_on: [odoo-base]
     build: {context: ./. , dockerfile: 10-prod-cc.Dockerfile}
-    image: $CI_REGISTRY_IMAGE-cc:latest
+    image: $CI_REGISTRY_IMAGE/cc:latest
   odoo-ee-deploy:
     depends_on: [odoo-base]
     build: {context: ./. , dockerfile: 11-prod-ee.Dockerfile}
-    image: $CI_REGISTRY_IMAGE-ee:latest
+    image: $CI_REGISTRY_IMAGE/ee:latest
   odoo-develop:
     depends_on: [odoo-base]
     build: {context: ./. , dockerfile: 12-devel.Dockerfile}

@@ -2,21 +2,23 @@
 image: $CI_REGISTRY_IMAGE:runner
 cache:
   key: $CI_COMMIT_REF_NAME
-stages: [build, deploy]
+stages: [Base-Building, Deployment]
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
 
-build_runner:
-  stage: build
+Runner Build:
+  stage: Base-Building
   except: [master]
   script:
     - docker-compose build > /dev/null
     - docker push $CI_REGISTRY_IMAGE:runner > /dev/null
 
-deploy_images:
-  stage: deploy
+Image Deployment:
+  stage: Deployment
   only: [master]
   script:
-    - docker push $CI_REGISTRY_IMAGE:latest > /dev/null
+    - docker-compose build > /dev/null
+    - docker push $CI_REGISTRY_IMAGE/cc > /dev/null
+    - docker push $CI_REGISTRY_IMAGE/ee > /dev/null
     - docker push $CI_REGISTRY_IMAGE:devel > /dev/null
     - docker push $CI_REGISTRY_IMAGE:base > /dev/null
