@@ -1,18 +1,21 @@
 #!/bin/bash
 
 set -e
+# If we are in a CI environment, just prefix with the environments project folder
+# This enables namespaced parallel builds
+ciprojectfolder=${CI_PROJECT_DIR}
 
 export PGUSER="$(
-    if [ -f /run/secrets/db_user ];then
-        cat /run/secrets/db_user;
+    if [ -f ${ciprojectfolder}/run/secrets/db_user ];then
+        cat ${ciprojectfolder}/run/secrets/db_user;
     else
         echo "odoo";
     fi;
 )"
 
 export PGPASSWORD="$(
-    if [ -f /run/secrets/db_password ];then
-        cat /run/secrets/db_password;
+    if [ -f ${ciprojectfolder}/run/secrets/db_password ];then
+        cat ${ciprojectfolder}/run/secrets/db_password;
     else
         echo "odoo";
     fi;
