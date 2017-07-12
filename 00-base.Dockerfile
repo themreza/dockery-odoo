@@ -1,54 +1,117 @@
-FROM debian:jessie
+FROM debian:jessie AS base-build
 USER root
 
-# grab gosu for easy step-down from root
-ENV GOSU_VERSION 1.10
-ADD build/00-grab-gosu.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+ENV ODOO_VERSION 10.0
+ENV PSQL_VERSION 9.6
+ENV WKHTMLTOX_VERSION 0.12
+ENV WKHTMLTOX_MINOR 0.12.4
+ENV NODE_VERSION 6
+ENV BOOTSTRAP_VERSION 3.3.7
 
-# grab apt-https support
-ADD build/01-grab-apt-https-support.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Build Time Deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	build-essential \
+	bzip2 \
+	curl \
+	libgeoip-dev \
+	python-dev \
+	wget \
+	xz-utils \
+	# lxml
+	libxml2-dev \
+	libxslt1-dev\
+	# Pillow
+	libjpeg-dev \
+	libfreetype6-dev \
+    liblcms2-dev \
+    libopenjpeg-dev \
+    libtiff5-dev \
+    tk-dev \
+    tcl-dev \
+ 	# psutil
+	linux-headers-amd64 \
+	# psycopg2
+	libpq-dev \
+	# python-ldap
+	libldap2-dev \
+	libsasl2-dev
 
-# grab system libraries
-ADD build/10-grap-odoo-system-libraries.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Odoo Run Time Deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+	python \
+	apt-transport-https \
+	ca-certificates \
+	locales \
+	fontconfig \
+	libfreetype6 \
+	libjpeg62-turbo \
+	liblcms2-2 \
+	libldap-2.4-2 \
+	libopenjpeg5 \
+	libpq5 \
+	libsasl2-2 \
+	libtiff5 \
+	libx11-6 \
+	libxext6 \
+	libxml2 \
+	libxrender1 \
+	libxslt1.1 \
+	tcl \
+	tk \
+	zlib1g \
+	zlibc
 
-# grab postgres-client-9.5
-ADD build/11-grab-postgres-client-9.5.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Grab latest pip
+RUN curl https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
 
-# grab wkhtmltopdf
-ADD build/12-grab-wkhtmltopdf-0.12.4.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Get Odoo pip dependencies
+RUN pip install --no-cache-dir --requirement https://raw.githubusercontent.com/odoo/odoo/${ODOO_VERSION}/requirements.txt
+RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 
-# grab web stack / Install node 6.x less, sass & phantomjs
-ADD build/13-grab-web-stack.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Grab Postgres
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
+RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        postgresql-client-${PSQL_VERSION}
 
-# grab web stack / Install node 6.x less, sass & phantomjs
-ADD build/14-grab-locales.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Grab wkhtmltopdf
+RUN curl -SLo wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
+RUN echo "0ef646d802cd0375524034d11af76444c7c8e796e11d553ab39bd4a7bf703ac631f4a3300902bec54589b3d5400b5762d9995839f6faaae2f9159efdf225cc78  wkhtmltox.tar.xz" | sha512sum -c -
+RUN tar --strip-components 1 -C /usr/local/ -xf wkhtmltox.tar.xz
+RUN rm wkhtmltox.tar.xz && wkhtmltopdf --version
 
-# Add odoo user and var/lib/odoo, ownership
-ADD build/20-create-user-and-var-lib-odoo.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Go get Web Stack
+RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" > /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" >> /etc/apt/sources.list.d/nodesource.list
+RUN curl -SL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        gem \
+        nodejs \
+        ruby-compass
+RUN ln -s /usr/bin/nodejs /usr/local/bin/node
+RUN npm install -g less
+RUN gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}"
+RUN rm -Rf ~/.gem /var/lib/gems/*/cache/
+RUN rm -Rf ~/.npm /tmp/*
 
-# Grab gettext
-ADD build/21-grab-gettext.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Grab Gettext for entrypoint env variable expansion "templating lite"
+RUN apt-get update && apt-get install -y --no-install-recommends gettext-base
 
-# grab odoo pip requirements
-ADD build/30-base-requirements-txt.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Add geoip database
+RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+RUN gunzip GeoLiteCity.dat.gz
+RUN mkdir -p /usr/local/share/GeoIP
+RUN mv GeoLiteCity.dat /usr/local/share/GeoIP/
+RUN pip install GeoIP
 
-# Grab geoip
-ADD build/31-grab-geoip.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Improve Odoo shell, in case we need it once
+RUN pip install ptpython
 
-# Grab ptpython for odoo shell, did not work: bpython and ipython
-ADD build/32-grab-ptpython-for-odoo-shell.sh /tmp/command
-RUN chmod +x /tmp/command && sync && /tmp/command
+# Create Odoo User
+RUN addgroup --system --gid 9001 odoo
+RUN adduser --system --uid 9001 --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
+RUN mkdir -p /var/lib/odoo
+RUN chown -R odoo:odoo /var/lib/odoo
 
 COPY bin/* /usr/local/bin/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-docker-base-libs/

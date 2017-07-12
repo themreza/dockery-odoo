@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/devco-odoo/docker-odoo-base:base
+FROM registry.gitlab.com/xoe/odoo/odoo-docker-base:base
 
 # Get secondary binaries and pythonscripts by default
 ONBUILD COPY .docker/bin/*           /usr/local/bin/
@@ -13,10 +13,12 @@ ONBUILD COPY .docker/build.d         /home/build.d
 ONBUILD RUN ln /usr/local/bin/build-dir-exec.sh /usr/local/bin/build.sh
 ONBUILD RUN chmod +x /home/build.d/*.sh && build.sh
 
+
 # Load framework
 ONBUILD COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
 ONBUILD COPY odoo-cc/odoo      /opt/odoo/odoo
 # Load enterprise and community addons
+ONBUILD COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
 ONBUILD COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
 # Make files odoo's
 ONBUILD RUN chown -R odoo:odoo /opt/odoo /var/lib/odoo

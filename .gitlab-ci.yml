@@ -1,24 +1,20 @@
 # CI for o9 repo.
-image: $CI_REGISTRY_IMAGE:runner
-cache:
-  key: $CI_COMMIT_REF_NAME
-stages: [Base-Building, Deployment]
+image: docker
+stages: [Build]
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-
-Runner Build:
-  stage: Base-Building
-  except: [master]
-  script:
-    - docker-compose build > /dev/null
-    - docker push $CI_REGISTRY_IMAGE:runner > /dev/null
-
-Image Deployment:
-  stage: Deployment
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+Image-Deployment:
+  stage: Build
   only: [master]
+  tags:
+    - image-cache
+    - docker-socket
   script:
-    - docker-compose build > /dev/null
-    - docker push $CI_REGISTRY_IMAGE/cc > /dev/null
-    - docker push $CI_REGISTRY_IMAGE/ee > /dev/null
-    - docker push $CI_REGISTRY_IMAGE:devel > /dev/null
-    - docker push $CI_REGISTRY_IMAGE:base > /dev/null
+    - docker build -t $CI_REGISTRY_IMAGE:base -f 00-base.Dockerfile --label xoe.docker-odoo-base.commit=$CI_BUILD_REF .
+    - docker build -t $CI_REGISTRY_IMAGE:latest -f 11-prod.Dockerfile .
+    - docker build -t $CI_REGISTRY_IMAGE:devel -f 12-devel.Dockerfile .
+    - docker build -t $CI_REGISTRY_IMAGE:runner -f 13-runner.Dockerfile .
+    - docker push $CI_REGISTRY_IMAGE:base
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:devel
+    - docker push $CI_REGISTRY_IMAGE:runner
