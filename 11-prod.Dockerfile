@@ -23,3 +23,6 @@ ONBUILD COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
 # Make files odoo's
 ONBUILD RUN chown -R odoo:odoo /opt/odoo /var/lib/odoo
 
+# Persist commit tag, if any to pass to the postgres user
+ONBUILD ENV CI_COMMIT_TAG $CI_COMMIT_TAG
+
