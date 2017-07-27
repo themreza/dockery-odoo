@@ -100,8 +100,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends gettext-base
 # Add geoip database
 RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
 RUN gunzip GeoLiteCity.dat.gz
-RUN mkdir -p /usr/local/share/GeoIP
-RUN mv GeoLiteCity.dat /usr/local/share/GeoIP/
+RUN mkdir -p /usr/share/GeoIP
+RUN mv GeoLiteCity.dat /usr/share/GeoIP/
 RUN pip install GeoIP
 
 # Improve Odoo shell, in case we need it once
