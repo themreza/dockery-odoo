@@ -5,12 +5,31 @@ set -e
 # This enables namespaced parallel builds
 ciprojectfolder=${CI_PROJECT_DIR}
 
-admin_passwd_config="admin_passwd = $(
-    if [ -f ${ciprojectfolder}/run/secrets/odoo_admin_password ];then
-        cat ${ciprojectfolder}/run/secrets/odoo_admin_password;
-    else
-        echo "default-admin-password-which-is-so-long-and-has-strange-signs-$}!-so-that-I-will-be-happy-to-change-it-soon";
-    fi;
-)"
-sed -i -e "s/^admin_passwd =.*$/$admin_passwd_config/g" ~/.odoorc
+# usage: file_env VAR [DEFAULT]
+#    ie: file_env 'XYZ_DB_PASSWORD' 'example'
+# (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
+#  "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
+file_env() {
+	local var="$1"
+	local fileVar="${var}_FILE"
+	local def="${2:-}"
+	if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
+		echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+		exit 1
+	fi
+	local val="$def"
+	echo $def
+	if [ "${!var:-}" ]; then
+		val="${!var}"
+	elif [ "${!fileVar:-}" ]; then
+		val="$(< "${ciprojectfolder}${!fileVar}")"
+	fi
+	export "$var"="$val"
+	unset "$fileVar"
+}
+
+file_env ADMIN_PASSWD "default-admin-password"
+echo $ADMIN_PASSWD
+
+sed -i -e "s/^admin_passwd =.*$/admin_passwd = $ADMIN_PASSWD/g" ~/.odoorc
 log INFO --Admin password appended to [options] section in ~/.odoorc
