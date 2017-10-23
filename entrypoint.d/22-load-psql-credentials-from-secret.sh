@@ -9,8 +9,8 @@ ciprojectfolder=${CI_PROJECT_DIR}
 migration=$(if [ ! -z "${MIGRATION_SIDEKICK_SUFFIX}" ]; then echo "-{$MIGRATION_SIDEKICK_SUFFIX}"; fi)
 # If we are in a deploy, use version tag suffix for the DB user
 # EXAMPLE: odoouser-{10.0.0.5}
-IFS='.' read -r -a array <<< "${CI_COMMIT_TAG}"
-version=$(if [ ! -z "${CI_COMMIT_TAG}" ]; then echo "-{${array[0]}.${array[1]}}"; fi)
+user=$(echo "${CI_COMMIT_TAG}" | awk '{split($0,a,"."); print a[1]"."a[2]}')
+version=$(if [ ! -z "${CI_COMMIT_TAG}" ]; then echo "-{${user}}"; fi)
 
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
