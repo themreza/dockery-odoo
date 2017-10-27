@@ -18,7 +18,6 @@ file_env() {
 		exit 1
 	fi
 	local val="$def"
-	echo $def
 	if [ "${!var:-}" ]; then
 		val="${!var}"
 	elif [ "${!fileVar:-}" ]; then
@@ -29,7 +28,6 @@ file_env() {
 }
 
 file_env ADMIN_PASSWD "default-admin-password"
-echo $ADMIN_PASSWD
 
 sed -i -e "s/^admin_passwd =.*$/admin_passwd = $ADMIN_PASSWD/g" ~/.odoorc
 log INFO --Admin password appended to [options] section in ~/.odoorc
