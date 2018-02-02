@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  odoo-prod:
+    build:
+      context: .
+      labels: 
+        xoe.docker-odoo-base.commit: ${CI_BUILD_REF:-devmachine}
+    image: "${CI_REGISTRY_IMAGE}:latest"
+  odoo-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.runner
+    image: "${CI_REGISTRY_IMAGE}:runner"
+    depends_on: ['odoo-prod']

@@ -10,11 +10,7 @@ Image-Deployment:
     - image-cache
     - docker-socket
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:base -f 00-base.Dockerfile --label xoe.docker-odoo-base.commit=$CI_BUILD_REF .
-    - docker build -t $CI_REGISTRY_IMAGE:latest -f 11-prod.Dockerfile .
-    - docker build -t $CI_REGISTRY_IMAGE:devel -f 12-devel.Dockerfile .
-    - docker build -t $CI_REGISTRY_IMAGE:runner -f 13-runner.Dockerfile .
-    - docker push $CI_REGISTRY_IMAGE:base
+    - docker build -t $CI_REGISTRY_IMAGE:latest --label xoe.docker-odoo-base.commit=$CI_BUILD_REF .
+    - docker build -t $CI_REGISTRY_IMAGE:runner -f Dockerfile.runner .
     - docker push $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:devel
     - docker push $CI_REGISTRY_IMAGE:runner

@@ -1,0 +1,8 @@
+FROM registry.gitlab.com/xoe/odoo/odoo-docker-base
+
+# python and odoo linting setup
+RUN pip install --upgrade --pre pylint-odoo
+RUN pip install pylint-mccabe coverage
+
+ENTRYPOINT []
+CMD []

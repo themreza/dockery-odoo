@@ -2,7 +2,7 @@ FROM debian:jessie AS base-build
 USER root
 
 ENV ODOO_VERSION 10.0
-ENV PSQL_VERSION 9.6
+ENV PSQL_VERSION 10
 ENV WKHTMLTOX_VERSION 0.12
 ENV WKHTMLTOX_MINOR 0.12.4
 ENV NODE_VERSION 6
@@ -107,20 +107,25 @@ RUN pip install GeoIP
 # Improve Odoo shell, in case we need it once
 RUN pip install ptpython
 
-# Create Odoo User
-RUN addgroup --system --gid 9001 odoo
-RUN adduser --system --uid 9001 --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
-RUN mkdir -p /var/lib/odoo
-RUN chown -R odoo:odoo /var/lib/odoo
+# Read configs and secrets
+# UID & GID will be used to fix secrets permission on docker-compose bind mounted ("plain") secrets
+ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_GID=9001 PGHOST=db
 
+# Create Odoo User
+RUN addgroup --system --gid $APP_UID odoo
+RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
+# Make secrets folder editable to work arround docker-compose mock implementation
+RUN mkdir -p /var/lib/odoo /run/secrets
+RUN chown -R odoo:odoo /var/lib/odoo /run/secrets
+
+# Copy helpers
 COPY bin/* /usr/local/bin/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-docker-base-libs/
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-docker-base-libs
 RUN chmod +x -R /usr/local/bin/ /usr/local/lib/python2.7/dist-packages/
 
-COPY entrypoint.d /home/entrypoint.d
-COPY config.d /home/config.d
-RUN chmod +x -R /home
+COPY entrypoint.d /entrypoint.d
+RUN chmod +x -R /entrypoint.d
 
-ENTRYPOINT ["entrypoint.sh", "/opt/odoo/odoo-bin"]
+ENTRYPOINT ["entrypoint.sh"]
 VOLUME ["/var/lib/odoo"]
