@@ -4,5 +4,8 @@ FROM registry.gitlab.com/xoe/odoo/odoo-docker-base
 RUN pip install --upgrade --pre pylint-odoo
 RUN pip install pylint-mccabe coverage
 
+# Some git tools for standard diffing
+RUN apt-get update && apt-get install -y --no-install-recommends git-core
+
 ENTRYPOINT []
 CMD []
