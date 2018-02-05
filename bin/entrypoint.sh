@@ -13,6 +13,17 @@ if [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
 
+
+# While we are dealing with rancher, which has no ConfigSets
+for folder in $(find /run/secrets -maxdepth 1 -mindepth 1 -type f -name "__*" ); do
+	target=${folder#/run/secrets/}
+	target=${target//__//}
+	mkdir -p ${target%/*}
+	rm -f ${target}
+	cp -rp "${folder}" "${target}"
+    echo "Copied ${folder} to ${target} (Rancher Indirection)"
+done;
+
 ODOO_CMD="/opt/odoo/odoo-bin"
 RUN=$@
 

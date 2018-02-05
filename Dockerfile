@@ -115,8 +115,8 @@ ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_
 RUN addgroup --system --gid $APP_UID odoo
 RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
 # Make secrets folder editable to work arround docker-compose mock implementation
-RUN mkdir -p /var/lib/odoo /run/secrets
-RUN chown -R odoo:odoo /var/lib/odoo /run/secrets
+RUN mkdir -p /var/lib/odoo /run/secrets /run/configs
+RUN chown -R odoo:odoo /var/lib/odoo /run/secrets /run/configs
 
 # Copy helpers
 COPY bin/* /usr/local/bin/
