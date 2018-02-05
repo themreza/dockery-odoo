@@ -130,7 +130,7 @@ def main(argv=None):
     modules = [x for l in modules for x in l]  # flatten list of lists
 
     res = list(set(modules) & set(modules_changed) - set(excluded) | set(included))
-    print(' '.join(res))
+    print(','.join(res))
 
 
 if __name__ == "__main__":
