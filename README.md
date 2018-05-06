@@ -1,19 +1,23 @@
 # [Dockerized XOE Base Image](https://github.com/xoes/odoo-docker-base)
 
+An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
+
+It aims to provide some opinionanted overrides, additions and/or patches included which makes Odoo instance scripting a little more fun.
 
 ## Components
 
 - Base Image
 - [WIP] Migrator Image (leveraging marabunta)
 - [WIP] Tester Image (remotely inspired by OCA's mqt)
-- [WIP] Translator Image (for Transifex or Weblate + GitHub or GitLab)
+- [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
 
 ## Image explained
 
-Basically, every directory you have to worry about is found inside `/opt/odoo`.
-This is its structure:
+Basically, every directory you have to worry about is `/opt/odoo`.
+In your project, this should be it's structure:
 
     addons/
+        10-my-addons/
         ...
         80-odoo-ee/
         90-odoo-cc/
