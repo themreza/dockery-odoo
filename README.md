@@ -8,10 +8,14 @@ It aims to provide some opinionanted overrides, additions and/or patches include
 
 ## Components
 
-- Base Image
+- Base Images
 - [WIP] Migrator Image (leveraging marabunta)
 - [WIP] Tester Image (remotely inspired by OCA's mqt)
 - [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
+
+The base images are versioned through branch names.
+
+The other images, README, ... are in shared development on `shared` branch (and eventually merged back to the version branches).
 
 ## Image explained
 
@@ -98,19 +102,19 @@ or better use descriptive `docker-compose` files:
 
 **To build your project's dev-container:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:dev
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:dev
 
 **To build your project's tester:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:tester
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:tester
 
 **To build your project's migrator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:migrator
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:migrator
 
 **To build your project's translator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:translator
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:translator
 
 ## Local build
 
