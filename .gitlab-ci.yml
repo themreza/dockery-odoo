@@ -24,6 +24,17 @@ Image-Deployment:
      base
     - docker push $CI_REGISTRY_IMAGE:latest
 
+    # Dev Container build
+    >
+     docker build
+     --tag "${CI_REGISTRY_IMAGE}:dev"
+     --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
+     --label com.github.xoes.docker-odoo-base.from-image = "${CI_REGISTRY_IMAGE}"
+     --label org.label-schema.name = "Odoo CI-Tester Image for Docker"
+     --label org.label-schema.description = "This image serves as standardized base CI test environment for your Odoo projects."
+     dev
+    - docker push $CI_REGISTRY_IMAGE:dev
+
     # Tester build
     >
      docker build
