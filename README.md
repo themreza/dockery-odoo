@@ -1,6 +1,7 @@
-# [Dockerized XOE Base Image](https://github.com/xoes/dockery-odoo)
+# [Dockery Odoo](https://github.com/xoes/dockery-odoo)
 
 An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
+Hand crafted for productivity by XOE Solutions!
 
 It aims to provide some opinionanted overrides, additions and/or patches included which makes Odoo instance scripting a little more fun.
 
@@ -122,3 +123,11 @@ or better use descriptive `docker-compose` files:
 
  - This repo is optimized for integrated Gitlab Registry
  - You might want to take `.gitlab-ci.yml` as an example and adapt it to your own CI/CD to create and publish your base images.
+
+
+# Credits & License
+
+Based on stewardship by:
+ - [@blaggacao](https://github.com/blaggacao) ([XOE Solutions](https://xoe.solutions))
+
+License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
