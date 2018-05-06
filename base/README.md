@@ -1,20 +1,21 @@
 # Project's Dockerfile
+```dockerfile
+# .docker/Dockerfile
+ARG  FROM_IMAGE=xoes/dockery-odoo
+FROM ${FROM_IMAGE}
 
-    # .docker/Dockerfile
-    ARG  FROM_IMAGE=xoes/dockery-odoo
-    FROM ${FROM_IMAGE}
+# Load framework
+COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
+COPY odoo-cc/odoo      /opt/odoo/odoo
 
-    # Load framework
-    COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
-    COPY odoo-cc/odoo      /opt/odoo/odoo
+# Load enterprise and community addons
+COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
+COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
 
-    # Load enterprise and community addons
-    COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
-    COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
-    
-    # Your addons
-    COPY addons1           /opt/odoo/addons/70-addons1
-    COPY addons2           /opt/odoo/addons/60-addons2
+# Your addons
+COPY addons1           /opt/odoo/addons/70-addons1
+COPY addons2           /opt/odoo/addons/60-addons2
+```
 
 # Build Auxiliary Images
 

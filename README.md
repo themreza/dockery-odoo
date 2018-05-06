@@ -41,16 +41,18 @@ PATH and PYTHONPATH enabled scripts to consider. For convenience.
 
 ### Note on `chmod +x`
 We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
-    
-    # Do not complain on .empty files (Bash only)
-    shopt -s dotglob
-    git update-index --chmod=+x \
-        base/bin/* \
-        base/entrypoint.d/* \
-        base/lib/* \
-        tester/lib/* \
-        translator/lib/*
-    shopt -u dotglob
+
+```bash    
+# Do not complain on .empty files (Bash only)
+shopt -s dotglob
+git update-index --chmod=+x \
+    base/bin/* \
+    base/entrypoint.d/* \
+    base/lib/* \
+    tester/lib/* \
+    translator/lib/*
+shopt -u dotglob
+```
 
 Don't foget to set `git config core.filemode true` before cloning.
 
@@ -60,33 +62,33 @@ This unfortunately only works on linux computers. You need to add `RUN chmod +x`
 
 **To create your project's Dockerfile:**
 
+```dockerfile
+# .docker/Dockerfile
+ARG  FROM_IMAGE=xoes/dockery-odoo
+FROM ${FROM_IMAGE}
 
-    # .docker/Dockerfile
-    ARG  FROM_IMAGE=xoes/dockery-odoo
-    FROM ${FROM_IMAGE}
+# Load framework
+COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
+COPY odoo-cc/odoo      /opt/odoo/odoo
 
-    # Load framework
-    COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
-    COPY odoo-cc/odoo      /opt/odoo/odoo
+# Load enterprise and community addons
+COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
+COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
 
-    # Load enterprise and community addons
-    COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
-    COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
-    
-    # Your addons
-    COPY addons1           /opt/odoo/addons/70-addons1
-    COPY addons2           /opt/odoo/addons/60-addons2
-
+# Your addons
+COPY addons1           /opt/odoo/addons/70-addons1
+COPY addons2           /opt/odoo/addons/60-addons2
+```
 - Loading is done in alfanumeric ascending order of your addons folder name
 - This is useful if you need to override entire modules (first loaded = used)
 
 **To build your project's image (`odoo/app`):**
 
-    docker build --tag odoo/app .
+    docker build --tag odoo/app base
 
 or with your custom base image
 
-    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE .
+    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE base
 
 for development, it's recomended to override the current addon folder...
 
@@ -102,19 +104,27 @@ or better use descriptive `docker-compose` files:
 
 **To build your project's dev-container:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:dev
+    docker build \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:dev
 
 **To build your project's tester:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:tester
+    docker build \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:tester
 
 **To build your project's migrator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:migrator
+    docker build \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:migrator
 
 **To build your project's translator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#shared:translator
+    docker build \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:translator
 
 ## Local build
 
