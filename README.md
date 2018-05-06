@@ -1,4 +1,4 @@
-# [Dockerized XOE Base Image](https://github.com/xoes/odoo-docker-base)
+# [Dockerized XOE Base Image](https://github.com/xoes/dockery-odoo)
 
 An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
 
@@ -56,7 +56,7 @@ This unfortunately only works on linux computers. You need to add `RUN chmod +x`
 
 
     # .docker/Dockerfile
-    ARG  FROM_IMAGE=xoes/odoo-docker-base
+    ARG  FROM_IMAGE=xoes/dockery-odoo
     FROM ${FROM_IMAGE}
 
     # Load framework
@@ -94,17 +94,21 @@ or better use descriptive `docker-compose` files:
 `docker-compose.override.yml` is a magic file name to override configuration for your local development, you should add it to `.gitignore`.
 
 
+**To build your project's dev-container:**
+
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:dev
+
 **To build your project's tester:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:tester
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:tester
 
 **To build your project's migrator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:migrator
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:migrator
 
 **To build your project's translator:**
 
-    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:translator
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/dockery-odoo.git#master:translator
 
 ## Local build
 

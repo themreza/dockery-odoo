@@ -17,7 +17,7 @@ Image-Deployment:
      --label org.label-schema.name = "Odoo Base Image for Docker"
      --label org.label-schema.description = "This image serves as standardized base environment for your Odoo projects."
      --label org.label-schema.url = "https://xoe.solutions"
-     --label org.label-schema.vcs-url = "https://github.com/xoes/odoo-docker-base"
+     --label org.label-schema.vcs-url = "https://github.com/xoes/dockery-odoo"
      --label org.label-schema.vcs-ref = "${CI_BUILD_REF}"
      --label org.label-schema.vendor = "XOE Corp. SAS"
      --label org.label-schema.version = "0.7"

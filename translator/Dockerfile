@@ -1,4 +1,4 @@
-ARG  FROM_IMAGE=xoes/odoo-docker-base
+ARG  FROM_IMAGE=xoes/dockery-odoo
 FROM ${FROM_IMAGE}
 
 # get weblate API client

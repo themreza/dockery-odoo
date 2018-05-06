@@ -120,10 +120,10 @@ RUN chown -R odoo:odoo /var/lib/odoo /run/secrets /run/configs
 
 # Copy helpers
 COPY bin/* /usr/local/bin/
-COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-docker-base-libs/
+COPY lib/* /usr/local/lib/python2.7/dist-packages/dockery-odoo-libs/
 COPY entrypoint.sh /
 COPY entrypoint.d /entrypoint.d
-ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-docker-base-libs
+ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
 
 ENTRYPOINT ["/entrypoint.sh"]
