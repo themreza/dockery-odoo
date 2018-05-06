@@ -1,7 +1,8 @@
 # [Dockery Odoo](https://github.com/xoes/dockery-odoo)
 
 An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
-Hand crafted for productivity by XOE Solutions!
+
+Hand crafted for productivity!
 
 It aims to provide some opinionanted overrides, additions and/or patches included which makes Odoo instance scripting a little more fun.
 
