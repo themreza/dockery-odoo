@@ -1,14 +1,39 @@
 version: '3.4'
 services:
-  odoo-prod:
+
+  base:
     build:
-      context: .
+      context: base
       labels: 
-        xoe.docker-odoo-base.commit: ${CI_BUILD_REF:-devmachine}
-    image: "${CI_REGISTRY_IMAGE}:latest"
-  odoo-runner:
+        org.label-schema.vcs-ref: "${CI_BUILD_REF:-devmachine}"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:latest"
+
+  runner:
     build:
-      context: .
-      dockerfile: Dockerfile.runner
-    image: "${CI_REGISTRY_IMAGE}:runner"
-    depends_on: ['odoo-prod']
+      context: runner
+      args:
+        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+      labels: 
+        com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:runner"
+    depends_on: ['base']
+
+  migrator:
+    build:
+      context: migrator
+      args:
+        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+      labels: 
+        com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:migrator"
+    depends_on: ['base']
+
+  translator:
+    build:
+      context: translator
+      args:
+        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+      labels: 
+        com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:translator"
+    depends_on: ['base']

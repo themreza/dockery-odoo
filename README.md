@@ -1,33 +1,12 @@
-# [Dockerized Felicity Base Image](https://gitlab.com/devco-odoo/felicity/container_registry)
+# [Dockerized XOE Base Image](https://github.com/xoes/odoo-docker-base)
 
 
-Highly opinionated image ready to put [Odoo](https://www.odoo.com) inside it,
-but **without Odoo**. // Strongly inspired by https://github.com/Tecnativa/docker-odoo-base
+## Components
 
-## What?
-
-Yes, the purpose of this is to serve as a base for you to build your own Odoo
-project, because most of them end up requiring a big amount of custom patches,
-merges, repositories, etc. With this image, you have a collection of good
-practices and tools to enable your team to have a standard Odoo project
-structure.
-
-BTW, we use [Debian][]. It has fast mirrors out of the box. Also in South America.
-
-  [Debian]: https://www.debian.org/
-
-## Why?
-
-Because developing Odoo is hard. You need lots of customizations, dependencies,
-and if you want to move from one version to another, it's a pain.
-
-Also because nobody wants Odoo as it comes from upstream, you most likely will
-need to add custom patches and addons, at least, so we need a way to put all
-together and make it work anywhere quickly.
-
-## How?
-
-You can start working with this straight away with our [scaffolding][].
+- Base Image
+- [WIP] Migrator Image (leveraging marabunta)
+- [WIP] Tester Image (remotely inspired by OCA's mqt)
+- [WIP] Translator Image (for Transifex or Weblate + GitHub or GitLab)
 
 ## Image explained
 
@@ -43,151 +22,95 @@ This is its structure:
     odoo-bin
     .odoorc
 
-Docker boilerplate is living in `/home`. It mainly constructs the config file.
-
-    entrypoint.d/
-    conf.d/
-    build/
-    build.d/  # Your custom build secondary steps are pooled by default
+Docker boilerplate is living in `/`.
 
 PATH and PYTHONPATH enabled scripts to consider. For convenience.
 
     ./bin/*    -> /usr/local/bin/
     ./lib/*.py -> /usr/local/lib/python2.7/dist-packages/
 
+### Note on `chmod +x`
+We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
+    
+    # Do not complain on .empty files (Bash only)
+    shopt -s dotglob
+    git update-index --chmod=+x \
+        base/bin/* \
+        base/entrypoint.d/* \
+        base/lib/* \
+        tester/lib/* \
+        translator/lib/*
+    shopt -u dotglob
+
+Don't foget to set `git config core.filemode true` before cloning.
+
+This unfortunately only works on linux computers. You need to add `RUN chmod +x` on windows machines.
 
 ## Image usage
 
-Basically, you just need to observe the following folder structure, see [scaffolding][]:
-Note that folders cannot be empty. Use an empty `.empty` file instead.
+**To create your project's Dockerfile:**
 
-    docker/
-        bin/
-            .empty
-        build.d/
-            .empty
-        conf.d/
-            .empty
-        entrypoint.d/
-            .empty
-        lib/
-            .empty
-        11-prod.Dockerfile
-        12-devel.Dockerfile
-        13-runner.Dockerfile
-    odoo-cc/
-    odoo-ee/
-    .env
-    01-prod.env
-    02-devel.env
-    docker-compose.override.yml  # You would typically put this into .gitignore
-    docker-compose.override.example  # So we keep an exaple, you can use and update in your org
-    docker-compose.yml
 
-The `docker-compose.yml` file:
+    # .docker/Dockerfile
+    ARG  FROM_IMAGE=xoes/odoo-docker-base
+    FROM ${FROM_IMAGE}
 
-    services:
-      deploy:
-        build: {context: ./. , dockerfile: docker/11-prod.Dockerfile}
-        image: $CI_REGISTRY_IMAGE
-        links: ['psql:db']
-        user: odoo
-        env_file:
-            - 01-prod.env
-        develop:
-            build: {context: ./. , dockerfile: docker/12-devel.Dockerfile}
-            image: $CI_REGISTRY_IMAGE:devel
-            links: ['psql:db', 'wdb:wdb']
-            ports: ['80:8069', '8072:8072']
-            volumes:
-              - odoo-data:/var/lib/odoo
-              - ./odoo-cc/odoo-bin:/opt/odoo/odoo-bin:ro
-              - ./odoo-cc/odoo:/opt/odoo/odoo:ro
-              - ./odoo-ee/:/opt/odoo/addons/80-odoo-ee:ro
-              - ./odoo-cc/addons:/opt/odoo/addons/90-odoo-cc:ro
-              - .:/home/src # Manipulating code from de image (scaffold)
-            user: odoo
-            env_file:
-              - 02-devel.env
-            command: ['--dev', 'wdb,reload,qweb,werkzeug,xml']
-          runner:
-            build: {context: ./. , dockerfile: docker/13-runner.Dockerfile}
-            image: $CI_REGISTRY_IMAGE:runner
-        ...
-        psql
-        wdb
-        etcetera
-        ...
-    version: '2'
-    volumes:
-      odoo-data: {driver: local}
-      psql: {driver: local}
+    # Load framework
+    COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
+    COPY odoo-cc/odoo      /opt/odoo/odoo
 
-After having build de base image and pushed it to your registry, like so...
- - within the base image folder
+    # Load enterprise and community addons
+    COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
+    COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
+    
+    # Your addons
+    COPY addons1           /opt/odoo/addons/70-addons1
+    COPY addons2           /opt/odoo/addons/60-addons2
 
-Linux
+- Loading is done in alfanumeric ascending order of your addons folder name
+- This is useful if you need to override entire modules (first loaded = used)
 
-    export CI_REGISTRY_IMAGE=[REPLACE-BY-YOUR-BASE-IMAGE-REPO]
+**To build your project's image (`odoo/app`):**
 
-    echo "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE" > .env
-    docker-compose build
-    docker push $CI_REGISTRY_IMAGE:base
-    docker push $CI_REGISTRY_IMAGE:latest
-    docker push $CI_REGISTRY_IMAGE:devel
-    docker push $CI_REGISTRY_IMAGE:runner
-    unset CI_REGISTRY_IMAGE
+    docker build --tag odoo/app .
 
-Windows
+or with your custom base image
 
-    set CI_REGISTRY_IMAGE=[REPLACE-BY-YOUR-BASE-IMAGE-REPO]
+    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE .
 
-    echo "CI_REGISTRY_IMAGE=%CI_REGISTRY_IMAGE%" > .env
-    docker-compose build
-    docker push %CI_REGISTRY_IMAGE%:base
-    docker push %CI_REGISTRY_IMAGE%:latest
-    docker push %CI_REGISTRY_IMAGE%:devel
-    docker push %CI_REGISTRY_IMAGE%:runner
-    set CI_REGISTRY_IMAGE=
+for development, it's recomended to override the current addon folder...
 
-... you should now build your actual project image
- - within your project folder
- - replace the FROM directives in the templates with your docker repo (the one from above)
+    docker run -p 80:8069 -v ./addons1:/opt/odoo/addons/70-addons1 odoo/app --dev all
 
-Linux
+or better use descriptive `docker-compose` files:
 
-    export CI_REGISTRY_IMAGE=[REPLACE-BY-YOUR-ACTUAL-IMAGE-REPO]
+    ./docker-compose.yml
+    ./docker-compose.override.yml
 
-    echo "CI_REGISTRY_IMAGE=$CI_REGISTRY_IMAGE" > .env
-    docker-compose build
-    docker push $CI_REGISTRY_IMAGE:latest
-    docker push $CI_REGISTRY_IMAGE:devel
-    docker push $CI_REGISTRY_IMAGE:runner
-    unset CI_REGISTRY_IMAGE
+`docker-compose.override.yml` is a magic file name to override configuration for your local development, you should add it to `.gitignore`.
 
-Windows
 
-    set CI_REGISTRY_IMAGE=[REPLACE-BY-YOUR-ACTUAL-IMAGE-REPO]
+**To build your project's tester:**
 
-    echo "CI_REGISTRY_IMAGE=%CI_REGISTRY_IMAGE%" > .env
-    docker-compose build
-    docker push %CI_REGISTRY_IMAGE%:latest
-    docker push %CI_REGISTRY_IMAGE%:devel
-    docker push %CI_REGISTRY_IMAGE%:runner
-    set CI_REGISTRY_IMAGE=
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:tester
 
-Then you can do:
+**To build your project's migrator:**
 
-    docker-compose up devel
-    docker-compose run devel shell
-    docker-compose run devel scaffold
-    ...
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:migrator
 
-You can manage your entire (default) environment throug the `*.env` file, like `10-prod.env`.
-"default", because real environment variables superseed those definitions.
+**To build your project's translator:**
 
-Tip: To understand how the magic works, have a closer look at the config.d folder.
+    docker build --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE https://github.com/xoes/odoo-docker-base.git#master:translator
 
-Having a closer look at entrypoint.d, you can find out:
- - How addons folders are constructed dynamically in ascending folder name order (hence number prefixing in the COPY directives)
- - How to use rancher/docker secrets in your config.
+## Local build
+
+ - Create `.env` file in the repo root.
+   This will feed environment variables to `docker-compose`
+ - Set `CI_REGISTRY_IMAGE` to the image name you want to use
+   It should coincide with the image name in your regestry.
+ - Run `docker-compose build`
+
+## CI/CD automated builds
+
+ - This repo is optimized for integrated Gitlab Registry
+ - You might want to take `.gitlab-ci.yml` as an example and adapt it to your own CI/CD to create and publish your base images.

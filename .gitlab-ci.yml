@@ -1,8 +1,7 @@
-# CI for o9 repo.
 image: docker
 stages: [Build]
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u gitlab-ci-token -p "${CI_JOB_TOKEN}" "${CI_REGISTRY}"
 Image-Deployment:
   stage: Build
   only: [master]
@@ -10,7 +9,50 @@ Image-Deployment:
     - image-cache
     - docker-socket
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:latest --label xoe.docker-odoo-base.commit=$CI_BUILD_REF .
-    - docker build -t $CI_REGISTRY_IMAGE:runner -f Dockerfile.runner .
+    # Base build
+    >
+     docker build 
+     --tag "${CI_REGISTRY_IMAGE}:latest"
+     --label org.label-schema.schema-version = "1.0"
+     --label org.label-schema.name = "Odoo Base Image for Docker"
+     --label org.label-schema.description = "This image serves as standardized base environment for your Odoo projects."
+     --label org.label-schema.url = "https://xoe.solutions"
+     --label org.label-schema.vcs-url = "https://github.com/xoes/odoo-docker-base"
+     --label org.label-schema.vcs-ref = "${CI_BUILD_REF}"
+     --label org.label-schema.vendor = "XOE Corp. SAS"
+     --label org.label-schema.version = "0.7"
+     base
     - docker push $CI_REGISTRY_IMAGE:latest
-    - docker push $CI_REGISTRY_IMAGE:runner
+
+    # Tester build
+    >
+     docker build
+     --tag "${CI_REGISTRY_IMAGE}:tester"
+     --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
+     --label com.github.xoes.docker-odoo-base.from-image = "${CI_REGISTRY_IMAGE}"
+     --label org.label-schema.name = "Odoo CI-Tester Image for Docker"
+     --label org.label-schema.description = "This image serves as standardized base CI test environment for your Odoo projects."
+     tester
+    - docker push $CI_REGISTRY_IMAGE:tester
+
+    # Migrator build
+    >
+     docker build
+     --tag "${CI_REGISTRY_IMAGE}:migrator"
+     --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
+     --label com.github.xoes.docker-odoo-base.from-image = "${CI_REGISTRY_IMAGE}"
+     --label org.label-schema.name = "Odoo Migrator Image for Docker"
+     --label org.label-schema.description = "This image serves as standardized base migrator environment for your Odoo projects based on marabunta."
+     migrator
+    - docker push $CI_REGISTRY_IMAGE:migrator
+
+    # Translator build
+    >
+     docker build
+     --tag "${CI_REGISTRY_IMAGE}:translator"
+     --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
+     --label com.github.xoes.docker-odoo-base.from-image = "${CI_REGISTRY_IMAGE}"
+     --label org.label-schema.name = "Odoo Translator Image for Docker"
+     --label org.label-schema.description = "This image serves as standardized translator integration for your Odoo projects for transifex or weblate."
+     translator
+    - docker push $CI_REGISTRY_IMAGE:translator
