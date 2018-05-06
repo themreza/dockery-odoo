@@ -8,21 +8,32 @@ services:
         org.label-schema.vcs-ref: "${CI_BUILD_REF:-devmachine}"
     image: "${CI_REGISTRY_IMAGE:-odoo/base}:latest"
 
-  runner:
+  dev:
     build:
-      context: runner
+      context: dev
       args:
-        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+        FROM_IMAGE: "${CI_REGISTRY_IMAGE:-odoo/base}"
       labels: 
         com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
-    image: "${CI_REGISTRY_IMAGE:-odoo/base}:runner"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:dev"
+    depends_on: ['base']
+
+
+  tester:
+    build:
+      context: tester
+      args:
+        FROM_IMAGE: "${CI_REGISTRY_IMAGE:-odoo/base}"
+      labels: 
+        com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
+    image: "${CI_REGISTRY_IMAGE:-odoo/base}:tester"
     depends_on: ['base']
 
   migrator:
     build:
       context: migrator
       args:
-        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+        FROM_IMAGE: "${CI_REGISTRY_IMAGE:-odoo/base}"
       labels: 
         com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
     image: "${CI_REGISTRY_IMAGE:-odoo/base}:migrator"
@@ -32,7 +43,7 @@ services:
     build:
       context: translator
       args:
-        FROM_IMAGE: $"{CI_REGISTRY_IMAGE:-odoo/base}"
+        FROM_IMAGE: "${CI_REGISTRY_IMAGE:-odoo/base}"
       labels: 
         com.github.xoes.docker-odoo-base.from-image: "${CI_REGISTRY_IMAGE:-odoo/base}"
     image: "${CI_REGISTRY_IMAGE:-odoo/base}:translator"

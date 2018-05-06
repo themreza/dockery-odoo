@@ -9,8 +9,8 @@ RUN pip install pylint-mccabe coverage
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
 
-COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-runner-libs/
-ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-runner-libs
+COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-tester-libs/
+ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-tester-libs
 
 ENTRYPOINT []
 CMD []
