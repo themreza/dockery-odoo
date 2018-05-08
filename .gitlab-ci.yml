@@ -10,7 +10,7 @@ Image-Deployment:
     - docker-socket
   script:
     # Base build
-    >
+    - >
      docker build 
      --tag "${CI_REGISTRY_IMAGE}:latest"
      --label org.label-schema.schema-version = "1.0"
@@ -25,7 +25,7 @@ Image-Deployment:
     - docker push $CI_REGISTRY_IMAGE:latest
 
     # Dev Container build
-    >
+    - >
      docker build
      --tag "${CI_REGISTRY_IMAGE}:dev"
      --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
@@ -36,7 +36,7 @@ Image-Deployment:
     - docker push $CI_REGISTRY_IMAGE:dev
 
     # Tester build
-    >
+    - >
      docker build
      --tag "${CI_REGISTRY_IMAGE}:tester"
      --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
@@ -47,7 +47,7 @@ Image-Deployment:
     - docker push $CI_REGISTRY_IMAGE:tester
 
     # Migrator build
-    >
+    - >
      docker build
      --tag "${CI_REGISTRY_IMAGE}:migrator"
      --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
@@ -58,7 +58,7 @@ Image-Deployment:
     - docker push $CI_REGISTRY_IMAGE:migrator
 
     # Translator build
-    >
+    - >
      docker build
      --tag "${CI_REGISTRY_IMAGE}:translator"
      --build-arg FROM_IMAGE = "${CI_REGISTRY_IMAGE}"
