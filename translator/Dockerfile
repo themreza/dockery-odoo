@@ -1,6 +1,8 @@
 ARG  FROM_IMAGE=xoes/dockery-odoo
 FROM ${FROM_IMAGE}
 
+USER root
+
 # get weblate API client
 # # DOC: https://docs.weblate.org/en/latest/wlc.html
 RUN pip install wlc
@@ -21,6 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
 COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-translator-libs/
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-translator-libs
+
+USER odoo
 
 ENTRYPOINT []
 CMD []

@@ -1,6 +1,8 @@
 ARG  FROM_IMAGE=xoes/dockery-odoo
 FROM ${FROM_IMAGE}
 
+USER root
+
 # get marabunta as the odoo migration controller library of choice
 RUN pip install marabunta
 
@@ -12,6 +14,8 @@ ENV DATABASE development
 ENV DB_USER odoo
 ENV DB_PASSWORD odoo
 ENV DB_HOST db
+
+USER odoo
 
 ENTRYPOINT ["marabunta"]
 CMD ["--help"]
