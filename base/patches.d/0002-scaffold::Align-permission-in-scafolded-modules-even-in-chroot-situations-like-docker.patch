@@ -1,0 +1,98 @@
+In some cases (umask settings!), the current user does not create with
+group write permissions. When, on the other hand, the current user is
+different from the developer (ej chroot setups / container user),
+the developer will not be able to start coding without adapting permissions,
+even though he has carefully crafted the groups outside and inside the chroot
+/ container environment and is part of the gid of the current user.
+
+ odoo/cli/scaffold.py | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/odoo/cli/scaffold.py b/odoo/cli/scaffold.py
+index 7293f82a1d6..86f5853f18f 100644
+--- a/odoo/cli/scaffold.py
++++ b/odoo/cli/scaffold.py
+@@ -72,73 +72,83 @@ def pascal(s):
+         ss.capitalize()
+         for ss in re.sub('[_\s]+', ' ', s).split()
+     )
+ 
+ def directory(p, create=False):
+     expanded = os.path.abspath(
+         os.path.expanduser(
+             os.path.expandvars(p)))
+     if create and not os.path.exists(expanded):
+         os.makedirs(expanded)
++        os.chmod(expanded, 0775)
+     if not os.path.isdir(expanded):
+         die("%s is not a directory" % p)
+     return expanded
+ 
+ env = jinja2.Environment()
+ env.filters['snake'] = snake
+ env.filters['pascal'] = pascal
+ class template(object):
+     def __init__(self, identifier):
+         # TODO: archives (zipfile, tarfile)
+         self.id = identifier
+         # is identifier a builtin?
+         self.path = builtins(identifier)
+         if os.path.isdir(self.path):
+             return
+         # is identifier a directory?
+         self.path = identifier
+         if os.path.isdir(self.path):
+             return
+         die("{} is not a valid module template".format(identifier))
+ 
+     def __str__(self):
+         return self.id
+ 
+     def files(self):
+         """ Lists the (local) path and content of all files in the template
+         """
+         for root, _, files in os.walk(self.path):
+             for f in files:
+                 path = os.path.join(root, f)
+                 yield path, open(path, 'rb').read()
+ 
+     def render_to(self, modname, directory, params=None):
+         """ Render this module template to ``dest`` with the provided
+          rendering parameters
+         """
+         # overwrite with local
+         for path, content in self.files():
+             local = os.path.relpath(path, self.path)
+             # strip .template extension
+             root, ext = os.path.splitext(local)
+             if ext == '.template':
+                 local = root
+             dest = os.path.join(directory, modname, local)
+             destdir = os.path.dirname(dest)
+             if not os.path.exists(destdir):
+                 os.makedirs(destdir)
+ 
+             with open(dest, 'wb') as f:
+                 if ext not in ('.py', '.xml', '.csv', '.js', '.rst', '.html', '.template'):
+                     f.write(content)
+                 else:
+                     env.from_string(content.decode('utf-8'))\
+                        .stream(params or {})\
+                        .dump(f, encoding='utf-8')
++        # Ensure group write permissions guarantee,
++        # if this script is executed by another user (ej. container user / chroot)
++        modpath = os.path.join(directory, modname)
++        for root, dirs, files in os.walk(modpath):
++            for momo in dirs:
++                os.chmod(os.path.join(root, momo), 0775)
++            for momo in files:
++                os.chmod(os.path.join(root, momo), 0775)
++            os.chmod(root, 0775)
+ 
+ def die(message, code=1):
+     print >>sys.stderr, message
+     sys.exit(code)
+ 
+ def warn(message):
+     # ASK: shall we use logger ?
+     print "WARNING: " + message

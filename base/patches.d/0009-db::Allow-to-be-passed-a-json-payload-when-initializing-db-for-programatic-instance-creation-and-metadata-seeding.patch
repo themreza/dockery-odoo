@@ -1,0 +1,97 @@
+If you ever deploy automatically, you want to seed some information about the
+deployed company to your Odoo instance without the need to do dirty hacks
+from an operator script.
+
+With this patch, just conveniently pass a json dictionary for the main company.
+
+ odoo/service/db.py | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/odoo/service/db.py b/odoo/service/db.py
+index a3ede358810..118500cb495 100644
+--- a/odoo/service/db.py
++++ b/odoo/service/db.py
+@@ -31,50 +31,52 @@ class DatabaseExists(Warning):
+ #----------------------------------------------------------
+ # Master password required
+ #----------------------------------------------------------
+ 
+ def check_super(passwd):
+     if passwd and passwd == odoo.tools.config['admin_passwd']:
+         return True
+     raise odoo.exceptions.AccessDenied()
+ 
+ # This should be moved to odoo.modules.db, along side initialize().
+-def _initialize_db(id, db_name, demo, lang, user_password, login='admin', country_code=None):
++def _initialize_db(id, db_name, demo, lang, user_password, login='admin', country_code=None, company_dict=None):
+     try:
+         db = odoo.sql_db.db_connect(db_name)
+         with closing(db.cursor()) as cr:
+             # TODO this should be removed as it is done by Registry.new().
+             odoo.modules.db.initialize(cr)
+             odoo.tools.config['load_language'] = lang
+             cr.commit()
+ 
+         registry = odoo.modules.registry.Registry.new(db_name, demo, None, update_module=True)
+ 
+         with closing(db.cursor()) as cr:
+             env = odoo.api.Environment(cr, SUPERUSER_ID, {})
+ 
+             if lang:
+                 modules = env['ir.module.module'].search([('state', '=', 'installed')])
+                 modules.update_translations(lang)
+ 
+             if country_code:
+                 countries = env['res.country'].search([('code', 'ilike', country_code)])
+                 if countries:
+                     env['res.company'].browse(1).country_id = countries[0]
+                 if len(country_timezones[country_code]) == 1:
+                     users = env['res.users'].search(['|', ('active','=', True), ('active','=', False)])
+                     users.write({'tz': country_timezones[country_code][0]})
+ 
++            if company_dict:
++                env['res.company'].browse(1).write(company_dict)
+ 
+             # update admin's password and lang and login
+             values = {'password': user_password, 'lang': lang}
+             if login:
+                 values['login'] = login
+                 emails = odoo.tools.email_split(login)
+                 if emails:
+                     values['email'] = emails[0]
+             env.user.write(values)
+ 
+             cr.execute('SELECT login, password FROM res_users ORDER BY login')
+             cr.commit()
+     except Exception, e:
+         _logger.exception('CREATE DATABASE failed:')
+@@ -84,25 +86,27 @@ def _create_empty_database(name):
+     with closing(db.cursor()) as cr:
+         chosen_template = odoo.tools.config['db_template']
+         cr.execute("SELECT datname FROM pg_database WHERE datname = %s",
+                    (name,))
+         if cr.fetchall():
+             raise DatabaseExists("database %r already exists!" % (name,))
+         else:
+             cr.autocommit(True)     # avoid transaction block
+             cr.execute("""CREATE DATABASE "%s" ENCODING 'unicode' TEMPLATE "%s" """ % (name, chosen_template))
+ 
+-def exp_create_database(db_name, demo, lang, user_password='admin', login='admin', country_code=None):
++def exp_create_database(db_name, demo, lang, user_password='admin', login='admin', country_code=None, company_dict=None):
+     """ Similar to exp_create but blocking."""
+     _logger.info('Create database `%s`.', db_name)
+     _create_empty_database(db_name)
+-    _initialize_db(id, db_name, demo, lang, user_password, login, country_code)
++    if company_dict:
++        company_dict = json.loads(company_dict)
++    _initialize_db(id, db_name, demo, lang, user_password, login, country_code, company_dict)
+     return True
+ 
+ def exp_duplicate_database(db_original_name, db_name):
+     _logger.info('Duplicate database `%s` to `%s`.', db_original_name, db_name)
+     odoo.sql_db.close_db(db_original_name)
+     db = odoo.sql_db.db_connect('postgres')
+     with closing(db.cursor()) as cr:
+         cr.autocommit(True)     # avoid transaction block
+         _drop_conn(cr, db_original_name)
+         cr.execute("""CREATE DATABASE "%s" ENCODING 'unicode' TEMPLATE "%s" """ % (db_name, db_original_name))
