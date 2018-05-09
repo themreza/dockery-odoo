@@ -32,7 +32,7 @@ set -e
 # Source *.d folder based on this script's name
 
 script_name=$(basename $0 .sh)
-script_name_folder = ${script_name}.d
+script_name_folder=${script_name}.d
 
 function source_scripts {
 	for file in $(find /${script_name_folder} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
