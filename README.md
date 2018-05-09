@@ -19,22 +19,11 @@ The other images, README, ... are in shared development on `shared` branch (and 
 
 ## Image explained
 
-Basically, every directory you have to worry about is `/opt/odoo`.
-In your project, this should be it's structure:
+- After building the image, every you have to worry about is `/opt/odoo`.
 
-    addons/
-        10-my-addons/
-        ...
-        80-odoo-ee/
-        90-odoo-cc/
-    odoo/
-        ...
-    odoo-bin
-    .odoorc
+- Docker boilerplate lives in `/`.
 
-Docker boilerplate is living in `/`.
-
-PATH and PYTHONPATH enabled scripts to consider. For convenience.
+- PATH and PYTHONPATH enabled boilerplate lies in:
 
     ./bin/*    -> /usr/local/bin/
     ./lib/*.py -> /usr/local/lib/python2.7/dist-packages/
