@@ -60,71 +60,101 @@ This unfortunately only works on linux computers. You need to add `RUN chmod +x`
 
 ## Image usage
 
-**To create your project's Dockerfile:**
+### Folder Convention
+
+There is no way around this folder structure. No point arguing.
+
+```bash
+  vendor/
+    odoo/
+      cc/
+      ee/  # contains ".empty" file, if empty
+  src/    # your addons
+  cfg/    # odoo config file(s), split them!
+  Dockerfile
+```
+
+### `Dockerfile`
 
 ```dockerfile
 # .docker/Dockerfile
 ARG  FROM_IMAGE=xoes/dockery-odoo
 FROM ${FROM_IMAGE}
 
-# Load framework
-COPY odoo-cc/odoo-bin  /opt/odoo/odoo-bin
-COPY odoo-cc/odoo      /opt/odoo/odoo
+# Examples of extending your project with vendored modules
+## NOTE: later *modules* override their previous namesake
+COPY vendor/it-projects/*   /opt/odoo/addons/010
+COPY vendor/xoe/*           /opt/odoo/addons/020
+COPY vendor/c2c/*           /opt/odoo/addons/030
 
-# Load enterprise and community addons
-COPY odoo-ee           /opt/odoo/addons/80-odoo-ee
-COPY odoo-cc/addons    /opt/odoo/addons/90-odoo-cc
-
-# Your addons
-COPY addons1           /opt/odoo/addons/70-addons1
-COPY addons2           /opt/odoo/addons/60-addons2
+# Example of extending your project with custom libraries
+USER root
+RUN pip install python-telegram-bot pandas numpy
+USER odoo
 ```
-- Loading is done in alfanumeric ascending order of your addons folder name
-- This is useful if you need to override entire modules (first loaded = used)
+### Project's images
 
-**To build your project's image (`odoo/app`):**
+#### Golden rule
 
-    docker build --tag odoo/app base
+1. Build your project's image
+2. Build all other images
+
+#### Build project's image
+
+Assuming your project lives in `odoo/app` namespace:
+
+    docker build --tag odoo/app .
 
 or with your custom base image
 
-    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE base
+    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE .
 
-for development, it's recomended to override the current addon folder...
+#### Build all other images
 
-    docker run -p 80:8069 -v ./addons1:/opt/odoo/addons/70-addons1 odoo/app --dev all
+**dev-container:**
 
-or better use descriptive `docker-compose` files:
+    docker build \
+      --tag odoo/app:dev \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:dev
+
+**tester:**
+
+    docker build \
+      --tag odoo/app:tester \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:tester
+
+**migrator:**
+
+    docker build \
+      --tag odoo/app:migrator \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:migrator
+
+**translator:**
+
+    docker build \
+      --tag odoo/app:translator \
+      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
+      https://github.com/xoes/dockery-odoo.git#shared:translator
+
+## Tipps for Development
+
+Bind mount some or all of your workdir folders.
+
+**Respect the naming convention to get ~the most~ anything out of it**
+
+_Remember: `addons/090` is your source code_
+
+    docker run -p 80:8069 -v ./src:/opt/odoo/addons/090 odoo/app --dev all
+
+Better use descriptive `docker-compose` files:
 
     ./docker-compose.yml
     ./docker-compose.override.yml
 
-`docker-compose.override.yml` is a magic file name to override configuration for your local development, you should add it to `.gitignore`.
-
-
-**To build your project's dev-container:**
-
-    docker build \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:dev
-
-**To build your project's tester:**
-
-    docker build \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:tester
-
-**To build your project's migrator:**
-
-    docker build \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:migrator
-
-**To build your project's translator:**
-
-    docker build \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:translator
+`docker-compose.override.yml` is a magic file name to override configuration for your machine's local development, you should add it to `.gitignore`.
 
 ## Local build
 
