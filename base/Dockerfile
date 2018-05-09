@@ -128,7 +128,7 @@ COPY bin/* /usr/local/bin/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/dockery-odoo-libs/
 COPY entrypoint.sh /
 COPY entrypoint.d /entrypoint.d
-COPY patches /patches.d
+COPY patches.d /patches.d
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
 
