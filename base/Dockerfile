@@ -1,4 +1,5 @@
 FROM debian:jessie AS base-build
+
 USER root
 
 ENV ODOO_VERSION 10.0
@@ -129,3 +130,18 @@ ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
 ENTRYPOINT ["/entrypoint.sh"]
 VOLUME ["/var/lib/odoo"]
+
+
+# ============================================================
+# Forward enforce minimal naming scheme on secondary build
+# ============================================================
+
+FROM base-build
+ONBUILD COPY vendor/odoo/cc/odoo-bin 	/opt/odoo/odoo-bin
+ONBUILD COPY vendor/odoo/cc/odoo  		/opt/odoo/odoo
+ONBUILD COPY vendor/odoo/cc/addons 		/opt/odoo/addons/000
+ONBUILD COPY vendor/odoo/ee/ 		 	/opt/odoo/addons/001
+ONBUILD COPY src 		 				/opt/odoo/addons/090
+ONBUILD COPY cfg						/opt/odoo/.odoorc.d
+
+# ============================================================
