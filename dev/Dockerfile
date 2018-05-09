@@ -25,5 +25,10 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
     WDB_WEB_PORT=1984 \
     WDB_WEB_SERVER=localhost
 
+COPY entrypoint.d/* /entrypoint.d/
+COPY templates /templates
+
 USER odoo
 
+# When you use scaffold, create new module in ./src aka 090
+WORKDIR ${ODOO_BASEPATH}/addons/090

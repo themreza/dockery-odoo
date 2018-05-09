@@ -17,14 +17,3 @@ for file in $(find "/run/secrets" -maxdepth 1 -mindepth 1 -xtype f -name "*_inse
 	chmod 0600 "${file%_insecure}"
     echo "Fixed ${file} to ${file%_insecure} with 0600"
 done;
-
-
-
-ARG  FROM_IMAGE=xoes/dockery-odoo
-FROM ${FROM_IMAGE}
-
-RUN pip install telegram
-
-curl -L /raw.github
-
-docker-compose.yml

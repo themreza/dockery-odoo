@@ -108,6 +108,10 @@ RUN pip install GeoIP
 # Improve Odoo shell, in case we need it once
 RUN pip install ptpython
 
+# Install json log formatter (for non-tty use)
+RUN pip install python-json-logger
+
+
 # Read configs and secrets
 # UID & GID will be used to fix secrets permission on docker-compose bind mounted ("plain") secrets
 ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_GID=9001 PGHOST=db
@@ -140,8 +144,9 @@ FROM base-build
 ONBUILD COPY vendor/odoo/cc/odoo-bin 	/opt/odoo/odoo-bin
 ONBUILD COPY vendor/odoo/cc/odoo  		/opt/odoo/odoo
 ONBUILD COPY vendor/odoo/cc/addons 		/opt/odoo/addons/000
-ONBUILD COPY vendor/odoo/ee/ 		 	/opt/odoo/addons/001
+ONBUILD COPY vendor/odoo/ee 		 	/opt/odoo/addons/001
 ONBUILD COPY src 		 				/opt/odoo/addons/090
 ONBUILD COPY cfg						/opt/odoo/.odoorc.d
+ENV ODOO_BASEPATH="/opt/odoo"
 
 # ============================================================
