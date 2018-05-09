@@ -154,7 +154,7 @@ License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 
 
 ### Note on `chmod +x`
-We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
+We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the executing bit within git. After adding files to the index, just do:
 
 ```bash    
 # Do not complain on .empty files (Bash only)
@@ -177,3 +177,4 @@ Don't forget to set `git config core.filemode true` before cloning.
 If things start not working (eg on windows):
 
 Use the build in helper `RUN set-all-execute-bits` in your Dockerfile(s).
+(Takes little more than a minute to execute)

@@ -120,8 +120,8 @@ ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_
 RUN addgroup --system --gid $APP_UID odoo
 RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
 # Make secrets folder editable to work arround docker-compose mock implementation
-RUN mkdir -p /var/lib/odoo /run/secrets /run/configs
-RUN chown -R odoo:odoo /var/lib/odoo /run/secrets /run/configs
+RUN mkdir -p /var/lib/odoo /run/secrets
+RUN chown -R odoo:odoo /var/lib/odoo /run/secrets
 
 # Copy helpers
 COPY bin/* /usr/local/bin/
@@ -135,18 +135,18 @@ ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 ENTRYPOINT ["/entrypoint.sh"]
 VOLUME ["/var/lib/odoo"]
 
+USER odoo
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
 # ============================================================
 
 FROM base-build
-ONBUILD COPY vendor/odoo/cc/odoo-bin 	/opt/odoo/odoo-bin
-ONBUILD COPY vendor/odoo/cc/odoo  		/opt/odoo/odoo
-ONBUILD COPY vendor/odoo/cc/addons 		/opt/odoo/addons/000
-ONBUILD COPY vendor/odoo/ee 		 	/opt/odoo/addons/001
-ONBUILD COPY src 		 				/opt/odoo/addons/090
-ONBUILD COPY cfg						/opt/odoo/.odoorc.d
 ENV ODOO_BASEPATH="/opt/odoo"
+ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo-bin 	"${ODOO_BASEPATH}"/odoo-bin
+ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo  		"${ODOO_BASEPATH}"/odoo
+ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/addons 		"${ODOO_BASEPATH}"/addons/000
+ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/ee 		 		"${ODOO_BASEPATH}"/addons/001
+ONBUILD COPY --chown=odoo:odoo 	src 		 				"${ODOO_BASEPATH}"/addons/090
 
 # ============================================================
