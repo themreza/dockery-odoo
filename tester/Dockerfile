@@ -15,5 +15,9 @@ ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-tester-libs
 
 USER odoo
 
+# We use this folder in the CI as a testbed
+ENV ODOO_BASEPATH=/testbed
+RUN mkdir /testbed
+
 ENTRYPOINT []
 CMD []

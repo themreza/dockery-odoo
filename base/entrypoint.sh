@@ -18,10 +18,10 @@ set -e
 # Please note: ee is required, put an .empty file if not used.
 
 
-: ${ODOO_BASE_PATH:="/opt/odoo"}  # Switch easily in CI environment
-: ${ODOO_CMD:="${ODOO_BASE_PATH}/odoo-bin"}
-: ${ODOO_RC:="${ODOO_BASE_PATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
-: ${ADDONS_BASE:="${ODOO_BASE_PATH}/addons"}
+: ${ODOO_BASEPATH:="/opt/odoo"}  # Switch easily in CI environment
+: ${ODOO_CMD:="${ODOO_BASEPATH}/odoo-bin"}
+: ${ODOO_RC:="${ODOO_BASEPATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
+: ${ADDONS_BASE:="${ODOO_BASEPATH}/addons"}
 
 # Those are fixed at build time (only here for reference)
 : ${APP_UID:="9001"}

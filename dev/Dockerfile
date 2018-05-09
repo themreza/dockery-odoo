@@ -26,3 +26,4 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
     WDB_WEB_SERVER=localhost
 
 USER odoo
+

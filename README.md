@@ -38,7 +38,9 @@ git update-index --chmod=+x \
     base/bin/* \
     base/entrypoint.d/* \
     base/lib/* \
+    dev/entrypoint.d/* \
     tester/lib/* \
+    tester/entrypoint.d/* \
     translator/lib/*
 shopt -u dotglob
 ```
