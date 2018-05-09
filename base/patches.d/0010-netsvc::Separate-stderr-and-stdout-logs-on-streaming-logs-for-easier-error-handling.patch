@@ -1,0 +1,119 @@
+ odoo/netsvc.py | 26 +++-----------------------
+ 1 file changed, 3 insertions(+), 23 deletions(-)
+
+diff --git a/odoo/netsvc.py b/odoo/netsvc.py
+index 4f4ebf2ffed..acdf09351bf 100644
+--- a/odoo/netsvc.py
++++ b/odoo/netsvc.py
+@@ -131,108 +131,88 @@ _logger_init = False
+ def init_logger():
+     global _logger_init
+     if _logger_init:
+         return
+     _logger_init = True
+ 
+     logging.addLevelName(25, "INFO")
+     logging.captureWarnings(True)
+ 
+     from tools.translate import resetlocale
+     resetlocale()
+ 
+     # create a format for log messages and dates
+     format = '%(asctime)s %(pid)s %(levelname)s %(dbname)s %(name)s: %(message)s'
+-    # Normal Handler on stdout
+-    handler = logging.StreamHandler(sys.stdout)
+-    # Error Handler on stderr for WARNING and above
+-    errhandler = logging.StreamHandler()
+-    errhandler.setLevel(logging.WARNING)
+-
+-    class MyFilter(object):
+-        def __init__(self, level):
+-            self.__level = level
+-
+-        def filter(self, logRecord):
+-            return logRecord.levelno < self.__level
+-
+-    # Exclude all logging WARNING and above (will be logged to stderr)
+-    # To avoide double entries if stderr is redirected
+-    handler.addFilter(MyFilter(logging.WARNING))
++    # Normal Handler on stderr
++    handler = logging.StreamHandler()
+ 
+     if tools.config['syslog']:
+         # SysLog Handler
+         if os.name == 'nt':
+             handler = logging.handlers.NTEventLogHandler("%s %s" % (release.description, release.version))
+         elif platform.system() == 'Darwin':
+             handler = logging.handlers.SysLogHandler('/var/run/log')
+         else:
+             handler = logging.handlers.SysLogHandler('/dev/log')
+         format = '%s %s' % (release.description, release.version) \
+                 + ':%(dbname)s:%(levelname)s:%(name)s:%(message)s'
+ 
+     elif tools.config['logfile']:
+         # LogFile Handler
+         logf = tools.config['logfile']
+         try:
+             # We check we have the right location for the log files
+             dirname = os.path.dirname(logf)
+             if dirname and not os.path.isdir(dirname):
+                 os.makedirs(dirname)
+             if tools.config['logrotate'] is not False:
+                 handler = logging.handlers.TimedRotatingFileHandler(filename=logf, when='D', interval=1, backupCount=30)
+             elif os.name == 'posix':
+                 handler = logging.handlers.WatchedFileHandler(logf)
+             else:
+                 handler = logging.FileHandler(logf)
+         except Exception:
+             sys.stderr.write("ERROR: couldn't create the logfile directory. Logging to the standard output.\n")
+ 
+     # Check that handler.stream has a fileno() method: when running OpenERP
+     # behind Apache with mod_wsgi, handler.stream will have type mod_wsgi.Log,
+     # which has no fileno() method. (mod_wsgi.Log is what is being bound to
+     # sys.stderr when the logging.StreamHandler is being constructed above.)
+     def is_a_tty(stream):
+         return hasattr(stream, 'fileno') and os.isatty(stream.fileno())
+ 
+-    if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(errhandler.stream):
++    if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
+         formatter = ColoredFormatter(format)
+     elif jsonlogger:
+         formatter = JSONFormatter(format)
+     else:
+         formatter = DBFormatter(format)
+     handler.setFormatter(formatter)
+-    errhandler.setFormatter(formatter)
+ 
+     logging.getLogger().addHandler(handler)
+ 
+-    # Only activate the error handler in case we are streaming logs
+-    # to stdout/stderr
+-    if os.name == 'posix' and isinstance(handler, logging.StreamHandler):
+-        logging.getLogger().addHandler(errhandler)
+-
+     if tools.config['log_db']:
+         db_levels = {
+             'debug': logging.DEBUG,
+             'info': logging.INFO,
+             'warning': logging.WARNING,
+             'error': logging.ERROR,
+             'critical': logging.CRITICAL,
+         }
+         postgresqlHandler = PostgreSQLHandler()
+         postgresqlHandler.setLevel(int(db_levels.get(tools.config['log_db_level'], tools.config['log_db_level'])))
+         logging.getLogger().addHandler(postgresqlHandler)
+ 
+     # Configure loggers levels
+     pseudo_config = PSEUDOCONFIG_MAPPER.get(tools.config['log_level'], [])
+ 
+     logconfig = tools.config['log_handler']
+ 
+     logging_configurations = DEFAULT_LOG_CONFIGURATION + pseudo_config + logconfig
+     for logconfig_item in logging_configurations:
+         loggername, level = logconfig_item.split(':')
+         level = getattr(logging, level, logging.INFO)
+         logger = logging.getLogger(loggername)
+         logger.setLevel(level)
+ 
+     for logconfig_item in logging_configurations:
+         _logger.debug('logger level set: "%s"', logconfig_item)
