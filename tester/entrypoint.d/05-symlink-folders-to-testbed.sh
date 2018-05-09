@@ -4,6 +4,8 @@
 # Relies on the repo folder structure and naming scheme.
 # "05-" because it needs runing before "10-" of base image
 
+# For additional vendored modules, symlink manually in your CI script
+
 set -e
 
 # Covers Travis & Gitlab-CI ootb
@@ -18,3 +20,5 @@ ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/addons" 	/testbed/addons/000
 ln -s "${CI_BUILD_DIR}/vendor/odoo/ee" 			/testbed/addons/001
 ln -s "${CI_BUILD_DIR}/src" 					/testbed/addons/090
 ln -s "${CI_BUILD_DIR}/cfg" 					/testbed/.odoorc.d
+
+
