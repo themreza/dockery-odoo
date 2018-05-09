@@ -31,28 +31,6 @@ The other images, README, ... are in shared development on `shared` branch (and 
     ./lib/*.py -> /usr/local/lib/python2.7/dist-packages/
 ```
 
-### Note on `chmod +x`
-We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
-
-```bash    
-# Do not complain on .empty files (Bash only)
-shopt -s dotglob
-git update-index --chmod=+x \
-    base/bin/* \
-    base/entrypoint.d/* \
-    base/lib/* \
-    dev/entrypoint.d/* \
-    tester/bin/* \
-    tester/lib/* \
-    tester/entrypoint.d/* \
-    translator/lib/*
-shopt -u dotglob
-```
-
-Don't forget to set `git config core.filemode true` before cloning.
-
-This unfortunately only works on linux computers. You need to add `RUN chmod +x` on windows machines.
-
 ## Image usage
 
 **Shortcut: https://github.com/xoes/dockery-odoo-scaffold**
@@ -173,3 +151,29 @@ Based on stewardship by:
  - [@blaggacao](https://github.com/blaggacao) ([XOE Solutions](https://xoe.solutions))
 
 License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
+
+
+### Note on `chmod +x`
+We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
+
+```bash    
+# Do not complain on .empty files (Bash only)
+shopt -s dotglob
+git update-index --chmod=+x \
+    base/entrypoint.sh \
+    base/bin/* \
+    base/entrypoint.d/* \
+    base/lib/* \
+    dev/entrypoint.d/* \
+    tester/bin/* \
+    tester/lib/* \
+    tester/entrypoint.d/* \
+    translator/lib/*
+shopt -u dotglob
+```
+
+Don't forget to set `git config core.filemode true` before cloning.
+
+If things start not working (eg on windows):
+
+Use the build in helper `RUN set-all-execute-bits` in your Dockerfile(s).
