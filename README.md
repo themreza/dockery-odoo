@@ -39,6 +39,7 @@ git update-index --chmod=+x \
     base/entrypoint.d/* \
     base/lib/* \
     dev/entrypoint.d/* \
+    tester/bin/* \
     tester/lib/* \
     tester/entrypoint.d/* \
     translator/lib/*
