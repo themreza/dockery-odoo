@@ -49,7 +49,7 @@ git update-index --chmod=+x \
 shopt -u dotglob
 ```
 
-Don't foget to set `git config core.filemode true` before cloning.
+Don't forget to set `git config core.filemode true` before cloning.
 
 This unfortunately only works on linux computers. You need to add `RUN chmod +x` on windows machines.
 
