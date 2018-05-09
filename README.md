@@ -9,6 +9,7 @@ It aims to provide some opinionanted overrides, additions and/or patches include
 ## Components
 
 - Base Images
+- [WIP] Dev Image (leveraging shared templates collection)
 - [WIP] Migrator Image (leveraging marabunta)
 - [WIP] Tester Image (remotely inspired by OCA's mqt)
 - [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
@@ -19,14 +20,16 @@ The other images, README, ... are in shared development on `shared` branch (and 
 
 ## Image explained
 
-- After building the image, every you have to worry about is `/opt/odoo`.
+- After building the image, everything you have to worry about is `/opt/odoo`.
 
 - Docker boilerplate lives in `/`.
 
 - PATH and PYTHONPATH enabled boilerplate lies in:
 
+```
     ./bin/*    -> /usr/local/bin/
     ./lib/*.py -> /usr/local/lib/python2.7/dist-packages/
+```
 
 ### Note on `chmod +x`
 We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the exeuting bit within git. After adding files to the index, just do:
