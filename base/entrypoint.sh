@@ -11,11 +11,12 @@ set -e
 # ./src/						-> 	/opt/odoo/addons/090
 # ./cfg/						-> 	/opt/odoo/.odoorc.d
 
+# NOTE: ee is required, put an .empty file if not used.
+
 # This is accomplished by a limited set of ONBUILD statments
 # Strong naming convention (inspired by golang) is enforced
 # as an attempt to increase long term portability.
 
-# Please note: ee is required, put an .empty file if not used.
 
 
 : ${ODOO_BASEPATH:="/opt/odoo"}  # Switch easily in CI environment
