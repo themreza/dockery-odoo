@@ -1,31 +1,48 @@
 #!/bin/bash
 set -e
 
+# In Repository						In Container
+# --------------------------		-------------------
+# ./vendor/odoo/cc/odoo-bin 	-> 	/opt/odoo/odoo-bin
+# ./vendor/odoo/cc/odoo 		-> 	/opt/odoo/odoo
+# ./vendor/odoo/cc/addons 		-> 	/opt/odoo/addons/000
+# ./vendor/odoo/ee/				-> 	/opt/odoo/addons/001
+# ./vendor/...					-> 	/opt/odoo/addons/...
+# ./src/						-> 	/opt/odoo/addons/090
+# ./cfg/						-> 	/opt/odoo/.odoorc.d
 
-scriptname=$(basename $0 .sh)
-scriptnamefolder = ${scriptname}.d
+# This is accomplished by a limited set of ONBUILD statments
+# Strong naming convention (inspired by golang) is enforced
+# as an attempt to increase long term portability.
+
+# Please note: ee is required, put an .empty file if not used.
 
 
-function load_scriptnamefolder_scripts {
-	for file in $(find /${scriptnamefolder} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
+: ${ODOO_BASE_PATH:="/opt/odoo"}  # Switch easily in CI environment
+: ${ODOO_CMD:="${ODOO_BASE_PATH}/odoo-bin"}
+: ${ODOO_RC:="${ODOO_BASE_PATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
+: ${ADDONS_BASE:="${ODOO_BASE_PATH}/addons"}
+
+# Those are fixed at build time (only here for reference)
+: ${APP_UID:="9001"}
+: ${APP_GID:="9001"} 
+
+
+# Source *.d folder based on this script's name
+
+script_name=$(basename $0 .sh)
+script_name_folder = ${script_name}.d
+
+function source_scripts {
+	for file in $(find /${script_name_folder} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
 	    echo Sourcing "$file" > /dev/stderr
 	    source $file
 	done
 }
 
+# Implemented command options
 
-# Dealing with Rancher v1.*, which has no ConfigSets
-for folder in $(find /run/secrets -maxdepth 1 -mindepth 1 -type f -name "__*" ); do
-	target=${folder#/run/secrets/}
-	target=${target//__//}
-	mkdir -p ${target%/*}
-	rm -f ${target}
-	cp -rp "${folder}" "${target}"
-    echo "Copied ${folder} to ${target} (Rancher Indirection)"
-done;
-
-ODOO_CMD="/opt/odoo/odoo-bin"
-RUN=$@
+CMD=$@
 
 if [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
@@ -33,23 +50,31 @@ fi
 
 if [ "$1" = 'run' ]; then
 	shift;
-	load_scriptnamefolder_scripts
-	RUN="${ODOO_CMD}  --addons-path ${ADDONSPATH} $@"
+	source_scripts
+	CMD="${ODOO_CMD} \
+		--addons-path ${ADDONSPATH} \
+		$@"
 fi
 
 if [ "$1" = 'shell' ]; then
 	shift;
-	load_scriptnamefolder_scripts
-	RUN="${ODOO_CMD} shell --addons-path ${ADDONSPATH} $@"
+	database="$1"
+	shift;
+	source_scripts
+	CMD="${ODOO_CMD} \
+		shell \
+		--addons-path ${ADDONSPATH} \
+		-d "${database}" \
+		$@"
 fi
 
 if [ "$1" = 'scaffold' ]; then
-	RUN="${ODOO_CMD} $@"
+	CMD="${ODOO_CMD} $@"
 fi
 
 if [ "$1" = 'deploy' ]; then
-	RUN="${ODOO_CMD} $@"
+	CMD="${ODOO_CMD} $@"
 fi
 
 set -x
-exec ${RUN}
+exec ${CMD}
