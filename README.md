@@ -55,6 +55,8 @@ This unfortunately only works on linux computers. You need to add `RUN chmod +x`
 
 ## Image usage
 
+**Shortcut: https://github.com/xoes/dockery-odoo-scaffold**
+
 ### Folder Convention
 
 There is no way around this folder structure. No point arguing.
