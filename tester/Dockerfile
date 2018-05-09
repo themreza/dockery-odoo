@@ -17,7 +17,7 @@ USER odoo
 
 # We use this folder in the CI as a testbed
 ENV ODOO_BASEPATH=/testbed
-RUN mkdir /testbed
+RUN mkdir -p /testbed/addons
 
 ENTRYPOINT []
 CMD []
