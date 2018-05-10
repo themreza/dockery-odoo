@@ -36,7 +36,7 @@ script_name_folder=${script_name}.d
 
 function source_scripts {
 	for file in $(find /${script_name_folder} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
-	    echo Sourcing "$file" > /dev/stderr
+	    echo Sourcing "$file" >&2
 	    source $file
 	done
 }
