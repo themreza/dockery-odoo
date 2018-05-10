@@ -23,8 +23,9 @@ ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-tester-libs
 ENV ODOO_BASEPATH=/testbed
 RUN mkdir -p /testbed/addons && chown -R odoo:odoo /testbed
 
-# We cannot switch back here, as +x is not set on odoo-bin
-# in the odoo repo, so we need to manipulate permissions
+# We cannot switch back here, as in most CIs
+# the repository would not be cloned as the odoo
+# user, so we need to manipulate permissions
 # as root and then use gosu
 
 # USER odoo

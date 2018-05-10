@@ -14,7 +14,7 @@ set -e
 # Custom: CI_BUILD_DIR
 : ${CI_BUILD_DIR:="${CI_PROJECT_DIR:="${TRAVIS_BUILD_DIR}"}"}
 
-chmod +x "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
+chown odoo:odoo "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
 
 ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin" "${ODOO_BASEPATH}"/odoo-bin
 ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo" 	"${ODOO_BASEPATH}"/odoo
