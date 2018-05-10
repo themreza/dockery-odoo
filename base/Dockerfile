@@ -119,9 +119,6 @@ ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_
 # Create Odoo User
 RUN addgroup --system --gid $APP_UID odoo
 RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
-# Make secrets folder editable to work arround docker-compose mock implementation
-RUN mkdir -p /var/lib/odoo /run/secrets
-RUN chown -R odoo:odoo /var/lib/odoo /run/secrets
 
 # Copy helpers
 COPY bin/* /usr/local/bin/
@@ -131,9 +128,14 @@ COPY entrypoint.d /entrypoint.d
 COPY patches.d /patches.d
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
+# Make secrets folder editable to work arround docker-compose mock implementation
+ENV BACKUP_DIR /var/lib/odoo-backups
+ENV PERSISTENCE_DIR /var/lib/odoo-persist
+RUN mkdir -p "${PERSISTENCE_DIR}" /run/secrets "${BACKUP_DIR}"
+RUN chown -R odoo:odoo "${PERSISTENCE_DIR}" /run/secrets "${BACKUP_DIR}"
 
 ENTRYPOINT ["/entrypoint.sh"]
-VOLUME ["/var/lib/odoo"]
+VOLUME ["${PERSISTENCE_DIR}", "${BACKUP_DIR}"]
 
 USER odoo
 
