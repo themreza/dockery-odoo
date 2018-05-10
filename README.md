@@ -125,7 +125,7 @@ Bind mount some or all of your workdir folders.
 
 _Remember: `addons/090` is your source code_
 
-    docker run -p 80:8069 -v ./src:/opt/odoo/addons/090 odoo/app --dev all
+    docker run -p 80:8069 -v ./src:/opt/odoo/addons/090 odoo/app:dev --dev all
 
 Better use descriptive `docker-compose` files:
 
