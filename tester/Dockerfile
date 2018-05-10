@@ -15,13 +15,11 @@ COPY entrypoint.d/* /entrypoint.d/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-tester-libs/
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-tester-libs
 
-USER odoo
-
 # We use this folder in the CI as a testbed
 ENV ODOO_BASEPATH=/testbed
-RUN mkdir -p /testbed/addons
+RUN mkdir -p /testbed/addons && chown -R odoo:odoo /testbed
 
-
+USER odoo
 
 ENTRYPOINT []
 CMD []
