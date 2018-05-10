@@ -58,7 +58,6 @@ if [ "$1" = 'run' ]; then
 fi
 
 if [ "$1" = 'shell' ]; then
-	shift;
 	database="$1"
 	shift;
 	source_scripts
@@ -78,10 +77,11 @@ if [ "$1" = 'deploy' ]; then
 fi
 
 if [ "$1" = 'apply-patches' ]; then
+	shift;
 	# additional arguments will be passed to patch
 	# Bind mount (writable) you odoo folder
 	# while appling those patches
-	CMD="$@"
+	CMD="apply-patches --quiet $@"
 fi
 
 set -x
