@@ -150,5 +150,6 @@ ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo  		"${ODOO_BASEPATH}"/odoo
 ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/addons 		"${ODOO_BASEPATH}"/addons/000
 ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/ee 		 		"${ODOO_BASEPATH}"/addons/001
 ONBUILD COPY --chown=odoo:odoo 	src 		 				"${ODOO_BASEPATH}"/addons/090
+ONBUILD RUN apply-patches
 
 # ============================================================

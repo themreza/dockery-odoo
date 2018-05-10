@@ -77,5 +77,12 @@ if [ "$1" = 'deploy' ]; then
 	CMD="${ODOO_CMD} $@"
 fi
 
+if [ "$1" = 'apply-patches' ]; then
+	# additional arguments will be passed to patch
+	# Bind mount (writable) you odoo folder
+	# while appling those patches
+	CMD="$@"
+fi
+
 set -x
 exec ${CMD}

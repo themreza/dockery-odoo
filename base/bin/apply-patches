@@ -1,0 +1,40 @@
+#!/bin/bash
+
+currentdir="${PWD}"
+
+cd "${ODOO_BASEPATH}/odoo"  # patch -p2
+
+echo ""  >> /tmp/patching-log
+echo ""  >> /tmp/patching-log
+echo "====== DOCKERY ODOO PATCHES ======"  >> /tmp/patching-log
+echo ""  >> /tmp/patching-log
+echo ""  >> /tmp/patching-log
+
+for patch in $(find "/patches.d" -xtype f -name '*.patch' | sort | xargs realpath); do
+    cat $patch | patch -p2 "$@" >> /tmp/patching-log
+done;
+
+cd "${currentdir}"
+
+echo ""  >> /tmp/patching-log
+echo ""  >> /tmp/patching-log
+echo "Run..."  >> /tmp/patching-log
+echo ""  >> /tmp/patching-log
+echo "    docker run \\"  >> /tmp/patching-cmd
+echo "        -v $(pwd)/vendor/odoo/cc:/opt/odoo/ \\"  >> /tmp/patching-cmd
+echo "        xoes/dockery-odoo:v10 apply-patches \\"  >> /tmp/patching-cmd
+echo "    && git commit -a -m \"[DOCKERY ODOO PATCHER]\""  >> /tmp/patching-cmd
+echo ""  >> /tmp/patching-log2
+echo "... to apply patches in your workdir."  >> /tmp/patching-log2
+echo ""  >> /tmp/patching-log2
+echo ""  >> /tmp/patching-log2
+echo "=================================="  >> /tmp/patching-log2
+echo ""  >> /tmp/patching-log2
+echo ""  >> /tmp/patching-log2
+
+
+# It would just nor format the right way
+# due to lag in redirections (for colour)
+cat /tmp/patching-log >&2
+cat /tmp/patching-cmd >&1
+cat /tmp/patching-log2 >&2
