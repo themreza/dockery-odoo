@@ -14,11 +14,17 @@ set -e
 # Custom: CI_BUILD_DIR
 : ${CI_BUILD_DIR:="${CI_PROJECT_DIR:="${TRAVIS_BUILD_DIR}"}"}
 
-ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin" /testbed/odoo-bin
-ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo" 	/testbed/odoo
-ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/addons" 	/testbed/addons/000
-ln -s "${CI_BUILD_DIR}/vendor/odoo/ee" 			/testbed/addons/001
-ln -s "${CI_BUILD_DIR}/src" 					/testbed/addons/090
-ln -s "${CI_BUILD_DIR}/cfg" 					/testbed/.odoorc.d
+ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin" "${ODOO_BASEPATH}"/odoo-bin
+ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo" 	"${ODOO_BASEPATH}"/odoo
+ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/addons" 	"${ODOO_BASEPATH}"/addons/000
+ln -s "${CI_BUILD_DIR}/vendor/odoo/ee" 			"${ODOO_BASEPATH}"/addons/001
+ln -s "${CI_BUILD_DIR}/src" 					"${ODOO_BASEPATH}"/addons/090
+ln -s "${CI_BUILD_DIR}/cfg" 					"${ODOO_BASEPATH}"/.odoorc.d
+
+if [[ -r "${CI_BUILD_DIR}/.adminpwd" ]]; then
+   ln -s "${CI_BUILD_DIR}/.adminpwd"     /run/secrets/adminpwd;
+fi
+
+cd "${CI_BUILD_DIR}"
 
 

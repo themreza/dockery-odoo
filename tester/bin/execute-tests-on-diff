@@ -1,0 +1,22 @@
+#!/bin/bash
+
+: ${BASEBRANCH:="master"}
+: ${DB_SLUG:="testing-db"}
+
+# Get diff modules to test (not test everything all the time)
+modules=$(odoo-get-changed-modules.py -c $BASEBRANCH . --exclude $EXCLUDE --include $INCLUDE)
+
+# Drop previous DB & clean data dir
+dropdb ${DB_SLUG} || true
+rm -rf "${PERSISTENCE_DIR}"/filestore/${DB_SLUG}
+
+# Run the tests
+/entrypoint.sh run \
+	--test-enable \
+	--log-level test \
+	--max-cron-threads=0 \
+	--stop-after-init \
+	--workers=0 \
+	-d ${DB_SLUG} \
+	-i ${modules} \
+	-u ${modules} "$@"
