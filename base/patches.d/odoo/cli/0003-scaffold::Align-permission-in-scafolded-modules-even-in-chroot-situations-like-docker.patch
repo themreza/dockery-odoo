@@ -29,10 +29,10 @@ index 7293f82a1d6..86f5853f18f 100644
 +        modpath = os.path.join(directory, modname)
 +        for root, dirs, files in os.walk(modpath):
 +            for momo in dirs:
-+                os.chmod(os.path.join(root, momo), 0775)
++                os.chmod(os.path.join(root, momo), 0777)
 +            for momo in files:
-+                os.chmod(os.path.join(root, momo), 0775)
-+            os.chmod(root, 0775)
++                os.chmod(os.path.join(root, momo), 0777)
++            os.chmod(root, 0777)
  
  def die(message, code=1):
      print >>sys.stderr, message
