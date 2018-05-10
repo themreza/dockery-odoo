@@ -9,11 +9,11 @@ modules=$(odoo-get-changed-modules.py -c $BASEBRANCH . --exclude $EXCLUDE --incl
 source echo-testing-info
 
 # Drop previous DB & clean data dir
-dropdb ${DB_SLUG} || true
+dropdb ${DB_SLUG} || true >> /dev/null
 rm -rf "${PERSISTENCE_DIR}"/filestore/${DB_SLUG}
 
 # Run the tests
-/entrypoint.sh run \
+gosu odoo:odoo /entrypoint.sh run \
 	--test-enable \
 	--log-level test \
 	--max-cron-threads=0 \
