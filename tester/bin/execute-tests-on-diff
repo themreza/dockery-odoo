@@ -6,6 +6,8 @@
 # Get diff modules to test (not test everything all the time)
 modules=$(odoo-get-changed-modules.py -c $BASEBRANCH . --exclude $EXCLUDE --include $INCLUDE)
 
+source echo-testing-info
+
 # Drop previous DB & clean data dir
 dropdb ${DB_SLUG} || true
 rm -rf "${PERSISTENCE_DIR}"/filestore/${DB_SLUG}

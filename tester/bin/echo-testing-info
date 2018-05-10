@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+echo ""
+echo ""
+echo "======== Test Run Metainfo =========================="
+echo ""
+echo "DB host           : ${PGHOST}"
+echo "Basebranch        : ${BASEBRANCH}"
+echo "Included modules  : ${INCLUDE:='n/a'}"
+echo "Excluded modules  : ${EXCLUDE:='n/a'}"
+echo "Testing DB        : ${DB_SLUG}"
+echo ""
+echo "Tested modules    : ${modules}"
+echo ""
+echo "====================================================="
+echo ""
+echo ""
