@@ -1,11 +1,11 @@
 If no tty is detected, the instance switches to json logging
 which is easier to work with in log aggregation flows
 
- odoo/netsvc.py | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ odoo/netsvc.py | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
 diff --git a/odoo/netsvc.py b/odoo/netsvc.py
-index 326228bf4f9..acdf09351bf 100644
+index 326228bf4f9..9a24d9e0ed6 100644
 --- a/odoo/netsvc.py
 +++ b/odoo/netsvc.py
 @@ -16,6 +16,11 @@ import odoo
@@ -20,14 +20,9 @@ index 326228bf4f9..acdf09351bf 100644
  _logger = logging.getLogger(__name__)
  
  def log(logger, level, prefix, msg, depth=None):
-@@ -96,11 +101,22 @@ LEVEL_COLOR_MAPPING = {
+@@ -95,6 +100,17 @@ LEVEL_COLOR_MAPPING = {
+     logging.CRITICAL: (WHITE, RED),
  }
- 
- class DBFormatter(logging.Formatter):
-     def format(self, record):
-         record.pid = os.getpid()
-         record.dbname = getattr(threading.currentThread(), 'dbname', '?')
-         return logging.Formatter.format(self, record)
  
 +if jsonlogger:
 +    class JSONFormatter(jsonlogger.JsonFormatter):
@@ -40,9 +35,9 @@ index 326228bf4f9..acdf09351bf 100644
 +            record.dbname = getattr(threading.currentThread(), 'dbname', '?')
 +            return jsonlogger.JsonFormatter.format(self, record)
 +
- class ColoredFormatter(DBFormatter):
+ class DBFormatter(logging.Formatter):
      def format(self, record):
-         fg_color, bg_color = LEVEL_COLOR_MAPPING.get(record.levelno, (GREEN, DEFAULT))
+         record.pid = os.getpid()
 @@ -162,6 +178,8 @@ def init_logger():
  
      if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
