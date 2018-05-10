@@ -16,6 +16,7 @@ It aims to provide some opinionanted overrides, additions and/or patches include
 - [WIP] Migrator Image (leveraging marabunta)
 - [WIP] Tester Image (remotely inspired by OCA's mqt)
 - [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
+- Gimmick: CI-Base image
 
 The base images are versioned through branch names.
 
