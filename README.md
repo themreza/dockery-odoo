@@ -6,6 +6,9 @@ Hand crafted for productivity!
 
 It aims to provide some opinionanted overrides, additions and/or patches included which makes Odoo instance scripting a little more fun.
 
+![God gives life to docker container](https://upload.wikimedia.org/wikipedia/commons/6/64/Creaci%C3%B3n_de_Ad%C3%A1n_%28Miguel_%C3%81ngel%29.jpg)
+*God gives life to docker container*
+
 ## Components
 
 - Base Images
