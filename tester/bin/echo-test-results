@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+: ${CUSTOM_JQ_FILTER:=""}
+: ${SHOW_RAW_LOGS:=""}
+
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+grep -E '^{' $(pwd)/logs.raw >> $(pwd)/logs.json
+
+echo ""
+echo ""
+echo ""
+echo -e "${YELLOW}======== Loglevel WARNING  ==========================${NC}"
+echo ""
+jq 'select(.levelname | contains("WARNING"))' $(pwd)/logs.json
+echo ""
+echo ""
+echo ""
+echo -e "${YELLOW}======== Loglevel ERROR    ==========================${NC}"
+echo ""
+jq 'select(.levelname | contains("ERROR"))' $(pwd)/logs.json
+echo ""
+echo ""
+echo ""
+echo -e "${YELLOW}======== Loglevel CRITICAL ==========================${NC}"
+echo ""
+jq 'select(.levelname | contains("CRITICAL"))' $(pwd)/logs.json
+echo ""
+echo ""
+echo ""
+
+if [ ! -z "${CUSTOM_JQ_FILTER}" ]; then
+	echo -e "${YELLOW}======== Custom jq filter  ==========================${NC}"
+	echo ""
+	jq "${CUSTOM_JQ_FILTER}" $(pwd)/logs.json
+	echo ""
+	echo ""
+	echo ""
+fi
+
+if [ ! -z "${SHOW_RAW_LOGS}" ]; then
+	echo -e "${YELLOW}======== RAW ODOO LOG OUPUT FOLLOW ==================${NC}"
+	cat $(pwd)/logs.raw
+fi

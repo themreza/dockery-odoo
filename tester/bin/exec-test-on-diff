@@ -1,18 +1,32 @@
 #!/bin/bash
 
+set -e
+
+set -o pipefail  # trace ERR through pipes
+set -o errtrace  # trace ERR through 'time command' and other functions
+
 : ${BASEBRANCH:="master"}
 : ${DB_SLUG:="testing-db"}
 
 # Get diff modules to test (not test everything all the time)
 modules=$(odoo-get-changed-modules.py -c $BASEBRANCH . --exclude $EXCLUDE --include $INCLUDE)
 
-source echo-testing-info
+source echo-test-info
 
 # Drop previous DB & clean data dir
-dropdb ${DB_SLUG} || true >> /dev/null
+dropdb ${DB_SLUG} 2> /dev/null || true 
 rm -rf "${PERSISTENCE_DIR}"/filestore/${DB_SLUG}
 
 # Run the tests
+chmod a+rw /dev/stderr
+
+echo "Start Tests..."
+echo "Logs are redirected to $(pwd)/logs.raw"
+echo "You will see the output only upon test completion."
+
+trap 'source echo-test-results' EXIT
+cat /entrypoint.sh
+
 gosu odoo:odoo /entrypoint.sh run \
 	--test-enable \
 	--log-level test \
@@ -21,4 +35,4 @@ gosu odoo:odoo /entrypoint.sh run \
 	--workers=0 \
 	-d ${DB_SLUG} \
 	-i ${modules} \
-	-u ${modules} "$@"
+	-u ${modules} "$@" &> $(pwd)/logs.raw  

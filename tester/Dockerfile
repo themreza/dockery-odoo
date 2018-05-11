@@ -9,6 +9,9 @@ RUN pip install pylint-mccabe coverage
 # Some git tools for standard diffing
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
+# Some git tools for standard diffing
+RUN apt-get update && apt-get install -y --no-install-recommends jq
+
 ENV GOSU_VERSION 1.10
 RUN wget https://github.com/tianon/gosu/releases/download/${GOSU_VERSION}/gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }') && \
 	mv gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }') /usr/local/bin/gosu && \
