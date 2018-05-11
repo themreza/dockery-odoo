@@ -96,7 +96,7 @@ RUN rm -Rf ~/.gem /var/lib/gems/*/cache/
 RUN rm -Rf ~/.npm /tmp/*
 
 # Grab update-local to easily set the server locale in your envieonment
-RUN apt-get update && apt-get install -y --no-install-recommends update-locale
+RUN apt-get update && apt-get install -y --no-install-recommends locales
 
 # Add geoip database
 RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
