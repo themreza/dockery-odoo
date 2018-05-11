@@ -17,15 +17,11 @@ source echo-test-info
 dropdb ${DB_SLUG} 2> /dev/null || true 
 rm -rf "${PERSISTENCE_DIR}"/filestore/${DB_SLUG}
 
-# Run the tests
-chmod a+rw /dev/stderr
-
 echo "Start Tests..."
 echo "Logs are redirected to $(pwd)/logs.raw"
 echo "You will see the output only upon test completion."
 
 trap 'source echo-test-results' EXIT
-cat /entrypoint.sh
 
 gosu odoo:odoo /entrypoint.sh run \
 	--test-enable \
