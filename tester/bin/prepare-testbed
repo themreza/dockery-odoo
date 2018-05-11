@@ -18,7 +18,6 @@ chown odoo:odoo "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
 chmod ug+x "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
 
 ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin" "${ODOO_BASEPATH}"/odoo-bin
-echo $(ls -la "${ODOO_BASEPATH}"/odoo-bin)
 ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/odoo" 	"${ODOO_BASEPATH}"/odoo
 ln -s "${CI_BUILD_DIR}/vendor/odoo/cc/addons" 	"${ODOO_BASEPATH}"/addons/000
 ln -s "${CI_BUILD_DIR}/vendor/odoo/ee" 			"${ODOO_BASEPATH}"/addons/001
