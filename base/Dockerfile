@@ -95,8 +95,8 @@ RUN gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "
 RUN rm -Rf ~/.gem /var/lib/gems/*/cache/
 RUN rm -Rf ~/.npm /tmp/*
 
-# Grab Gettext for entrypoint env variable expansion "templating lite"
-RUN apt-get update && apt-get install -y --no-install-recommends gettext-base
+# Grab update-local to easily set the server locale in your envieonment
+RUN apt-get update && apt-get install -y --no-install-recommends update-locale
 
 # Add geoip database
 RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
@@ -136,6 +136,8 @@ RUN chown -R odoo:odoo "${PERSISTENCE_DIR}" /run/secrets "${BACKUP_DIR}"
 
 ENTRYPOINT ["/entrypoint.sh"]
 VOLUME ["${PERSISTENCE_DIR}", "${BACKUP_DIR}"]
+
+RUN update-locale en_US.UTF-8
 
 USER odoo
 
