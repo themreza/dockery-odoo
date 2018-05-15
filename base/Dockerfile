@@ -134,9 +134,13 @@ RUN chown -R odoo:odoo "${PERSISTENCE_DIR}" /run/secrets "${BACKUP_DIR}"
 ENTRYPOINT ["/entrypoint.sh"]
 VOLUME ["${PERSISTENCE_DIR}", "${BACKUP_DIR}"]
 
-RUN locale-gen en_US \
-	&& locale-gen en_US.UTF-8 \
-	&& update-locale ALL=en_US.UTF-8 LANGUAGE=en_US.UTF-8
+# Fix locale setting (needed for some tests to work)
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8  
 
 USER odoo
 
