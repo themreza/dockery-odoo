@@ -12,9 +12,9 @@ It aims to provide some opinionanted overrides, additions and/or patches include
 ## Components
 
 - Base Images
-- [WIP] Dev Image (leveraging shared templates collection)
-- [WIP] Migrator Image (leveraging marabunta)
-- [WIP] Tester Image (remotely inspired by OCA's mqt)
+- Dev Image (leveraging shared templates collection)
+- Migrator Image (leveraging marabunta)
+- Tester Image (remotely inspired by OCA's mqt)
 - [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
 - Gimmick: CI-Base image
 
