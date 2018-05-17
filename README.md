@@ -172,7 +172,8 @@ git update-index --chmod=+x \
     tester/bin/* \
     tester/lib/* \
     tester/entrypoint.d/* \
-    translator/lib/*
+    translator/lib/* \
+    migrator/entrypoint.d/*
 shopt -u dotglob
 ```
 
