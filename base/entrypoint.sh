@@ -17,29 +17,7 @@ set -e
 # Strong naming convention (inspired by golang) is enforced
 # as an attempt to increase long term portability.
 
-
-
-: ${ODOO_BASEPATH:="/opt/odoo"}  # Switch easily in CI environment
-: ${ODOO_CMD:="${ODOO_BASEPATH}/odoo-bin"}
-: ${ODOO_RC:="${ODOO_BASEPATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
-: ${ADDONS_BASE:="${ODOO_BASEPATH}/addons"}
-
-# Those are fixed at build time (only here for reference)
-: ${APP_UID:="9001"}
-: ${APP_GID:="9001"} 
-
-
-# Source *.d folder based on this script's name
-
-script_name=$(basename $0 .sh)
-script_name_folder=${script_name}.d
-
-function source_scripts {
-	for file in $(find /${script_name_folder} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
-	    echo Sourcing "$file"
-	    source $file
-	done
-}
+source /entrypoint.0.sh
 
 # Implemented command options
 

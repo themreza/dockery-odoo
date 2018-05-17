@@ -165,6 +165,7 @@ We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the ex
 shopt -s dotglob
 git update-index --chmod=+x \
     base/entrypoint.sh \
+    base/entrypoint.*.sh \
     base/bin/* \
     base/entrypoint.d/* \
     base/lib/* \
@@ -173,6 +174,7 @@ git update-index --chmod=+x \
     tester/lib/* \
     tester/entrypoint.d/* \
     translator/lib/* \
+    migrator/entrypoint-migrator.sh \
     migrator/entrypoint.d/*
 shopt -u dotglob
 ```
