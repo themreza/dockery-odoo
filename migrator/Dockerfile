@@ -14,7 +14,7 @@ RUN pip install git+https://github.com/xoes/marabunta#egg=marabunta
 ENV MARABUNTA_ODOO_CMD ${ODOO_BASEPATH}/odoo-bin
 ENV MARABUNTA_MIGRATION_FILE ${ODOO_BASEPATH}/.marabunta.yml
 
-COPY entrypoint.d/* /entrypoint.d/
+COPY entrypoint* /
 
 USER odoo
 

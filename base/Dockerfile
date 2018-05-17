@@ -120,8 +120,7 @@ RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-l
 # Copy helpers
 COPY bin/* /usr/local/bin/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/dockery-odoo-libs/
-COPY entrypoint.sh /
-COPY entrypoint.d /entrypoint.d
+COPY entrypoint* /
 COPY patches.d /patches.d
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
