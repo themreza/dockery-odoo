@@ -1,0 +1,186 @@
+baseURL = "http://xoe-labs.github.io/dockery-odoo/"
+title = "Dockery-Odoo"
+languageCode = "en-us"
+theme = "elate"
+
+
+
+[params]
+
+  # custom_css = ["css/custom1.css", "css/custom2.css"]
+
+  # Navigation
+  [params.navigation]
+    brand = "Dockery-Odoo"
+    status = "alpha"
+
+  # Hero section
+  [params.hero]
+    title = "![Dockery-Odoo](images/Dockery-Odoo-mixed.svg)"
+    subtitle = '''
+Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> or <a href="https://flectrahq.com/" target="_blank">Flectra</a> development workflow with complete, standard & cloud native tooling which is easy to integrate with CI/CD and ready to deploy.
+
+[![GitHub stars](https://img.shields.io/github/stars/xoe-labs/dockery-odoo.svg?longCache=true&style=flat-square&logo=github&label=Stars)](https://github.com/xoe-labs/dockery-odoo)
+[![Docker Pulls](https://img.shields.io/docker/pulls/xoes/dockery-odoo.svg?longCache=true&style=flat-square)](https://hub.docker.com/r/xoes/dockery-odoo/)
+[![By XOE](https://img.shields.io/badge/by-XOE Labs-F26524.svg?longCache=true&style=flat-square)](https://xoe.solutions)
+'''
+
+  # Intro section
+  # Available icons: http://simplelineicons.com/
+  [params.intro]
+
+  [[params.intro.item]]
+    title = "Bootstrap your project"
+    icon = "icon-wrench"
+    description = '''
+```shell
+$ cd ~
+$ mkdir -p $(pwd)/dev/
+$ cd dev/
+$ git clone git@github.com:xoe-labs/dockery-odoo-scaffold.git project-name
+$ cd project-name
+$ git submodule add git@github.com:odoo/odoo.git vendor/odoo/cc
+$ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
+```
+'''
+    # url = "#"
+    # button = "Copy"
+
+  [[params.intro.item]]
+    title = "Customize your Dockerfile"
+    description = '''
+```Dockerfile
+## ./Dockerfile
+ARG  FROM_IMAGE=xoes/dockery-odoo
+FROM ${FROM_IMAGE}
+
+## Examples of extending your project with vendored modules
+## NOTE: later *modules* override their previous namesake
+# COPY vendor/it-projects/*   /opt/odoo/addons/010
+# COPY vendor/xoe/*           /opt/odoo/addons/020
+# COPY vendor/c2c/*           /opt/odoo/addons/030
+
+## Example of extending your project with custom libraries
+USER root
+# RUN pip install python-telegram-bot pandas numpy
+USER odoo
+```
+'''
+    # url = "#"
+    # button = "Copy"
+
+  [[params.intro.item]]
+    title = "Set up your Project Image Namespace"
+    description = '''
+```shell
+$ echo "CI_REGISTRY_IMAGE=registry.gitlab.com/yourorg/erp-projects/project-name" > .env
+```
+'''
+    # url = "#"
+    # button = "Copy"
+
+  [[params.intro.item]]
+    title = "Launch using docker-compose"
+    description = '''
+```shell
+$ docker-compose up odoo
+```
+'''
+    # url = "#"
+    # button = "Copy"
+    icon = "icon-rocket"
+  #  img = "img_10.jpg"
+
+  [[params.intro.item]]
+    title = "Scaffold your first module"
+    description = '''
+```shell
+$ docker-compose run odoo scaffold "My next big module"
+```
+'''
+    # url = "#"
+    # button = "Copy"
+    icon = "icon-frame"
+  #  img = "img_10.jpg"
+
+  #[params.intro.video]
+  #  enable = true
+  #  title = "Watch the video"
+  #  icon = "icon-play2"
+  #  url = "https://vimeo.com/channels/staffpicks/93951774"
+
+
+  # Services section
+  [params.services]
+    enable = true
+    title = "Features"
+    description = "Dockery-Odoo is the **fastest** and **cleanest** way to get up to speed with your Odoo / Flectra development."
+
+    [[params.services.item]]
+      title = "Docker Based"
+      description = "Leverages best practices of a docker centric development workflow."
+      icon = "icon-anchor"
+
+    [[params.services.item]]
+      title = "Kubernetes Ready"
+      description = "Was build with industry standard kubernetes deployment and operation model in mind."
+      icon = "icon-cloud-upload"
+
+    [[params.services.item]]
+      title = "Convenience by Default"
+      description = "Never again waste time on project setup, ever."
+      icon = "icon-speedometer"
+
+    [[params.services.item]]
+      title = "Ecosystem Player"
+      description = "Optimized for excellent teamplay with CI/CD."
+      icon = "icon-play"
+
+    [[params.services.item]]
+      title = "Descriptive Migration"
+      description = "An improved decriptive migration controller build into it."
+      icon = "icon-refresh"
+
+    [[params.services.item]]
+      title = "Translation (to come)"
+      description = "Integration with Transifex, Weblate, GitHub and GitLab."
+      icon = "icon-speech"
+
+  # About section
+  [params.about]
+    enable = true
+    title = "Other projects"
+    description = "We are commited to excellence in community-driven development at XOE.<br /> Here is a list of some of our most useful tools"
+
+    [[params.about.item]]
+      name = "Odoo Operator"
+      position = "Deploy Odoo/Flectra instances reliably at scale with k8s"
+      description = ""
+      img = "Odoo-Operator-color.svg"
+      alt = "Odoo Operator"
+      social = [
+        ["icon-globe", "https://xoe-labs.github.io/odoo-operator"],
+        ["icon-github", "https://github.com/xoe-labs/odoo-operator"]
+      ]
+
+    [[params.about.item]]
+      name = "Dockery-Odoo Scaffold"
+      position = "Bootstrap your project with useful template files."
+      description = ""
+      img = "Dockery-Odoo-Scaffold-color.svg"
+      alt = "Dockery-Odoo Scaffold"
+      social = [
+        ["icon-globe", "https://xoe-labs.github.io/dockery-odoo-scaffold"],
+        ["icon-home", "https://github.com/xoe-labs/dockery-odoo-scaffold"]
+      ]
+
+    [[params.about.item]]
+      name = "Odoo Patches"
+      position = "A curated patch collection for Odoo / Flectra"
+      description = ""
+      img = "Odoo-Patches-color.svg"
+      alt = "XOE Odoo Patches"
+      social = [
+        ["icon-globe", "https://xoe-labs.github.io/odoo-patches"],
+        ["icon-home", "https://github.com/xoe-labs/odoo-patches"]
+      ]
