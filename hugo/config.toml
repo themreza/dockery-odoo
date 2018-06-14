@@ -21,7 +21,7 @@ theme = "elate"
 Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> or <a href="https://flectrahq.com/" target="_blank">Flectra</a> development workflow with complete, standard & cloud native tooling which is easy to integrate with CI/CD and ready to deploy.
 
 [![GitHub stars](https://img.shields.io/github/stars/xoe-labs/dockery-odoo.svg?longCache=true&style=flat-square&logo=github&label=Stars)](https://github.com/xoe-labs/dockery-odoo)
-[![Docker Pulls](https://img.shields.io/docker/pulls/xoes/dockery-odoo.svg?longCache=true&style=flat-square)](https://hub.docker.com/r/xoes/dockery-odoo/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/xoelabs/dockery-odoo.svg?longCache=true&style=flat-square)](https://hub.docker.com/r/xoelabs/dockery-odoo/)
 [![By XOE](https://img.shields.io/badge/by-XOE Labs-F26524.svg?longCache=true&style=flat-square)](https://xoe.solutions)
 '''
 
@@ -55,7 +55,7 @@ $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
     description = '''
 ```Dockerfile
 ## ./Dockerfile
-ARG  FROM_IMAGE=xoes/dockery-odoo:v10
+ARG  FROM_IMAGE=xoelabs/dockery-odoo:v10
 FROM ${FROM_IMAGE}
 
 ## Examples of extending your project with vendored modules

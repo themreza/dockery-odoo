@@ -1,4 +1,4 @@
-# [Dockery Odoo](https://github.com/xoes/dockery-odoo)
+# [Dockery Odoo](https://github.com/xoe-labs/dockery-odoo)
 
 An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
 
@@ -61,7 +61,7 @@ There is no way around this folder structure. No point arguing.
 
 ```dockerfile
 # .docker/Dockerfile
-ARG  FROM_IMAGE=xoes/dockery-odoo
+ARG  FROM_IMAGE=xoelabs/dockery-odoo
 FROM ${FROM_IMAGE}
 
 # Examples of extending your project with vendored modules
@@ -99,28 +99,28 @@ or with your custom base image
     docker build \
       --tag odoo/app:dev \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:images/dev
+      https://github.com/xoe-labs/dockery-odoo.git#shared:images/dev
 
 **tester:**
 
     docker build \
       --tag odoo/app:tester \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:images/tester
+      https://github.com/xoe-labs/dockery-odoo.git#shared:images/tester
 
 **migrator:**
 
     docker build \
       --tag odoo/app:migrator \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:images/migrator
+      https://github.com/xoe-labs/dockery-odoo.git#shared:images/migrator
 
 **translator:**
 
     docker build \
       --tag odoo/app:translator \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:images/translator
+      https://github.com/xoe-labs/dockery-odoo.git#shared:images/translator
 
 ## Tipps for Development
 
