@@ -34,12 +34,16 @@ Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> or <a href="ht
     icon = "icon-wrench"
     description = '''
 ```shell
-$ cd ~
-$ mkdir -p $(pwd)/dev/
-$ cd dev/
-$ git clone git@github.com:xoe-labs/dockery-odoo-scaffold.git project-name
-$ cd project-name
-$ git submodule add git@github.com:odoo/odoo.git vendor/odoo/cc
+$ WORKDIR=$(pwd)/dev/
+$ PROJECT=my-project
+
+$ mkdir -p "${WORKDIR}" && \
+  cd "${WORKDIR}" && \
+  git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git "${PROJECT}"  && \
+  cd  "${PROJECT}" && \
+  git submodule add https://github.com/odoo/odoo.git vendor/odoo/cc
+
+# If you have access to enterprise code
 $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
 ```
 '''
@@ -51,14 +55,14 @@ $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
     description = '''
 ```Dockerfile
 ## ./Dockerfile
-ARG  FROM_IMAGE=xoes/dockery-odoo
+ARG  FROM_IMAGE=xoes/dockery-odoo:v10
 FROM ${FROM_IMAGE}
 
 ## Examples of extending your project with vendored modules
 ## NOTE: later *modules* override their previous namesake
-# COPY vendor/it-projects/*   /opt/odoo/addons/010
-# COPY vendor/xoe/*           /opt/odoo/addons/020
-# COPY vendor/c2c/*           /opt/odoo/addons/030
+# COPY  --chown=odoo:odoo vendor/it-projects/*   /opt/odoo/addons/010
+# COPY  --chown=odoo:odoo vendor/xoe/*           /opt/odoo/addons/020
+# COPY  --chown=odoo:odoo vendor/c2c/*           /opt/odoo/addons/030
 
 ## Example of extending your project with custom libraries
 USER root
@@ -73,7 +77,9 @@ USER odoo
     title = "Set up your Project Image Namespace"
     description = '''
 ```shell
-$ echo "CI_REGISTRY_IMAGE=registry.gitlab.com/yourorg/erp-projects/project-name" > .env
+$ DOCKERIMAGE="registry.gitlab.com/yourorg/erp-projects/project-name"
+
+$ echo "IMAGE=${DOCKERIMAGE}" > .env
 ```
 '''
     # url = "#"
@@ -83,6 +89,10 @@ $ echo "CI_REGISTRY_IMAGE=registry.gitlab.com/yourorg/erp-projects/project-name"
     title = "Launch using docker-compose"
     description = '''
 ```shell
+# First time base image build
+$ docker-compose -f docker-compose.yml build odoo
+
+# Start local Development Server
 $ docker-compose up odoo
 ```
 '''
