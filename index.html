@@ -118,7 +118,7 @@
 							<h2 class="to-animate"><p>Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> or <a href="https://flectrahq.com/" target="_blank">Flectra</a> development workflow with complete, standard &amp; cloud native tooling which is easy to integrate with CI/CD and ready to deploy.</p>
 
 <p><a href="https://github.com/xoe-labs/dockery-odoo"><img src="https://img.shields.io/github/stars/xoe-labs/dockery-odoo.svg?longCache=true&amp;style=flat-square&amp;logo=github&amp;label=Stars" alt="GitHub stars" /></a>
-<a href="https://hub.docker.com/r/xoes/dockery-odoo/"><img src="https://img.shields.io/docker/pulls/xoes/dockery-odoo.svg?longCache=true&amp;style=flat-square" alt="Docker Pulls" /></a>
+<a href="https://hub.docker.com/r/xoelabs/dockery-odoo/"><img src="https://img.shields.io/docker/pulls/xoelabs/dockery-odoo.svg?longCache=true&amp;style=flat-square" alt="Docker Pulls" /></a>
 <a href="https://xoe.solutions"><img src="https://img.shields.io/badge/by-XOE Labs-F26524.svg?longCache=true&amp;style=flat-square" alt="By XOE" /></a></p>
 </h2>
 						</div>
@@ -139,12 +139,16 @@
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon icon-wrench"></i>
 						<h2>Bootstrap your project</h2>
-						<p><pre><code class="language-shell">$ cd ~
-$ mkdir -p $(pwd)/dev/
-$ cd dev/
-$ git clone git@github.com:xoe-labs/dockery-odoo-scaffold.git project-name
-$ cd project-name
-$ git submodule add git@github.com:odoo/odoo.git vendor/odoo/cc
+						<p><pre><code class="language-shell">$ WORKDIR=$(pwd)/dev/
+$ PROJECT=my-project
+
+$ mkdir -p &quot;${WORKDIR}&quot; &amp;&amp; \
+  cd &quot;${WORKDIR}&quot; &amp;&amp; \
+  git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git &quot;${PROJECT}&quot;  &amp;&amp; \
+  cd  &quot;${PROJECT}&quot; &amp;&amp; \
+  git submodule add https://github.com/odoo/odoo.git vendor/odoo/cc
+
+# If you have access to enterprise code
 $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
 </code></pre>
 </p>
@@ -159,14 +163,14 @@ $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
 						<i class="fh5co-intro-icon "></i>
 						<h2>Customize your Dockerfile</h2>
 						<p><pre><code class="language-Dockerfile">## ./Dockerfile
-ARG  FROM_IMAGE=xoes/dockery-odoo
+ARG  FROM_IMAGE=xoelabs/dockery-odoo:v10
 FROM ${FROM_IMAGE}
 
 ## Examples of extending your project with vendored modules
 ## NOTE: later *modules* override their previous namesake
-# COPY vendor/it-projects/*   /opt/odoo/addons/010
-# COPY vendor/xoe/*           /opt/odoo/addons/020
-# COPY vendor/c2c/*           /opt/odoo/addons/030
+# COPY  --chown=odoo:odoo vendor/it-projects/*   /opt/odoo/addons/010
+# COPY  --chown=odoo:odoo vendor/xoe/*           /opt/odoo/addons/020
+# COPY  --chown=odoo:odoo vendor/c2c/*           /opt/odoo/addons/030
 
 ## Example of extending your project with custom libraries
 USER root
@@ -184,7 +188,9 @@ USER odoo
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon "></i>
 						<h2>Set up your Project Image Namespace</h2>
-						<p><pre><code class="language-shell">$ echo &quot;CI_REGISTRY_IMAGE=registry.gitlab.com/yourorg/erp-projects/project-name&quot; &gt; .env
+						<p><pre><code class="language-shell">$ DOCKERIMAGE=&quot;registry.gitlab.com/yourorg/erp-projects/project-name&quot;
+
+$ echo &quot;IMAGE=${DOCKERIMAGE}&quot; &gt; .env
 </code></pre>
 </p>
 						
@@ -197,7 +203,11 @@ USER odoo
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon icon-rocket"></i>
 						<h2>Launch using docker-compose</h2>
-						<p><pre><code class="language-shell">$ docker-compose up odoo
+						<p><pre><code class="language-shell"># First time base image build
+$ docker-compose -f docker-compose.yml build odoo
+
+# Start local Development Server
+$ docker-compose up odoo
 </code></pre>
 </p>
 						
