@@ -2,7 +2,6 @@
 
 # Symlink git workdir folders of CI clone to testbed
 # Relies on the repo folder structure and naming scheme.
-# "05-" because it needs runing before "10-" of base image
 
 # For additional vendored modules, symlink manually in your CI script
 
