@@ -1,4 +1,4 @@
-ARG  FROM_IMAGE=xoes/dockery-odoo
+ARG  FROM_IMAGE=xoelabs/dockery-odoo
 FROM ${FROM_IMAGE}
 
 

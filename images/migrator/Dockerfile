@@ -1,4 +1,4 @@
-ARG  FROM_IMAGE=xoes/dockery-odoo
+ARG  FROM_IMAGE=xoelabs/dockery-odoo
 FROM ${FROM_IMAGE}
 
 USER root
@@ -6,7 +6,7 @@ USER root
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
 # get marabunta as the odoo migration controller library of choice
-RUN pip install git+https://github.com/xoes/marabunta#egg=marabunta
+RUN pip install git+https://github.com/xoe-labs/marabunta#egg=marabunta
 
 # You can configure marabunata either by environment variables
 # or by config flags (which override env variables)
