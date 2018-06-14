@@ -1,9 +1,0 @@
-#!/bin/bash
-
-shopt -s dotglob
-chmod +x /entrypoint.sh
-chmod +x /entrypoint*.sh
-chmod +x /usr/local/bin/*
-chmod +x /usr/local/lib/python2.7/dist-packages/dockery-*-libs/*
-chmod +x /entrypoint.d/*
-shopt -u dotglob
