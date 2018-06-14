@@ -1,0 +1,88 @@
+You can use this patch as a convenient way to augment your module templating
+and make the flow more user friendly.
+
+It passes thre extra parameters to the jinja environment:
+ * summary
+ * description
+ * options['license']
+ * options['category']
+
+You might guess it options dict is meant for usage in the odoo manifest options.
+
+ odoo/cli/scaffold.py | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+
+diff --git a/odoo/cli/scaffold.py b/odoo/cli/scaffold.py
+index 67eb9116c3b..5229ccbe1a9 100644
+--- a/odoo/cli/scaffold.py
++++ b/odoo/cli/scaffold.py
+@@ -8,6 +8,11 @@ import json
+ 
+ import jinja2
+ 
++try:
++    from pick import pick
++except:
++    pick = None
++
+ from . import Command
+ 
+ class Scaffold(Command):
+@@ -37,8 +42,57 @@ class Scaffold(Command):
+             sys.exit(parser.print_help())
+         args = parser.parse_args(args=cmdargs)
+ 
++        summary = raw_input("Write a short summary (optional): ")
++        description = raw_input("Write a description (optional): ")
++        options = {}
++        if pick:
++            title = 'Choose the module category: '
++            # See /base/module/module_data.xml
++            selection = [
++                'Accounting',
++                'Discuss',
++                'Document Management',
++                'eCommerce',
++                'Human Resources',
++                'Industries',
++                'Localization',
++                'Manufacturing',
++                'Marketing',
++                'Point of Sale',
++                'Productivity',
++                'Project',
++                'Purchases',
++                'Sales',
++                'Warehouse',
++                'Website',
++                'Extra Tools',
++                'Hidden',
++            ]
++            options['category'], _ = pick(selection, title)
++            title = 'Choose the module license: '
++            # See /base/module/module.py
++            selection = [
++                'GPL-2',
++                'GPL-2 or any later version',
++                'GPL-3',
++                'GPL-3 or any later version',
++                'AGPL-3',
++                'LGPL-3',
++                'Other OSI approved licence',
++                'OEEL-1',
++                'OPL-1',
++                'Other proprietary',
++            ]
++            options['license'], _ = pick(selection, title)
++
+         params = {'name': args.name}
+         params.update(args.json)
++        if summary:
++            params.update({'summary': summary})
++        if description:
++            params.update({'description': description})
++        if options:
++            params.update(options)
+         args.template.render_to(
+             snake(args.name),
+             directory(args.dest, create=True),
