@@ -11,20 +11,24 @@ It aims to provide some opinionanted overrides, additions and/or patches include
 
 ## Components
 
-- Base Images
-- Dev Image (leveraging shared templates collection)
-- Migrator Image (leveraging marabunta)
-- Tester Image (remotely inspired by OCA's mqt)
-- [WIP] Translator Image (for Transifex or Weblate / GitHub or GitLab)
-- Gimmick: CI-Base image
+- **Base Images**
+- **Dev Image** (leveraging shared templates collection)
+- **Migrator Image** (leveraging marabunta)
+- **Tester Image** (remotely inspired by OCA's mqt)
+- **[WIP] Translator Image** (for Transifex or Weblate / GitHub or GitLab)
+- Gimmick: **CI-Base image**
 
-The base images are versioned through branch names.
+### Branch `shared`
 
-The other images, README, ... are in shared development on `shared` branch (and eventually merged back to the version branches).
+Contains shared images, README, etc.
+
+### Branch `v10`, `v11`, etc.
+
+Contains the base image for the respective version.
 
 ## Image explained
 
-- After building the image, everything you have to worry about is `/opt/odoo`.
+- After building the (base) image, everything you have to worry about is `/opt/odoo`.
 
 - Docker boilerplate lives in `/`.
 
@@ -37,7 +41,7 @@ The other images, README, ... are in shared development on `shared` branch (and 
 
 ## Image usage
 
-**Shortcut: https://github.com/xoes/dockery-odoo-scaffold**
+**Shortcut: https://github.com/xoe-labs/dockery-odoo-scaffold**
 
 ### Folder Convention
 
@@ -73,7 +77,7 @@ USER odoo
 ```
 ### Project's images
 
-#### Golden rule
+#### Sequence
 
 1. Build your project's image
 2. Build all other images
@@ -95,28 +99,28 @@ or with your custom base image
     docker build \
       --tag odoo/app:dev \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:dev
+      https://github.com/xoes/dockery-odoo.git#shared:images/dev
 
 **tester:**
 
     docker build \
       --tag odoo/app:tester \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:tester
+      https://github.com/xoes/dockery-odoo.git#shared:images/tester
 
 **migrator:**
 
     docker build \
       --tag odoo/app:migrator \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:migrator
+      https://github.com/xoes/dockery-odoo.git#shared:images/migrator
 
 **translator:**
 
     docker build \
       --tag odoo/app:translator \
       --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoes/dockery-odoo.git#shared:translator
+      https://github.com/xoes/dockery-odoo.git#shared:images/translator
 
 ## Tipps for Development
 
@@ -164,18 +168,26 @@ We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the ex
 # Do not complain on .empty files (Bash only)
 shopt -s dotglob
 git update-index --chmod=+x \
-    base/entrypoint.sh \
-    base/entrypoint.*.sh \
-    base/bin/* \
-    base/entrypoint.d/* \
-    base/lib/* \
-    dev/entrypoint.d/* \
-    tester/bin/* \
-    tester/lib/* \
-    tester/entrypoint.d/* \
-    translator/lib/* \
-    migrator/entrypoint-migrator.sh \
-    migrator/entrypoint.d/*
+    images/dev/entrypoint.d/* \
+    images/tester/bin/* \
+    images/tester/lib/* \
+    images/tester/entrypoint.d/* \
+    images/translator/lib/* \
+    images/migrator/entrypoint-migrator.sh \
+    images/migrator/entrypoint.d/*
+shopt -u dotglob
+```
+
+
+```bash    
+# Do not complain on .empty files (Bash only)
+shopt -s dotglob
+git update-index --chmod=+x \
+    images/base/entrypoint.sh \
+    images/base/entrypoint.*.sh \
+    images/base/bin/* \
+    images/base/entrypoint.d/* \
+    images/base/lib/*
 shopt -u dotglob
 ```
 
