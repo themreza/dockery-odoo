@@ -111,7 +111,7 @@ RUN pip install python-json-logger
 
 # Read configs and secrets
 # UID & GID will be used to fix secrets permission on docker-compose bind mounted ("plain") secrets
-ENV PGPASSFILE=/run/secrets/pgpass ODOO_RC=/run/configs/odoo.d APP_UID=9001 APP_GID=9001 PGHOST=db
+ENV PGPASSFILE=/run/secrets/pgpass APP_UID=9001 APP_GID=9001 PGHOST=db
 
 # Create Odoo User
 RUN addgroup --system --gid $APP_UID odoo
