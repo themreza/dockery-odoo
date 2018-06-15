@@ -11,6 +11,12 @@ set -e
 : ${APP_UID:="9001"}
 : ${APP_GID:="9001"} 
 
+export ODOO_BASEPATH
+export ODOO_CMD
+export ODOO_RC
+export ADDONS_BASE
+export APP_UID
+export APP_UID
 
 entrypoint_scripts=entrypoint.d
 
