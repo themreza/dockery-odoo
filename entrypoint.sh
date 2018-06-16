@@ -24,7 +24,7 @@ set +x
 
 CMD=$@
 
-
+set +u
 if [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
@@ -63,6 +63,7 @@ if [ "$1" = 'apply-patches' ]; then
 	# while appling those patches
 	CMD="apply-patches --quiet $@"
 fi
+set -u
 
 set -x
 exec ${CMD}
