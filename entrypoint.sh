@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuxo pipefail
 
 # In Repository						In Container
 # --------------------------		-------------------
@@ -18,10 +18,12 @@ set -e
 # as an attempt to increase long term portability.
 
 source /entrypoint.0.sh
+set +x
 
 # Implemented command options
 
 CMD=$@
+
 
 if [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"

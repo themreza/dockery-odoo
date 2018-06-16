@@ -1,7 +1,7 @@
 #!/bin/bash
 # Generate Odoo addons folder scanning the folder
+set -Eeuo pipefail
 
-set -e
 addonspath=""
 # Sort reverse alfanumerically first, then do realpath 
 # so we can freely reorder loading by symlinking for

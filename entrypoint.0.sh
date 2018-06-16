@@ -1,22 +1,16 @@
 #!/bin/bash
-set -e
+set -Eeuxo pipefail
 
 
-: ${ODOO_BASEPATH:="/opt/odoo"}  # Switch easily in CI environment
-: ${ODOO_CMD:="${ODOO_BASEPATH}/odoo-bin"}
-: ${ODOO_RC:="${ODOO_BASEPATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
-: ${ADDONS_BASE:="${ODOO_BASEPATH}/addons"}
+export ODOO_BASEPATH=${ODOO_BASEPATH:="/opt/odoo"}  # Switch easily in CI environment
+export ODOO_CMD=${ODOO_CMD:="${ODOO_BASEPATH}/odoo-bin"}
+export ODOO_RC=${ODOO_RC:="${ODOO_BASEPATH}/.odoorc.d"}  # Bind-mount a folder (Patch 0005)
+export ADDONS_BASE=${ADDONS_BASE:="${ODOO_BASEPATH}/addons"}
 
 # Those are fixed at build time (only here for reference)
-: ${APP_UID:="9001"}
-: ${APP_GID:="9001"} 
+export APP_UID=${APP_UID:="9001"}
+export APP_GID=${APP_GID:="9001"} 
 
-export ODOO_BASEPATH
-export ODOO_CMD
-export ODOO_RC
-export ADDONS_BASE
-export APP_UID
-export APP_UID
 
 entrypoint_scripts=entrypoint.d
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 # In a environment with no ConfigSets, you can use 
 # this hack to pass configuration through secrets

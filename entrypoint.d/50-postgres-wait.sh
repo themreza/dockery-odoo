@@ -1,7 +1,6 @@
 #!/bin/bash
 # wait-for-postgres.sh
-
-set -e
+set -Eeuo pipefail
 
 # Connection provided by pgpass file
 until psql -h "${PGHOST}" postgres -c '\q'; do
