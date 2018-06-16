@@ -27,8 +27,9 @@ echo ""  >> /tmp/pl3
 echo "Run..."  >> /tmp/pl3
 echo ""  >> /tmp/pl3
 echo "    docker run \\"  >> /tmp/pl4
+echo "        --user=1000 \\"  >> /tmp/pl4
 echo "        -v \$(pwd)/vendor/odoo/cc:/opt/odoo/ \\"  >> /tmp/pl4
-echo "        xoes/dockery-odoo:v10 apply-patches \\"  >> /tmp/pl4
+echo "        xoelabs/dockery-odoo:v10 apply-patches \\"  >> /tmp/pl4
 echo "    && git --git-dir \$(pwd)/vendor/odoo/cc/.git \\"  >> /tmp/pl4
 echo "       commit -a -m \"[DOCKERY ODOO PATCHER]\""  >> /tmp/pl4
 echo ""  >> /tmp/pl5
