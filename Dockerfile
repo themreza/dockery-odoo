@@ -145,6 +145,15 @@ ENV LC_ALL en_US.UTF-8
 # Install git `to pip install` customized python packages
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
+# Install pyflame for production profiling
+RUN sudo apt install autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
+	&& git clone https://github.com/uber/pyflame.git \
+	&& cd pyflame \
+	&& ./autogen.sh \
+	&& ./configure \
+	&& make \
+	&& make install
+
 USER odoo
 
 # ============================================================
