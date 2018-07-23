@@ -8,8 +8,8 @@ set -Eeuo pipefail
 for folder in $(find /run/secrets -maxdepth 1 -mindepth 1 -type f -name "__*" ); do
 	target=${folder#/run/secrets/}
 	target=${target//__//}
-	mkdir -p ${target%/*}
-	rm -f ${target}
+	mkdir -p "${target%/*}"
+	rm -f "${target}"
 	cp -rp "${folder}" "${target}"
     echo "Copied ${folder} to ${target} (Secrets Indirection)"
 done;

@@ -1,59 +1,56 @@
 #!/bin/bash
 set -Eeuxo pipefail
 
-# In Repository						In Container
-# --------------------------		-------------------
-# ./vendor/odoo/cc/odoo-bin 	-> 	/opt/odoo/odoo-bin
-# ./vendor/odoo/cc/odoo 		-> 	/opt/odoo/odoo
-# ./vendor/odoo/cc/addons 		-> 	/opt/odoo/addons/000
-# ./vendor/odoo/ee/				-> 	/opt/odoo/addons/001
-# ./vendor/...					-> 	/opt/odoo/addons/...
-# ./src/						-> 	/opt/odoo/addons/090
-# ./cfg/						-> 	/opt/odoo/.odoorc.d
+# -----------------------------------------------------------------------------
+# This general entrypoint script provides the control structure for dealing 
+# with all possible commands supplied to this container. 
+#
+# entrypoint.appenv.sh provides a general app environment and entrypoint.d 
+# folder scripts are executed in their alphabetical where needed.
+#
+# It is meant to be adapted or extended in downstream containers.
+# -----------------------------------------------------------------------------
 
-# NOTE: ee is required, put an .empty file if not used.
-
-# This is accomplished by a limited set of ONBUILD statments
-# Strong naming convention (inspired by golang) is enforced
-# as an attempt to increase long term portability.
-
-source /entrypoint.0.sh
+# shellcheck disable=SC1091
+source /entrypoint.appenv.sh
+# shellcheck disable=SC1091
+source /entrypoint.sourced.sh
 set +x
 
 # Implemented command options
 
-CMD=$@
+CMD=( "$@" )
 
 set +u
 if [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
 
-if [ "$1" = 'run' ]; then
+if [ "$#" -eq 0 ] || [ "$1" = 'run' ]; then
 	shift;
-	source_scripts
-	CMD="${ODOO_CMD} \
+	sourceScriptsInFolder "/entrypoint.d"
+	CMD=("${ODOO_CMD} \
 		--addons-path ${ODOO_ADDONSPATH} \
-		$@"
+		${CMD[@]}")
 fi
 
 if [ "$1" = 'shell' ]; then
 	database="$1"
 	shift;
-	source_scripts
-	CMD="${ODOO_CMD} \
+	sourceScriptsInFolder "/entrypoint.d"
+	CMD=("${ODOO_CMD} \
 		shell \
 		--addons-path ${ODOO_ADDONSPATH} \
-		-d "${database}" \
-		$@"
+		-d ${database} \
+		${CMD[@]}")
 fi
 
 if [ "$1" = 'scaffold' ]; then
-	CMD="${ODOO_CMD} $@"
+	CMD=("${ODOO_CMD} ${CMD[@]}")
 fi
 
 if [ "$1" = 'deploy' ]; then
-	CMD="${ODOO_CMD} $@"
+	CMD=("${ODOO_CMD} ${CMD[@]}")
 fi
 
 if [ "$1" = 'apply-patches' ]; then
@@ -61,9 +58,9 @@ if [ "$1" = 'apply-patches' ]; then
 	# additional arguments will be passed to patch
 	# Bind mount (writable) you odoo folder
 	# while appling those patches
-	CMD="apply-patches --quiet $@"
+	CMD=("apply-patches --quiet ${CMD[@]}")
 fi
 set -u
 
 set -x
-exec ${CMD}
+exec "${CMD[@]}"

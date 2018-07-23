@@ -23,17 +23,3 @@ for dir in $(find "${ADDONS_BASE}" -maxdepth 1 -mindepth 1 -xtype d | sort -r | 
     fi;
 done;
 export ODOO_ADDONSPATH=$addonspath
-
-
-
-
-
-
-entrypoint_scripts=entrypoint.d
-
-function source_scripts {
-	for file in $(find /${entrypoint_scripts} -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
-	    echo Sourcing "$file"
-	    source $file
-	done
-}
