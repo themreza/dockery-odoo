@@ -33,7 +33,7 @@ if [ "$1" = 'run' ]; then
 	shift;
 	source_scripts
 	CMD="${ODOO_CMD} \
-		--addons-path ${ADDONSPATH} \
+		--addons-path ${ODOO_ADDONSPATH} \
 		$@"
 fi
 
@@ -43,7 +43,7 @@ if [ "$1" = 'shell' ]; then
 	source_scripts
 	CMD="${ODOO_CMD} \
 		shell \
-		--addons-path ${ADDONSPATH} \
+		--addons-path ${ODOO_ADDONSPATH} \
 		-d "${database}" \
 		$@"
 fi
