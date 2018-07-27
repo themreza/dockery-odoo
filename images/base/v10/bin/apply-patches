@@ -1,0 +1,56 @@
+#!/bin/bash
+
+currentdir="${PWD}"
+
+cd "${ODOO_BASEPATH}/odoo"  # patch -p2
+
+
+if [ "$1" = '--quiet' ]; then
+	shift;
+	quiet=1
+fi
+
+echo ""  >> /tmp/pl1
+echo ""  >> /tmp/pl1
+echo "====== DOCKERY ODOO PATCHES ======"  >> /tmp/pl1
+echo ""  >> /tmp/pl1
+echo ""  >> /tmp/pl1
+
+for patch in $(find "/patches.d" -xtype f -name '*.patch' | sort | xargs realpath); do
+    cat $patch | patch -p2 "$@" >> /tmp/pl2
+done;
+
+cd "${currentdir}"
+
+echo ""  >> /tmp/pl3
+echo ""  >> /tmp/pl3
+echo "Run..."  >> /tmp/pl3
+echo ""  >> /tmp/pl3
+echo "    docker run \\"  >> /tmp/pl4
+echo "        --user=1000 \\"  >> /tmp/pl4
+echo "        -v \$(pwd)/vendor/odoo/cc:/opt/odoo/ \\"  >> /tmp/pl4
+echo "        xoelabs/dockery-odoo:v10 apply-patches \\"  >> /tmp/pl4
+echo "    && git --git-dir \$(pwd)/vendor/odoo/cc/.git \\"  >> /tmp/pl4
+echo "       commit -a -m \"[DOCKERY ODOO PATCHER]\""  >> /tmp/pl4
+echo ""  >> /tmp/pl5
+echo "... to apply patches in your workdir."  >> /tmp/pl5
+echo ""  >> /tmp/pl5
+echo ""  >> /tmp/pl5
+echo "=================================="  >> /tmp/pl5
+echo ""  >> /tmp/pl5
+echo ""  >> /tmp/pl5
+
+
+# It would just nor format the right way
+# due to lag in redirections (for colour)
+if [ "$quiet" != "1" ]; then
+	cat /tmp/pl1 >&2
+fi
+
+cat /tmp/pl2 >&2
+
+if [ "$quiet" != "1" ]; then
+	cat /tmp/pl3 >&2
+	cat /tmp/pl4 >&1
+	cat /tmp/pl5 >&2
+fi
