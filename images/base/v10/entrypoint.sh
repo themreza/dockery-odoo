@@ -18,7 +18,7 @@ source /entrypoint.sourced.sh
 set +x
 
 # Implemented command options
-if [ "$#" -eq 0 ]; then
+if [ "$#" -eq 0 ] || [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
 
