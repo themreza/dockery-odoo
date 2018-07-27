@@ -1,0 +1,49 @@
+If no tty is detected, the instance switches to json logging
+which is easier to work with in log aggregation flows
+
+ odoo/netsvc.py | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/odoo/netsvc.py b/odoo/netsvc.py
+index 326228bf4f9..9a24d9e0ed6 100644
+--- a/odoo/netsvc.py
++++ b/odoo/netsvc.py
+@@ -16,6 +16,11 @@ import odoo
+ import sql_db
+ import tools
+ 
++try:
++    from pythonjsonlogger import jsonlogger
++except ImportError:
++    jsonlogger = None
++
+ _logger = logging.getLogger(__name__)
+ 
+ def log(logger, level, prefix, msg, depth=None):
+@@ -95,6 +100,17 @@ LEVEL_COLOR_MAPPING = {
+     logging.CRITICAL: (WHITE, RED),
+ }
+ 
++if jsonlogger:
++    class JSONFormatter(jsonlogger.JsonFormatter):
++        def formatException(self, exc_info):
++            result = super(JSONFormatter, self).formatException(exc_info)
++            # Also provide the error's class & module name
++            return exc_info[0].__module__ + '.' + exc_info[0].__name__ + ' >>>> ' + result
++        def format(self, record):
++            record.pid = os.getpid()
++            record.dbname = getattr(threading.currentThread(), 'dbname', '?')
++            return jsonlogger.JsonFormatter.format(self, record)
++
+ class DBFormatter(logging.Formatter):
+     def format(self, record):
+         record.pid = os.getpid()
+@@ -162,6 +178,8 @@ def init_logger():
+ 
+     if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
+         formatter = ColoredFormatter(format)
++    elif jsonlogger:
++        formatter = JSONFormatter(format)
+     else:
+         formatter = DBFormatter(format)
+     handler.setFormatter(formatter)

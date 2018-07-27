@@ -1,0 +1,16 @@
+ odoo/cli/scaffold.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/odoo/cli/scaffold.py b/odoo/cli/scaffold.py
+index ccac8eb7351..2baae565fe2 100644
+--- a/odoo/cli/scaffold.py
++++ b/odoo/cli/scaffold.py
+@@ -105,7 +105,7 @@ class Scaffold(Command):
+         )
+ 
+ builtins = lambda *args: os.path.join(
+-    os.path.abspath(os.path.dirname(__file__)),
++    '/',
+     'templates',
+     *args)
+ 

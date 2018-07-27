@@ -1,0 +1,56 @@
+ odoo/netsvc.py | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
+
+diff --git a/odoo/netsvc.py b/odoo/netsvc.py
+index b6433e9da8b..e093fa6f5fd 100644
+--- a/odoo/netsvc.py
++++ b/odoo/netsvc.py
+@@ -138,9 +138,22 @@ def init_logger():
+ 
+     # create a format for log messages and dates
+     format = '%(asctime)s %(pid)s %(levelname)s %(dbname)s %(name)s: %(message)s'
+-    # Normal Handler on stderr
+-    handler = logging.StreamHandler()
++    # Normal Handler on stdout
++    handler = logging.StreamHandler(sys.stdout)
++    # Error Handler on stderr for WARNING and above
++    errhandler = logging.StreamHandler()
++    errhandler.setLevel(logging.WARNING)
+ 
++    class MyFilter(object):
++        def __init__(self, level):
++            self.__level = level
++
++        def filter(self, logRecord):
++            return logRecord.levelno < self.__level
++
++    # Exclude all logging WARNING and above (will be logged to stderr)
++    # To avoide double entries if stderr is redirected
++    handler.addFilter(MyFilter(logging.WARNING))
+     if tools.config['syslog']:
+         # SysLog Handler
+         if os.name == 'nt':
+@@ -176,16 +189,22 @@ def init_logger():
+     def is_a_tty(stream):
+         return hasattr(stream, 'fileno') and os.isatty(stream.fileno())
+ 
+-    if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(handler.stream):
++    if os.name == 'posix' and isinstance(handler, logging.StreamHandler) and is_a_tty(errhandler.stream):
+         formatter = ColoredFormatter(format)
+     elif jsonlogger:
+         formatter = JSONFormatter(format)
+     else:
+         formatter = DBFormatter(format)
+     handler.setFormatter(formatter)
++    errhandler.setFormatter(formatter)
+ 
+     logging.getLogger().addHandler(handler)
+ 
++    # Only activate the error handler in case we are streaming logs
++    # to stdout/stderr
++    if os.name == 'posix' and isinstance(handler, logging.StreamHandler):
++        logging.getLogger().addHandler(errhandler)
++
+     if tools.config['log_db']:
+         db_levels = {
+             'debug': logging.DEBUG,

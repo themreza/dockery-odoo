@@ -1,12 +1,33 @@
-FROM debian:jessie AS base-build
+# -----------------
+# Multi-stage build
+# -----------------
+FROM debian:stretch as pyflame-build
+
+USER root
+# Build latest pyflame       //-- for live production profiling
+RUN apt-get update && apt-get install -y \
+	   autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
+	   git-core \
+	&& git clone https://github.com/uber/pyflame.git \
+	&& cd pyflame \
+	&& ./autogen.sh \
+	&& ./configure \
+	&& make
+
+
+# -----------------
+# Multi-stage build
+# -----------------
+FROM debian:stretch AS base-build
 
 USER root
 
+
 # Library versions
-ENV ODOO_VERSION         10.0
+ENV ODOO_VERSION         11.0
 ENV PSQL_VERSION         10
-ENV WKHTMLTOX_VERSION    0.12
-ENV WKHTMLTOX_MINOR      0.12.4
+ENV WKHTMLTOX_VERSION    0.12.5
+ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb
 ENV NODE_VERSION         6
 ENV BOOTSTRAP_VERSION    3.3.7
 
@@ -20,16 +41,17 @@ ENV ODOO_PRST_DIR        "/var/lib/odoo-persist"
 ENV	APP_UID              "9001"
 ENV	APP_GID              "9001"
 
-
 # Grab build deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	build-essential \
 	bzip2 \
 	curl \
 	libgeoip-dev \
-	python-dev \
+	python3-dev \
 	wget \
 	xz-utils \
+	libevent-dev \
+    libssl-dev \
 	# lxml
 	libxml2-dev \
 	libxslt1-dev\
@@ -37,31 +59,27 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libjpeg-dev \
 	libfreetype6-dev \
     liblcms2-dev \
-    libopenjpeg-dev \
     libtiff5-dev \
     tk-dev \
     tcl-dev \
  	# psutil
 	linux-headers-amd64 \
-	# psycopg2
-	libpq-dev \
 	# python-ldap
 	libldap2-dev \
 	libsasl2-dev
 
 # Grab run deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-	python \
+	python3 \
 	apt-transport-https \
 	ca-certificates \
+	gnupg2 \
 	locales \
 	fontconfig \
 	libfreetype6 \
 	libjpeg62-turbo \
 	liblcms2-2 \
 	libldap-2.4-2 \
-	libopenjpeg5 \
-	libpq5 \
 	libsasl2-2 \
 	libtiff5 \
 	libx11-6 \
@@ -74,39 +92,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	zlib1g \
 	zlibc
 
+
 # Grab latest pip
-RUN curl https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
+RUN curl https://bootstrap.pypa.io/get-pip.py | python3 /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
-# Grab latest pyflame        //-- for live production profiling
-# RUN sudo apt install autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
-# 	&& git clone https://github.com/uber/pyflame.git \
-# 	&& cd pyflame \
-# 	&& ./autogen.sh \
-# 	&& ./configure \
-# 	&& make \
-# 	&& make install
+# Grab postgres
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
+RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
+RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
 
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --requirement /requirements.txt
 RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 
-# Grab postgres
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
-RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
-RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
-
 # Grab wkhtmltopdf
-RUN curl -SLo wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
-RUN echo "0ef646d802cd0375524034d11af76444c7c8e796e11d553ab39bd4a7bf703ac631f4a3300902bec54589b3d5400b5762d9995839f6faaae2f9159efdf225cc78  wkhtmltox.tar.xz" | sha512sum -c -
-RUN tar --strip-components 1 -C /usr/local/ -xf wkhtmltox.tar.xz && rm wkhtmltox.tar.xz && wkhtmltopdf --version
+RUN curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOX_VERSION}/wkhtmltox_${WKHTMLTOX_VERSION}-1.stretch_amd64.deb
+RUN echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c -
+RUN apt-get update && apt-get install -yqq --no-install-recommends libpng16-16 libssl1.1 xfonts-75dpi xfonts-base
+RUN dpkg -i ./wkhtmltox.deb && rm wkhtmltox.deb && wkhtmltopdf --version
 
 # Grab web stack
-RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" > /etc/apt/sources.list.d/nodesource.list
-RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" >> /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x stretch main" > /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x stretch main" >> /etc/apt/sources.list.d/nodesource.list
 RUN curl -SL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gem \
@@ -127,6 +138,10 @@ RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.g
 
 # Grab latest ptpython       //-- to improve Odoo shell, in case we need it once
 RUN pip install ptpython
+
+# Grab pyflame binary        //-- for live production profiling
+COPY --from=pyflame-build /pyflame/src/pyflame /usr/local/bin/
+RUN chmod +x /usr/local/bin/pyflame
 
 # Grab latest json logger    //-- for easier parsing in non-tty use (Patch 0001)
 RUN pip install python-json-logger
@@ -160,6 +175,9 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8  
 
 USER odoo
+
+# Grab newer werkzeug        //-- for right IP in logs https://git.io/fNu6v
+RUN pip install --user Werkzeug==0.14.1
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
