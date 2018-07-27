@@ -11,37 +11,26 @@ set -Eeuxo pipefail
 # It is meant to be adapted or extended in downstream containers.
 # -----------------------------------------------------------------------------
 
+set +x
+
+# shellcheck disable=SC1091
+source /entrypoint.sourced.sh
+
+
 # Implemented command options
 if [ "$#" -eq 0 ] || [ "${1:0:1}" = '-' ]; then
 	set -- run "$@"
 fi
 
 CMD=( "$@" )
+needs_entrypoint_d=""
 
-if [ "$1" = 'apply-patches' ]; then
-	# additional arguments will be passed to patch
-	# Bind mount (writable) you odoo folder
-	# while appling those patches
-	CMD=(
-			"apply-patches"
-			"--quiet"
-			"${CMD[@]:1}"
-		)
-fi
-
-# shellcheck disable=SC1091
-source /entrypoint.appenv.sh
-# shellcheck disable=SC1091
-source /entrypoint.sourced.sh
-set +x
-
-
-
-
-set +u
+# Create command
 
 if [ "$1" = 'run' ]; then
-	sourceScriptsInFolder "/entrypoint.d"
+	# shellcheck disable=SC1091
+	source /entrypoint.appenv.sh
+	needs_entrypoint_d=yes
 	CMD=(
 			"${ODOO_CMD}"
 			"--addons-path"
@@ -52,7 +41,9 @@ fi
 
 if [ "$1" = 'shell' ]; then
 	database="$1"
-	sourceScriptsInFolder "/entrypoint.d"
+	# shellcheck disable=SC1091
+	source /entrypoint.appenv.sh
+	needs_entrypoint_d=yes
 	CMD=(
 			"${ODOO_CMD}"
 			"shell"
@@ -64,6 +55,8 @@ if [ "$1" = 'shell' ]; then
 fi
 
 if [ "$1" = 'scaffold' ]; then
+	# shellcheck disable=SC1091
+	source /entrypoint.appenv.sh
 	CMD=(
 			"${ODOO_CMD}"
 			"${CMD[@]}"
@@ -71,13 +64,28 @@ if [ "$1" = 'scaffold' ]; then
 fi
 
 if [ "$1" = 'deploy' ]; then
+	# shellcheck disable=SC1091
+	source /entrypoint.appenv.sh
 	CMD=(
 			"${ODOO_CMD}"
 			"${CMD[@]}"
 		)
 fi
+if [ "$1" = 'apply-patches' ]; then
+	# additional arguments will be passed to patch
+	# Bind mount (writable) you odoo folder
+	# while appling those patches
+	CMD=(
+			"apply-patches"
+			"--quiet"
+			"${CMD[@]:1}"
+		)
+fi
 
-set -u
+
+if [ "${needs_entrypoint_d}" == 'yes' ]; then
+	sourceScriptsInFolder "/entrypoint.d"
+fi
 
 set -x
 exec "${CMD[@]}"
