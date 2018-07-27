@@ -18,31 +18,32 @@ source /entrypoint.sourced.sh
 set +x
 
 # Implemented command options
+if [ "$#" -eq 0 ]; then
+	set -- run "$@"
+fi
+
 
 CMD=( "$@" )
 
 set +u
-if [ "${1:0:1}" = '-' ]; then
-	set -- run "$@"
-fi
 
-if [ "$#" -eq 0 ] || [ "$1" = 'run' ]; then
-	shift;
+if [ "$1" = 'run' ]; then
 	sourceScriptsInFolder "/entrypoint.d"
-	CMD=("${ODOO_CMD} \
-		--addons-path ${ODOO_ADDONSPATH} \
-		${CMD[@]}")
+	CMD=("${ODOO_CMD}"
+		"--addons-path"
+		"${ODOO_ADDONSPATH}"
+		"${CMD[@]:1}")
 fi
 
 if [ "$1" = 'shell' ]; then
 	database="$1"
-	shift;
 	sourceScriptsInFolder "/entrypoint.d"
-	CMD=("${ODOO_CMD} \
-		shell \
-		--addons-path ${ODOO_ADDONSPATH} \
-		-d ${database} \
-		${CMD[@]}")
+	CMD=("${ODOO_CMD}"
+		"shell"
+		"--addons-path"
+		"${ODOO_ADDONSPATH}"
+		"-d" "${database}"
+		"${CMD[@]:1}")
 fi
 
 if [ "$1" = 'scaffold' ]; then
@@ -54,11 +55,10 @@ if [ "$1" = 'deploy' ]; then
 fi
 
 if [ "$1" = 'apply-patches' ]; then
-	shift;
 	# additional arguments will be passed to patch
 	# Bind mount (writable) you odoo folder
 	# while appling those patches
-	CMD=("apply-patches --quiet ${CMD[@]}")
+	CMD=("apply-patches --quiet ${CMD[@]:1}")
 fi
 set -u
 
