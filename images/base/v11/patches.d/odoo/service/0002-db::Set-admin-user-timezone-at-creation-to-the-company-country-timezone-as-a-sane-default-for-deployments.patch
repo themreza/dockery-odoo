@@ -16,7 +16,7 @@ index cb8e4e6ef3d..a3ede358810 100644
  from functools import wraps
  from contextlib import closing
  
-@@ -59,6 +60,10 @@ def _initialize_db(id, db_name, demo, lang, user_password, login='admin', countr
+@@ -73,6 +74,10 @@ def _initialize_db(id, db_name, demo, lang, user_password, login='admin', countr
                  countries = env['res.country'].search([('code', 'ilike', country_code)])
                  if countries:
                      env['res.company'].browse(1).country_id = countries[0]

@@ -11,7 +11,7 @@ diff --git a/odoo/service/db.py b/odoo/service/db.py
 index a3ede358810..118500cb495 100644
 --- a/odoo/service/db.py
 +++ b/odoo/service/db.py
-@@ -38,7 +38,7 @@ def check_super(passwd):
+@@ -51,7 +51,7 @@ def check_super(passwd):
      raise odoo.exceptions.AccessDenied()
  
  # This should be moved to odoo.modules.db, along side initialize().
@@ -20,7 +20,7 @@ index a3ede358810..118500cb495 100644
      try:
          db = odoo.sql_db.db_connect(db_name)
          with closing(db.cursor()) as cr:
-@@ -64,6 +64,8 @@ def _initialize_db(id, db_name, demo, lang, user_password, login='admin', countr
+@@ -77,6 +77,8 @@ def _initialize_db(id, db_name, demo, lang, user_password, login='admin', countr
                      users = env['res.users'].search(['|', ('active','=', True), ('active','=', False)])
                      users.write({'tz': country_timezones[country_code][0]})
  
@@ -29,10 +29,10 @@ index a3ede358810..118500cb495 100644
  
              # update admin's password and lang and login
              values = {'password': user_password, 'lang': lang}
-@@ -91,11 +93,13 @@ def _create_empty_database(name):
-             cr.autocommit(True)     # avoid transaction block
+@@ -107,11 +109,13 @@ def _create_empty_database(name):
              cr.execute("""CREATE DATABASE "%s" ENCODING 'unicode' TEMPLATE "%s" """ % (name, chosen_template))
- 
+
+ @check_db_management_enabled
 -def exp_create_database(db_name, demo, lang, user_password='admin', login='admin', country_code=None):
 +def exp_create_database(db_name, demo, lang, user_password='admin', login='admin', country_code=None, company_dict=None):
      """ Similar to exp_create but blocking."""
