@@ -2,7 +2,7 @@
 
 currentdir="${PWD}"
 
-cd "${ODOO_BASEPATH}/odoo"  # patch -p2
+cd "${ODOO_FRM}"  # patch -p2
 
 
 if [ "$1" = '--quiet' ]; then
