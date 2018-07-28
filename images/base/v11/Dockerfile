@@ -107,7 +107,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends postgresql-clie
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir --requirement /requirements.txt
-RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
+RUN pip install --no-cache-dir phonenumbers
 
 # Grab wkhtmltopdf
 RUN curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOX_VERSION}/wkhtmltox_${WKHTMLTOX_VERSION}-1.stretch_amd64.deb
