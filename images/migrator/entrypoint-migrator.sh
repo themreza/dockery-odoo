@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-source /entrypoint.0.sh
+source /entrypoint.sourced.sh
 
-source_scripts
+sourceScriptsInFolder "entrypoint.d"
 
 CMD="marabunta $@"
 
