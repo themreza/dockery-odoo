@@ -174,6 +174,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+RUN set-all-execute-bits
+
 USER odoo
 
 # Grab newer werkzeug        //-- for right IP in logs https://git.io/fNu6v
