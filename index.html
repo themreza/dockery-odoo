@@ -191,7 +191,7 @@ USER odoo
 						<p><pre><code class="language-shell">$ cat &lt;&lt; EOF &gt; .env
 # Magic file for docker-compose
 # Otherwise: &quot;source&quot; wherever this environment is needed:
-# export $(egrep -v '^#' .env | xargs
+# export $(egrep -v '^#' .env | xargs)
 IMAGE=myregistry.com/my-project/image
 FROM=xoelabs/dockery-odoo
 FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
