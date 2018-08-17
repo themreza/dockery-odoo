@@ -55,8 +55,10 @@ $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
     description = '''
 ```Dockerfile
 ## ./Dockerfile
-ARG  FROM_IMAGE=xoelabs/dockery-odoo:v10
+ARG  FROM_IMAGE=xoelabs/dockery-odoo:v11
 FROM ${FROM_IMAGE}
+
+ENV ODOO_ENTERPRISE=false
 
 ## Examples of extending your project with vendored modules
 ## NOTE: later *modules* override their previous namesake
