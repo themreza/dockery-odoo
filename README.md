@@ -1,157 +1,65 @@
-# [Dockery Odoo](https://github.com/xoe-labs/dockery-odoo)
+# Dockery Odoo
 
-An Odoo development lifecycle management image suite for your Odoo projects **without** any Odoo itself.
+- Odoo DevOps lifecycle tooling based on Docker.
+- Meant to ease your life with Odoo.
+- Years of experience incorporated, but no Odoo itself.
+- Hand crafted for productivity.
 
-Hand crafted for productivity!
+**Wether big or small: <a href="https://xoe-labs.github.io/dockery-odoo/" target="_blank">here</a> is where start all.**
 
-It aims to provide some opinionanted overrides, additions and/or patches included which makes Odoo instance scripting a little more fun.
+## Folders
 
-![God gives life to docker container](https://upload.wikimedia.org/wikipedia/commons/6/64/Creaci%C3%B3n_de_Ad%C3%A1n_%28Miguel_%C3%81ngel%29.jpg)
-*God gives life to docker container*
+- `hugo` - the lovely page
+- `images` - what you're here for
 
-## Components
-
-- **Base Images**
-- **Dev Image** (leveraging shared templates collection)
-- **Migrator Image** (leveraging marabunta)
-- **Tester Image** (remotely inspired by OCA's mqt)
-- **[WIP] Translator Image** (for Transifex or Weblate / GitHub or GitLab)
-- Gimmick: **CI-Base image**
-
-### Branch `shared`
-
-Contains shared images, README, etc.
-
-### Branch `v10`, `v11`, etc.
-
-Contains the base image for the respective version.
-
-## Image explained
-
-- After building the (base) image, everything you have to worry about is `/opt/odoo`.
-
-- Docker boilerplate lives in `/`.
-
-- PATH and PYTHONPATH enabled boilerplate lies in:
-
-```
-    ./bin/*    -> /usr/local/bin/
-    ./lib/*.py -> /usr/local/lib/python2.7/dist-packages/
-```
-
-## Image usage
-
-**Shortcut: https://github.com/xoe-labs/dockery-odoo-scaffold**
-
-### Folder Convention
-
-There is no way around this folder structure. No point arguing.
+## The project GAFS
+(Generally Accepted Folder Structure) - see [scaffolding repo](https://github.com/xoe-labs/dockery-odoo-scaffold)
 
 ```bash
-  vendor/
-    odoo/
-      cc/
-      ee/  # contains ".empty" file, if empty
-  src/    # your addons
-  cfg/    # odoo config file(s), split them!
-  Dockerfile
+your-project/
+ ├── cfg/           # Odoo config files, reloaded.
+ ├── scripts/       # Your life gets easier (TM)
+ ├── vendor/
+ │   ├── odoo/
+ │   │   ├── cc/    # A plain git@github.com:odoo/odoo.git
+ │   │   └── ee/    # A plain git@github.com:odoo/enterprise.git
+ │   └── .../       # Optionally, additional vendor's repos
+ │
+ ├── src/           # *Your* folder, develop in here.
+ │   ├── module_1/
+ │   └── .../
+ ├── ...            # The general suspects (gitignore, etc.)
+ ├── .adminpwd
+ ├── .pgpass
+ ├── .marabunta.yml # Single source of truth for migrations
+ ├── .env           # Single source of truth for environment
+ ├── Dockerfile     # Single source of truth for image
+ ├── docker-compose.yml             # Production akin version
+ └── docker-compose.override.yml    # Development akin version
 ```
 
-### `Dockerfile`
+## Image Building Sequence
 
-```dockerfile
-# .docker/Dockerfile
-ARG  FROM_IMAGE=xoelabs/dockery-odoo
-FROM ${FROM_IMAGE}
+1. Build your projects base image
+2. Build your projects helper images.
+    - Using remote github contexts *.
+    - Leveraging `--build-arg FROM_IMAGE` to "rebase" on your project
 
-# Examples of extending your project with vendored modules
-## NOTE: later *modules* override their previous namesake
-COPY vendor/it-projects/*   /opt/odoo/addons/010
-COPY vendor/xoe/*           /opt/odoo/addons/020
-COPY vendor/c2c/*           /opt/odoo/addons/030
+\* Use this repo's contexts _or_ fork it and craft your own.
 
-# Example of extending your project with custom libraries
-USER root
-RUN pip install python-telegram-bot pandas numpy
-USER odoo
-```
-### Project's images
 
-#### Sequence
+--------
 
-1. Build your project's image
-2. Build all other images
+Don't complain about a short readme. :wink:
 
-#### Build project's image
+You are supposed to have started [here](https://github.com/xoe-labs/dockery-odoo).
 
-Assuming your project lives in `odoo/app` namespace:
-
-    docker build --tag odoo/app .
-
-or with your custom base image
-
-    docker build --tag odoo/app --build-arg FROM_IMAGE=YOUR_PROJECT_BASE_IMAGE .
-
-#### Build all other images
-
-**dev-container:**
-
-    docker build \
-      --tag odoo/app:dev \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoe-labs/dockery-odoo.git#shared:images/dev
-
-**tester:**
-
-    docker build \
-      --tag odoo/app:tester \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoe-labs/dockery-odoo.git#shared:images/tester
-
-**migrator:**
-
-    docker build \
-      --tag odoo/app:migrator \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoe-labs/dockery-odoo.git#shared:images/migrator
-
-**translator:**
-
-    docker build \
-      --tag odoo/app:translator \
-      --build-arg FROM_IMAGE=YOUR_PROJECT_IMAGE \
-      https://github.com/xoe-labs/dockery-odoo.git#shared:images/translator
-
-## Tipps for Development
-
-Bind mount some or all of your workdir folders.
-
-**Respect the naming convention to get ~the most~ anything out of it**
-
-_Remember: `addons/090` is your source code_
-
-    docker run -p 80:8069 -v ./src:/opt/odoo/addons/090 odoo/app:dev --dev all
-
-Better use descriptive `docker-compose` files:
-
-    ./docker-compose.yml
-    ./docker-compose.override.yml
-
-`docker-compose.override.yml` is a magic file name to override configuration for your machine's local development, you should add it to `.gitignore`.
-
-## Local build
-
- - Create `.env` file in the repo root.
-   This will feed environment variables to `docker-compose`
- - Set `CI_REGISTRY_IMAGE` to the image name you want to use
-   It should coincide with the image name in your regestry.
- - Run `docker-compose build`
-
-## CI/CD automated builds
-
- - This repo is optimized for integrated Gitlab Registry
- - You might want to take `.gitlab-ci.yml` as an example and adapt it to your own CI/CD to create and publish your base images.
-
+## Next Steps
+- Scrutinize the [scaffolding repo](https://github.com/xoe-labs/dockery-odoo-scaffold)
+- Check what [`./scripts`](https://github.com/xoe-labs/dockery-odoo-scaffold/tree/master/scripts) can do for you
+- Learn about the [`./.marabunta.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.marabunta.yml) file, a camptocamp [project](https://github.com/camptocamp/marabunta) that has been [tuned](https://github.com/xoe-labs/marabunta) by folks at [XOE Labs](https://github.com/xoe-labs)
+- Get a free, pre-configured CI/CD with [`.gitlab-ci.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.gitlab-ci.yaml)
+- Check the environment "options" in handy [`.env`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.env) file
 
 # Credits & License
 
@@ -159,41 +67,3 @@ Based on stewardship by:
  - [@blaggacao](https://github.com/blaggacao) ([XOE Solutions](https://xoe.solutions))
 
 License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
-
-
-### Note on `chmod +x`
-We avoid cluttering Dockerfiles with `RUN chmod +x` files through setting the executing bit within git. After adding files to the index, just do:
-
-```bash    
-# Do not complain on .empty files (Bash only)
-shopt -s dotglob
-git update-index --chmod=+x \
-    images/dev/entrypoint.d/* \
-    images/tester/bin/* \
-    images/tester/lib/* \
-    images/tester/entrypoint.d/* \
-    images/translator/lib/* \
-    images/migrator/entrypoint-migrator.sh \
-    images/migrator/entrypoint.d/*
-shopt -u dotglob
-```
-
-
-```bash    
-# Do not complain on .empty files (Bash only)
-shopt -s dotglob
-git update-index --chmod=+x \
-    images/base/entrypoint.sh \
-    images/base/entrypoint.*.sh \
-    images/base/bin/* \
-    images/base/entrypoint.d/* \
-    images/base/lib/*
-shopt -u dotglob
-```
-
-Don't forget to set `git config core.filemode true` before cloning.
-
-If things start not working (eg on windows):
-
-Use the build in helper `RUN set-all-execute-bits` in your Dockerfile(s).
-(Takes little more than a minute to execute)

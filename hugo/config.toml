@@ -179,7 +179,7 @@ $ docker-compose run odoo scaffold "My next big module"
 
     [[params.about.item]]
       name = "Odoo Operator"
-      position = "Deploy Odoo/Flectra instances reliably at scale with k8s"
+      position = "Deploy Odoo instances reliably at scale with k8s"
       description = ""
       img = "Odoo-Operator-color.svg"
       alt = "Odoo Operator"
