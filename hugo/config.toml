@@ -55,7 +55,7 @@ $ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
     description = '''
 ```Dockerfile
 ## ./Dockerfile
-ARG  FROM_IMAGE=xoelabs/dockery-odoo:v11
+ARG  FROM_IMAGE=xoelabs/dockery-odoo:11.0
 FROM ${FROM_IMAGE}
 
 ENV ODOO_ENTERPRISE=false
@@ -85,7 +85,7 @@ $ cat << EOF > .env
 IMAGE=myregistry.com/my-project/image
 FROM=xoelabs/dockery-odoo
 FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
-ODOO_VERSION=v11
+ODOO_VERSION=11.0
 EOF
 ```
 '''
