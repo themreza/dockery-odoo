@@ -97,7 +97,7 @@ EOF
     description = '''
 ```shell
 # Make use of the provided scripts
-$ chomd -R +x ./scripts
+$ chmod -R +x ./scripts
 
 # Build the images
 $ ./scripts/run-images.sh --pull
