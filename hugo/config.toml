@@ -74,12 +74,17 @@ USER odoo
     # button = "Copy"
 
   [[params.intro.item]]
-    title = "Set up your Project Image Namespace"
+    title = "Your project environment"
     description = '''
 ```shell
-$ DOCKERIMAGE="registry.gitlab.com/yourorg/erp-projects/project-name"
-
-$ echo "IMAGE=${DOCKERIMAGE}" > .env
+$ cat << EOF > .env
+# Magic file for docker-compose
+# Otherwise: source wherever this environment is needed
+IMAGE=myregistry.com/my-project/image
+FROM=xoelabs/dockery-odoo
+FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
+ODOO_VERSION=v11
+EOF
 ```
 '''
     # url = "#"
@@ -89,10 +94,13 @@ $ echo "IMAGE=${DOCKERIMAGE}" > .env
     title = "Launch using docker-compose"
     description = '''
 ```shell
-# First time base image build
-$ docker-compose -f docker-compose.yml build odoo
+# Make use of the provided scripts
+$ chomd -R +x ./scripts
 
-# Start local Development Server
+# Build the images
+$ ./scripts/run-images.sh --pull
+
+# Start local development server
 $ docker-compose up odoo
 ```
 '''
@@ -105,6 +113,10 @@ $ docker-compose up odoo
     title = "Scaffold your first module"
     description = '''
 ```shell
+# Apply patches to your workdir
+$ ./scripts/run-patches.sh
+
+# Scaffold
 $ docker-compose run odoo scaffold "My next big module"
 ```
 '''
