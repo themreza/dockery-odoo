@@ -159,7 +159,7 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN set-all-execute-bits
+RUN chmod +x /usr/local/bin/set-all-execute-bits && set-all-execute-bits
 
 USER odoo
 
