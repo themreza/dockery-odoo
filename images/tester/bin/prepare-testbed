@@ -13,6 +13,11 @@ set -e
 # Custom: CI_BUILD_DIR
 : ${CI_BUILD_DIR:="${CI_PROJECT_DIR:="${TRAVIS_BUILD_DIR}"}"}
 
+# Enable chrome screenshots
+# Configure them as build artefacts for download.
+mkdir "${CI_BUILD_DIR}/_testlogs"
+chown odoo:odoo "${CI_BUILD_DIR}/_testlogs"
+
 chown odoo:odoo "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
 chmod ug+x "${CI_BUILD_DIR}/vendor/odoo/cc/odoo-bin"
 

@@ -3,6 +3,11 @@ FROM ${FROM_IMAGE}
 
 
 USER root
+# local browser testing
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+	&& echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
+	&& apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
+
 # develpoment libraries
 RUN pip install \
         astor \
@@ -16,6 +21,9 @@ RUN pip install \
 RUN pip install --upgrade --pre pylint-odoo
 RUN pip install pylint-mccabe coverage
 
+# For chrome bworser testing
+RUN pip install websocket-client
+
 # Odoo Scaffolding dependency
 RUN pip install pick
 
@@ -27,6 +35,9 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
 
 COPY entrypoint.d/* /entrypoint.d/
 COPY templates /templates
+
+# Prepare odoo owned testlog folder for chrome screenshots
+RUN mkdir -p /testlogs && chown odoo:odoo /testlogs
 
 USER odoo
 
