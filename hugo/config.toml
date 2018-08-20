@@ -120,12 +120,34 @@ $ docker-compose up odoo
 $ ./scripts/run-patches.sh
 
 # Scaffold
-$ docker-compose run odoo scaffold "My next big module"
+$ docker-compose run -u $UID scaffold "My next big module"
 ```
 '''
     # url = "#"
     # button = "Copy"
     icon = "icon-frame"
+  #  img = "img_10.jpg"
+
+  [[params.intro.item]]
+    title = "Poke arround, test and explore"
+    description = '''
+```shell
+# Run a Odoo shell
+$ docker-compose run shell -d <DATABASE>
+
+# Test a module
+$ docker-compose run tests -d <DATABASE> -i <MODULE>
+
+# Version 12.0 and above:
+# View screenshots taken from the js tests
+# Just own the output folder by the "magic" id
+$ sudo chown -R 9001 _testlogs
+
+```
+'''
+    # url = "#"
+    # button = "Copy"
+    icon = "icon-magnifier"
   #  img = "img_10.jpg"
 
   #[params.intro.video]
