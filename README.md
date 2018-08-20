@@ -29,8 +29,8 @@ your-project/
  │   ├── module_1/
  │   └── .../
  ├── ...            # The general suspects (gitignore, etc.)
- ├── .adminpwd
- ├── .pgpass
+ ├── .adminpwd		# ... no prod passwords in git, please!
+ ├── .pgpass		# ... no prod passwords in git, please!
  ├── .marabunta.yml # Single source of truth for migrations
  ├── .env           # Single source of truth for environment
  ├── Dockerfile     # Single source of truth for image
