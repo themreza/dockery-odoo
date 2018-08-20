@@ -235,7 +235,30 @@ $ docker-compose up odoo
 $ ./scripts/run-patches.sh
 
 # Scaffold
-$ docker-compose run odoo scaffold &quot;My next big module&quot;
+$ docker-compose run -u $UID scaffold &quot;My next big module&quot;
+</code></pre>
+</p>
+						
+					</div>
+				</div>
+				
+				<div class="fh5co-block to-animate" style="background-image: url(images/);">
+					<div class="overlay-darker"></div>
+					<div class="overlay"></div>
+					<div class="fh5co-text">
+						<i class="fh5co-intro-icon icon-magnifier"></i>
+						<h2>Poke arround, test and explore</h2>
+						<p><pre><code class="language-shell"># Run a Odoo shell
+$ docker-compose run shell -d &lt;DATABASE&gt;
+
+# Test a module
+$ docker-compose run tests -d &lt;DATABASE&gt; -i &lt;MODULE&gt;
+
+# Version 12.0 and above:
+# View screenshots taken from the js tests
+# Just own the output folder by the &quot;magic&quot; id
+$ sudo chown -R 9001 _testlogs
+
 </code></pre>
 </p>
 						
