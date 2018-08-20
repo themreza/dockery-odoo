@@ -22,7 +22,7 @@ ENV	APP_GID              "9001"
 
 
 # Grab build deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	build-essential \
 	bzip2 \
 	curl \
@@ -50,7 +50,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libsasl2-dev
 
 # Grab run deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	python \
 	apt-transport-https \
 	ca-certificates \
@@ -78,7 +78,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
-RUN apt-get update && apt-get install -y --no-install-recommends git-core
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core
 
 # Grab latest pyflame        //-- for live production profiling
 # RUN sudo apt install autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
@@ -97,7 +97,7 @@ RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
 RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
-RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
 
 # Grab wkhtmltopdf
 RUN curl -SLo wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
@@ -108,7 +108,7 @@ RUN tar --strip-components 1 -C /usr/local/ -xf wkhtmltox.tar.xz && rm wkhtmltox
 RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" > /etc/apt/sources.list.d/nodesource.list
 RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" >> /etc/apt/sources.list.d/nodesource.list
 RUN curl -SL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     gem \
     nodejs \
     ruby-compass \

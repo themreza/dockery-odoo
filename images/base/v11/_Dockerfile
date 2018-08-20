@@ -5,7 +5,7 @@ FROM debian:stretch as pyflame-build
 
 USER root
 # Build latest pyflame       //-- for live production profiling
-RUN apt-get update && apt-get install -y \
+RUN apt-get -qq update && apt-get -qq install -y \
 	   autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
 	   git-core \
 	&& git clone https://github.com/uber/pyflame.git \
@@ -42,7 +42,7 @@ ENV	APP_UID              "9001"
 ENV	APP_GID              "9001"
 
 # Grab build deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	build-essential \
 	bzip2 \
 	curl \
@@ -69,7 +69,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	libsasl2-dev
 
 # Grab run deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	python3 \
 	apt-transport-https \
 	ca-certificates \
@@ -97,12 +97,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3 /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
-RUN apt-get update && apt-get install -y --no-install-recommends git-core
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core
 
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
 RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
-RUN apt-get update && apt-get install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
 
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
@@ -112,14 +112,14 @@ RUN pip install --no-cache-dir phonenumbers
 # Grab wkhtmltopdf
 RUN curl -SLo wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOX_VERSION}/wkhtmltox_${WKHTMLTOX_VERSION}-1.stretch_amd64.deb
 RUN echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c -
-RUN apt-get update && apt-get install -yqq --no-install-recommends libpng16-16 libssl1.1 xfonts-75dpi xfonts-base
+RUN apt-get -qq update && apt-get -qq install -yqq --no-install-recommends libpng16-16 libssl1.1 xfonts-75dpi xfonts-base
 RUN dpkg -i ./wkhtmltox.deb && rm wkhtmltox.deb && wkhtmltopdf --version
 
 # Grab web stack
 RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x stretch main" > /etc/apt/sources.list.d/nodesource.list
 RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x stretch main" >> /etc/apt/sources.list.d/nodesource.list
 RUN curl -SL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     gem \
     nodejs \
     ruby-compass \
