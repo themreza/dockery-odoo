@@ -26,6 +26,11 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 # For js test recordings
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
+# Add a chrome user and setup home dir.
+RUN groupadd --system chrome && \
+    useradd --system --create-home --gid chrome --groups audio,video chrome && \
+    mkdir --parents /home/chrome/reports && \
+    chown --recursive chrome:chrome /home/chrome
 
 COPY bin/* /usr/local/bin/
 COPY entrypoint.d/* /entrypoint.d/
