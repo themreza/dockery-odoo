@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# For a clean cat: before `set` command
+if [ "$1" = 'patches' ]; then
+	cat /patches
+	exit 0
+fi
+
 set -Eeuxo pipefail
 
 # -----------------------------------------------------------------------------
@@ -69,16 +76,6 @@ if [ "$1" = 'deploy' ]; then
 	CMD=(
 			"${ODOO_CMD}"
 			"${CMD[@]}"
-		)
-fi
-if [ "$1" = 'apply-patches' ]; then
-	# additional arguments will be passed to patch
-	# Bind mount (writable) you odoo folder
-	# while appling those patches
-	CMD=(
-			"apply-patches"
-			"--quiet"
-			"${CMD[@]:1}"
 		)
 fi
 

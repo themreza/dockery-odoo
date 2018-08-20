@@ -96,7 +96,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Grab latest pip
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3 /dev/stdin --no-cache-dir
 
-# Grab latest git            //-- to `pip install` customized python packages
+# Grab latest git            //-- to `pip install` customized python packages & apply patches
 RUN apt-get update && apt-get install -y --no-install-recommends git-core
 
 # Grab postgres
@@ -129,6 +129,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -Rf ~/.gem /var/lib/gems/*/cache/ \
     && rm -Rf ~/.npm /tmp/*
 
+# Grab pyflame binary        //-- for live production profiling
+COPY --from=pyflame-build /pyflame/src/pyflame /usr/local/bin/
+RUN chmod +x /usr/local/bin/pyflame
+
+
 # Grab latest geoip DB       //-- to enable IP based geo-referncing
 RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
     && gunzip GeoLiteCity.dat.gz \
@@ -139,9 +144,6 @@ RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.g
 # Grab latest ptpython       //-- to improve Odoo shell, in case we need it once
 RUN pip install ptpython
 
-# Grab pyflame binary        //-- for live production profiling
-COPY --from=pyflame-build /pyflame/src/pyflame /usr/local/bin/
-RUN chmod +x /usr/local/bin/pyflame
 
 # Grab latest json logger    //-- for easier parsing in non-tty use (Patch 0001)
 RUN pip install python-json-logger
@@ -155,7 +157,7 @@ COPY bin/* /usr/local/bin/
 COPY lib/* /usr/local/lib/python2.7/dist-packages/dockery-odoo-libs/
 COPY entrypoint* /
 COPY entrypoint.d /entrypoint.d
-COPY patches.d /patches.d
+COPY patches /patches
 ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
 # Own folders                //-- for hacky indirections where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
@@ -191,6 +193,6 @@ ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo  		"${ODOO_FRM}"
 ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/addons 		"${ODOO_ADDONS_BASEPATH}"/000
 ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/ee 		 		"${ODOO_ADDONS_BASEPATH}"/001
 ONBUILD COPY --chown=odoo:odoo 	src 		 				"${ODOO_ADDONS_BASEPATH}"/090
-ONBUILD RUN apply-patches
+ONBUILD RUN ./patches ${ODOO_BASEPATH}
 
 # ============================================================
