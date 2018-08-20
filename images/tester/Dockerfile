@@ -24,6 +24,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 	&& echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
 	&& apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
 
+# For js test recordings
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
 
 COPY bin/* /usr/local/bin/
 COPY entrypoint.d/* /entrypoint.d/
