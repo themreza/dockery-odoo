@@ -6,13 +6,13 @@ FROM debian:stretch as pyflame-build
 USER root
 # Build latest pyflame       //-- for live production profiling
 RUN apt-get -qq update && apt-get -qq install -y \
-	   autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
-	   git-core > /dev/null \
-	&& git clone https://github.com/uber/pyflame.git \
-	&& cd pyflame \
-	&& ./autogen.sh > /dev/null \
-	&& ./configure > /dev/null \
-	&& make > /dev/null
+       autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
+       git-core > /dev/null \
+    && git clone https://github.com/uber/pyflame.git \
+    && cd pyflame \
+    && ./autogen.sh > /dev/null \
+    && ./configure > /dev/null \
+    && make > /dev/null
 
 
 # -----------------
@@ -38,61 +38,61 @@ ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
 ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"
 ENV ODOO_BCKP_DIR        "/var/lib/odoo-backups"
 ENV ODOO_PRST_DIR        "/var/lib/odoo-persist"
-ENV	APP_UID              "9001"
-ENV	APP_GID              "9001"
+ENV APP_UID              "9001"
+ENV APP_GID              "9001"
 
 # Grab build deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
-	build-essential \
-	bzip2 \
-	curl \
-	libgeoip-dev \
-	python3-dev \
-	wget \
-	xz-utils \
-	libevent-dev \
+    build-essential \
+    bzip2 \
+    curl \
+    libgeoip-dev \
+    python3-dev \
+    wget \
+    xz-utils \
+    libevent-dev \
     libssl-dev \
-	# lxml
-	libxml2-dev \
-	libxslt1-dev\
-	# Pillow
-	libjpeg-dev \
-	libfreetype6-dev \
+    # lxml
+    libxml2-dev \
+    libxslt1-dev\
+    # Pillow
+    libjpeg-dev \
+    libfreetype6-dev \
     liblcms2-dev \
     libtiff5-dev \
     tk-dev \
     tcl-dev \
- 	# psutil
-	linux-headers-amd64 \
-	# python-ldap
-	libldap2-dev \
-	libsasl2-dev \
-	> /dev/null
+    # psutil
+    linux-headers-amd64 \
+    # python-ldap
+    libldap2-dev \
+    libsasl2-dev \
+    > /dev/null
 
 # Grab run deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
-	python3 \
-	apt-transport-https \
-	ca-certificates \
-	gnupg2 \
-	locales \
-	fontconfig \
-	libfreetype6 \
-	libjpeg62-turbo \
-	liblcms2-2 \
-	libldap-2.4-2 \
-	libsasl2-2 \
-	libtiff5 \
-	libx11-6 \
-	libxext6 \
-	libxml2 \
-	libxrender1 \
-	libxslt1.1 \
-	tcl \
-	tk \
-	zlib1g \
-	zlibc \
-	> /dev/null
+    python3 \
+    apt-transport-https \
+    ca-certificates \
+    gnupg2 \
+    locales \
+    fontconfig \
+    libfreetype6 \
+    libjpeg62-turbo \
+    liblcms2-2 \
+    libldap-2.4-2 \
+    libsasl2-2 \
+    libtiff5 \
+    libx11-6 \
+    libxext6 \
+    libxml2 \
+    libxrender1 \
+    libxslt1.1 \
+    tcl \
+    tk \
+    zlib1g \
+    zlibc \
+    > /dev/null
 
 
 # Grab latest pip

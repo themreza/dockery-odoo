@@ -17,64 +17,64 @@ ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
 ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"
 ENV ODOO_BCKP_DIR        "/var/lib/odoo-backups"
 ENV ODOO_PRST_DIR        "/var/lib/odoo-persist"
-ENV	APP_UID              "9001"
-ENV	APP_GID              "9001"
+ENV APP_UID              "9001"
+ENV APP_GID              "9001"
 
 
 # Grab build deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
-	build-essential \
-	bzip2 \
-	curl \
-	libgeoip-dev \
-	python-dev \
-	wget \
-	xz-utils \
-	# lxml
-	libxml2-dev \
-	libxslt1-dev\
-	# Pillow
-	libjpeg-dev \
-	libfreetype6-dev \
+    build-essential \
+    bzip2 \
+    curl \
+    libgeoip-dev \
+    python-dev \
+    wget \
+    xz-utils \
+    # lxml
+    libxml2-dev \
+    libxslt1-dev\
+    # Pillow
+    libjpeg-dev \
+    libfreetype6-dev \
     liblcms2-dev \
     libopenjpeg-dev \
     libtiff5-dev \
     tk-dev \
     tcl-dev \
- 	# psutil
-	linux-headers-amd64 \
-	# psycopg2
-	libpq-dev \
-	# python-ldap
-	libldap2-dev \
-	libsasl2-dev \
-	> /dev/null
+    # psutil
+    linux-headers-amd64 \
+    # psycopg2
+    libpq-dev \
+    # python-ldap
+    libldap2-dev \
+    libsasl2-dev \
+    > /dev/null
 
 # Grab run deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
-	python \
-	apt-transport-https \
-	ca-certificates \
-	locales \
-	fontconfig \
-	libfreetype6 \
-	libjpeg62-turbo \
-	liblcms2-2 \
-	libldap-2.4-2 \
-	libopenjpeg5 \
-	libpq5 \
-	libsasl2-2 \
-	libtiff5 \
-	libx11-6 \
-	libxext6 \
-	libxml2 \
-	libxrender1 \
-	libxslt1.1 \
-	tcl \
-	tk \
-	zlib1g \
-	zlibc \
-	> /dev/null
+    python \
+    apt-transport-https \
+    ca-certificates \
+    locales \
+    fontconfig \
+    libfreetype6 \
+    libjpeg62-turbo \
+    liblcms2-2 \
+    libldap-2.4-2 \
+    libopenjpeg5 \
+    libpq5 \
+    libsasl2-2 \
+    libtiff5 \
+    libx11-6 \
+    libxext6 \
+    libxml2 \
+    libxrender1 \
+    libxslt1.1 \
+    tcl \
+    tk \
+    zlib1g \
+    zlibc \
+    > /dev/null
 
 # Grab latest pip
 RUN curl --silent --show-error --location https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
@@ -84,12 +84,12 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-cor
 
 # Grab latest pyflame        //-- for live production profiling
 # RUN sudo apt install autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
-# 	&& git clone https://github.com/uber/pyflame.git \
-# 	&& cd pyflame \
-# 	&& ./autogen.sh \
-# 	&& ./configure \
-# 	&& make \
-# 	&& make install
+#   && git clone https://github.com/uber/pyflame.git \
+#   && cd pyflame \
+#   && ./autogen.sh \
+#   && ./configure \
+#   && make \
+#   && make install
 
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
@@ -176,11 +176,11 @@ RUN pip --quiet --quiet install --user Werkzeug==0.14.1
 # ============================================================
 
 FROM base-build
-ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo-bin 	"${ODOO_CMD}"
-ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/odoo  		"${ODOO_FRM}"
-ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/cc/addons 		"${ODOO_ADDONS_BASEPATH}"/000
-ONBUILD COPY --chown=odoo:odoo 	vendor/odoo/ee 		 		"${ODOO_ADDONS_BASEPATH}"/001
-ONBUILD COPY --chown=odoo:odoo 	src 		 				"${ODOO_ADDONS_BASEPATH}"/090
+ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo-bin     "${ODOO_CMD}"
+ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo         "${ODOO_FRM}"
+ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/addons       "${ODOO_ADDONS_BASEPATH}"/000
+ONBUILD COPY --chown=odoo:odoo  vendor/odoo/ee              "${ODOO_ADDONS_BASEPATH}"/001
+ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_ADDONS_BASEPATH}"/090
 ONBUILD RUN ./patches ${ODOO_BASEPATH}
 
 # ============================================================
