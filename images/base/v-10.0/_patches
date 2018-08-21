@@ -1,5 +1,5 @@
 # odoo/netsvc.py - [PATCH] [IMP] netsvc: add json logging capa on non tty
-rPatch https://github.com/odoo/odoo/compare/10.0...xoe-labs:10.0-NOPR-add-json-logging-on-non-tty.patch
+rPatch https://github.com/xoe-labs/odoo-dev/compare//10.0...xoe-labs:10.0-NOPR-add-json-logging-on-non-tty.patch
 
 # odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
 rPatch https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-bind-mount-adminpwd-secret.patch
