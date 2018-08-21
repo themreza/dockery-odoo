@@ -123,7 +123,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 
 
 # Grab latest geoip DB       //-- to enable IP based geo-referncing
-RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
+RUN wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
     && gunzip GeoLiteCity.dat.gz \
     && mkdir -p /usr/share/GeoIP \
     && mv GeoLiteCity.dat /usr/share/GeoIP/ \
