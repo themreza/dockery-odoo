@@ -9,14 +9,12 @@ set -Eeuxo pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 
-
-for version in $(find "${DIR}" -maxdepth 1 -type d -name 'v*') "master" ; do
-	cp -rp "${DIR}"/common/* "${version}/"
-	cat "$version/_patches" >> "$version/patches"
-	cat "$version/_Dockerfile" > "$version/Dockerfile"
-	cat "$version/_Dockerfile.common" >> "$version/Dockerfile"
+for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
+	name=$(basename "${path}")
+	version=${name#"v-"}
+	cp -rp "${DIR}"/common/* "${path}/"
+	cat "$path/_patches" >> "$path/patches"
+	cat "$path/_Dockerfile" > "$path/Dockerfile"
+	cat "$path/_Dockerfile.common" >> "$path/Dockerfile"
+	curl "https://raw.githubusercontent.com/odoo/odoo/${version}/requirements.txt" -o "${DIR}/${name}/requirements.txt"
 done
-
-curl https://raw.githubusercontent.com/odoo/odoo/10.0/requirements.txt -o "${DIR}"/v10/requirements.txt
-curl https://raw.githubusercontent.com/odoo/odoo/11.0/requirements.txt -o "${DIR}"/v11/requirements.txt
-curl https://raw.githubusercontent.com/odoo/odoo/master/requirements.txt -o "${DIR}"/master/requirements.txt
