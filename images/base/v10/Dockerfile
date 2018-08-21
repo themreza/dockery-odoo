@@ -93,8 +93,8 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-cor
 
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
-RUN pip install --no-cache-dir --requirement /requirements.txt
-RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
+RUN pip --quiet --quiet install --no-cache-dir --requirement /requirements.txt
+RUN pip --quiet --quiet install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
@@ -127,14 +127,14 @@ RUN wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.g
     && gunzip GeoLiteCity.dat.gz \
     && mkdir -p /usr/share/GeoIP \
     && mv GeoLiteCity.dat /usr/share/GeoIP/ \
-    && pip install GeoIP
+    && pip --quiet --quiet install GeoIP
 
 # Grab latest ptpython       //-- to improve Odoo shell, in case we need it once
-RUN pip install ptpython
+RUN pip --quiet --quiet install ptpython
 
 
 # Grab latest json logger    //-- for easier parsing in non-tty use (Patch 0001)
-RUN pip install python-json-logger
+RUN pip --quiet --quiet install python-json-logger
 
 # Create app user
 RUN addgroup --system --gid $APP_UID odoo
@@ -169,7 +169,7 @@ RUN chmod +x /usr/local/bin/set-all-execute-bits && set-all-execute-bits
 USER odoo
 
 # Grab newer werkzeug        //-- for right IP in logs https://git.io/fNu6v
-RUN pip install --user Werkzeug==0.14.1
+RUN pip --quiet --quiet install --user Werkzeug==0.14.1
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
