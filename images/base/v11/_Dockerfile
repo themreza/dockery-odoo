@@ -12,7 +12,8 @@ RUN apt-get -qq update && apt-get -qq install -y \
 	&& cd pyflame \
 	&& ./autogen.sh \
 	&& ./configure \
-	&& make
+	&& make \
+	> /dev/null
 
 
 # -----------------
@@ -66,7 +67,8 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	linux-headers-amd64 \
 	# python-ldap
 	libldap2-dev \
-	libsasl2-dev
+	libsasl2-dev \
+	> /dev/null
 
 # Grab run deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
@@ -90,19 +92,20 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	tcl \
 	tk \
 	zlib1g \
-	zlibc
+	zlibc \
+	> /dev/null
 
 
 # Grab latest pip
 RUN curl --silent --show-error --location https://bootstrap.pypa.io/get-pip.py | python3 /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
-RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core > /dev/null
 
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
 RUN curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION} > /dev/null
 
 # Grab pip dependencies
 COPY requirements.txt /requirements.txt
@@ -112,7 +115,7 @@ RUN pip install --no-cache-dir phonenumbers
 # Grab wkhtmltopdf
 RUN curl --silent --show-error --location --output wkhtmltox.deb https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOX_VERSION}/wkhtmltox_${WKHTMLTOX_VERSION}-1.stretch_amd64.deb
 RUN echo "${WKHTMLTOPDF_CHECKSUM}  wkhtmltox.deb" | sha256sum -c -
-RUN apt-get -qq update && apt-get -qq install -yqq --no-install-recommends libpng16-16 libssl1.1 xfonts-75dpi xfonts-base
+RUN apt-get -qq update && apt-get -qq install -yqq --no-install-recommends libpng16-16 libssl1.1 xfonts-75dpi xfonts-base > /dev/null
 RUN dpkg -i ./wkhtmltox.deb && rm wkhtmltox.deb && wkhtmltopdf --version
 
 # Grab web stack
@@ -123,6 +126,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     gem \
     nodejs \
     ruby-compass \
+    > /dev/null \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
     && npm install -g less \
     && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}" \

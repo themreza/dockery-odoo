@@ -47,7 +47,8 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	libpq-dev \
 	# python-ldap
 	libldap2-dev \
-	libsasl2-dev
+	libsasl2-dev \
+	> /dev/null
 
 # Grab run deps
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
@@ -72,13 +73,14 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	tcl \
 	tk \
 	zlib1g \
-	zlibc
+	zlibc \
+	> /dev/null
 
 # Grab latest pip
 RUN curl --silent --show-error --location https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
-RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core > /dev/null
 
 # Grab latest pyflame        //-- for live production profiling
 # RUN sudo apt install autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
@@ -97,7 +99,7 @@ RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
 RUN curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
+RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION} > /dev/null
 
 # Grab wkhtmltopdf
 RUN curl --silent --show-error --location --output wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
@@ -112,6 +114,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     gem \
     nodejs \
     ruby-compass \
+    > /dev/null \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
     && npm install -g less \
     && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}" \
