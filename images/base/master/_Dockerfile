@@ -7,13 +7,12 @@ USER root
 # Build latest pyflame       //-- for live production profiling
 RUN apt-get -qq update && apt-get -qq install -y \
 	   autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
-	   git-core \
-	&& git clone https://github.com/uber/pyflame.git \
+	   git-core > /dev/null \
+	&& git clone https://github.com/uber/pyflame.git > /dev/null \
 	&& cd pyflame \
-	&& ./autogen.sh \
-	&& ./configure \
-	&& make \
-	> /dev/null
+	&& ./autogen.sh > /dev/null \
+	&& ./configure > /dev/null \
+	&& make > /dev/null
 
 
 # -----------------
