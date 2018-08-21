@@ -35,11 +35,11 @@ rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-db-set-
 
 # odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add json parameter to pass env
 # rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26478.patch
-rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-add-json-option-to-scaffold.patch
+# rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-add-json-option-to-scaffold.patch
 
 # odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: add cli convenience dialogue
-# Depends on: 			 [PATCH] [IMP] scaffold: add json parameter to pass env
-rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0-add-json-option-to-scaffold...xoe-labs:11.0-NOPR-add-cli-dialogue-to-scaffolding.patch
+# Incorporates:			 [PATCH] [IMP] scaffold: add json parameter to pass env
+rPatch https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-NOPR-add-cli-dialogue-to-scaffolding.patch
 
 # odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: config templates dir by env var
 # rPatch https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26480.patch
