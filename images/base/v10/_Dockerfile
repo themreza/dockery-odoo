@@ -116,7 +116,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     ruby-compass \
     > /dev/null \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
-    && npm install -g less \
+    && npm install --quiet --global less \
     && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}" \
     && rm -Rf ~/.gem /var/lib/gems/*/cache/ \
     && rm -Rf ~/.npm /tmp/*
