@@ -75,7 +75,7 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 	zlibc
 
 # Grab latest pip
-RUN curl https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
+RUN curl --silent --show-error --location https://bootstrap.pypa.io/get-pip.py | python /dev/stdin --no-cache-dir
 
 # Grab latest git            //-- to `pip install` customized python packages & apply patches
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends git-core
@@ -96,18 +96,18 @@ RUN pip install --no-cache-dir psutil==4.3.1 pydot==1.2.3 ofxparse==0.16
 
 # Grab postgres
 RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main' >> /etc/apt/sources.list.d/postgresql.list
-RUN curl -SL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - 
+RUN curl --silent --show-error --location https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends postgresql-client-${PSQL_VERSION}
 
 # Grab wkhtmltopdf
-RUN curl -SLo wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
+RUN curl --silent --show-error --location --output wkhtmltox.tar.xz https://downloads.wkhtmltopdf.org/${WKHTMLTOX_VERSION}/${WKHTMLTOX_MINOR}/wkhtmltox-${WKHTMLTOX_MINOR}_linux-generic-amd64.tar.xz
 RUN echo "0ef646d802cd0375524034d11af76444c7c8e796e11d553ab39bd4a7bf703ac631f4a3300902bec54589b3d5400b5762d9995839f6faaae2f9159efdf225cc78  wkhtmltox.tar.xz" | sha512sum -c -
 RUN tar --strip-components 1 -C /usr/local/ -xf wkhtmltox.tar.xz && rm wkhtmltox.tar.xz && wkhtmltopdf --version
 
 # Grab web stack
 RUN echo "deb https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" > /etc/apt/sources.list.d/nodesource.list
 RUN echo "deb-src https://deb.nodesource.com/node_${NODE_VERSION}.x jessie main" >> /etc/apt/sources.list.d/nodesource.list
-RUN curl -SL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+RUN curl --silent --show-error --location https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     gem \
     nodejs \
