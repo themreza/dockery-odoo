@@ -25,7 +25,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 	&& apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
 
 # For js test recordings
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg
+# Not avaialble in jessie
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg || true
 # Add a chrome user and setup home dir.
 RUN groupadd --system chrome && \
     useradd --system --create-home --gid chrome --groups audio,video chrome && \
