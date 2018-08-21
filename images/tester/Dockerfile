@@ -30,8 +30,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends ffmpeg 
 
 COPY bin/* /usr/local/bin/
 COPY entrypoint.d/* /entrypoint.d/
-COPY lib/* /usr/local/lib/python2.7/dist-packages/odoo-tester-libs/
-ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/odoo-tester-libs
 
 # We use this folder in the CI as a testbed
 ENV ODOO_BASEPATH=/testbed

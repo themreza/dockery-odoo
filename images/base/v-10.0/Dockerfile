@@ -142,11 +142,9 @@ RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-l
 
 # Copy from build env
 COPY bin/* /usr/local/bin/
-COPY lib/* /usr/local/lib/python2.7/dist-packages/dockery-odoo-libs/
 COPY entrypoint* /
 COPY entrypoint.d /entrypoint.d
 COPY patches /patches
-ENV PATH=$PATH:/usr/local/lib/python2.7/dist-packages/dockery-odoo-libs
 
 # Own folders                //-- for hacky indirections where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
 # TODO: Move partly to dev docker once indirection for configmaps no more needed
