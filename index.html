@@ -194,10 +194,19 @@ USER odoo
 # Magic file for docker-compose
 # Otherwise: &quot;source&quot; wherever this environment is needed:
 # export $(egrep -v '^#' .env | xargs)
+
+# The final image with your code
 IMAGE=myregistry.com/my-project/image
+
+# The collaborative base image(s) (eg. XOE's)
 FROM=xoelabs/dockery-odoo
+
+# The build contexts for auxiliary images
 FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
+
+# The odoo version
 ODOO_VERSION=11.0
+
 EOF
 </code></pre>
 </p>
