@@ -5,7 +5,7 @@
 
 <html>
     <head>
-	<meta name="generator" content="Hugo 0.41" />
+	<meta name="generator" content="Hugo 0.48" />
             <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title> Dockery-Odoo</title>
@@ -141,43 +141,16 @@
 						<h2>Bootstrap your project</h2>
 						<p><pre><code class="language-shell">$ WORKDIR=$(pwd)/dev/
 $ PROJECT=my-project
+$ DEFAULT_BRANCH=11.0
 
 $ mkdir -p &quot;${WORKDIR}&quot; &amp;&amp; \
   cd &quot;${WORKDIR}&quot; &amp;&amp; \
   git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git &quot;${PROJECT}&quot;  &amp;&amp; \
   cd  &quot;${PROJECT}&quot; &amp;&amp; \
-  git submodule add https://github.com/odoo/odoo.git vendor/odoo/cc
+  git submodule add -b &quot;${DEFAULT_BRANCH}&quot; https://github.com/odoo/odoo.git vendor/odoo/cc
 
 # If you have access to enterprise code
-$ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
-</code></pre>
-</p>
-						
-					</div>
-				</div>
-				
-				<div class="fh5co-block to-animate" style="background-image: url(images/);">
-					<div class="overlay-darker"></div>
-					<div class="overlay"></div>
-					<div class="fh5co-text">
-						<i class="fh5co-intro-icon "></i>
-						<h2>Customize your Dockerfile</h2>
-						<p><pre><code class="language-Dockerfile">## ./Dockerfile
-ARG  FROM_IMAGE=xoelabs/dockery-odoo:11.0
-FROM ${FROM_IMAGE}
-
-ENV ODOO_ENTERPRISE=false
-
-## Examples of extending your project with vendored modules
-## NOTE: later *modules* override their previous namesake
-# COPY  --chown=odoo:odoo vendor/it-projects/*   /opt/odoo/addons/010
-# COPY  --chown=odoo:odoo vendor/xoe/*           /opt/odoo/addons/020
-# COPY  --chown=odoo:odoo vendor/c2c/*           /opt/odoo/addons/030
-
-## Example of extending your project with custom libraries
-USER root
-# RUN pip install python-telegram-bot pandas numpy
-USER odoo
+$ git submodule add -b &quot;${DEFAULT_BRANCH}&quot; git@github.com:odoo/enterprise.git vendor/odoo/ee
 </code></pre>
 </p>
 						
@@ -190,24 +163,14 @@ USER odoo
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon "></i>
 						<h2>Your project environment</h2>
-						<p><pre><code class="language-shell">$ cat &lt;&lt; EOF &gt; .env
-# Magic file for docker-compose
-# Otherwise: &quot;source&quot; wherever this environment is needed:
-# export $(egrep -v '^#' .env | xargs)
+						<p><pre><code class="language-shell">$ sed -i &quot;s/{{PROJECT}}/${PROJECT}/&quot; ./Dockerfile ./.env &amp;&amp; \
+  sed -i &quot;s/{{DEFAULT_BRANCH}}/${DEFAULT_BRANCH}/&quot; ./Dockerfile ./.env
 
-# The final image with your code
-IMAGE=myregistry.com/my-project/image
+## Review and customize your Dockerfile
+$ nano ./Dockerfile
 
-# The collaborative base image(s) (eg. XOE's)
-FROM=xoelabs/dockery-odoo
-
-# The build contexts for auxiliary images
-FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
-
-# The odoo version
-ODOO_VERSION=11.0
-
-EOF
+## Review and customize your .env file
+$ nano ./.env
 </code></pre>
 </p>
 						
