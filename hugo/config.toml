@@ -36,40 +36,16 @@ Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> development wo
 ```shell
 $ WORKDIR=$(pwd)/dev/
 $ PROJECT=my-project
+$ DEFAULT_BRANCH=11.0
 
 $ mkdir -p "${WORKDIR}" && \
   cd "${WORKDIR}" && \
   git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git "${PROJECT}"  && \
   cd  "${PROJECT}" && \
-  git submodule add https://github.com/odoo/odoo.git vendor/odoo/cc
+  git submodule add -b "${DEFAULT_BRANCH}" https://github.com/odoo/odoo.git vendor/odoo/cc
 
 # If you have access to enterprise code
-$ git submodule add git@github.com:odoo/enterprise.git vendor/odoo/ee
-```
-'''
-    # url = "#"
-    # button = "Copy"
-
-  [[params.intro.item]]
-    title = "Customize your Dockerfile"
-    description = '''
-```Dockerfile
-## ./Dockerfile
-ARG  FROM_IMAGE=xoelabs/dockery-odoo:11.0
-FROM ${FROM_IMAGE}
-
-ENV ODOO_ENTERPRISE=false
-
-## Examples of extending your project with vendored modules
-## NOTE: later *modules* override their previous namesake
-# COPY  --chown=odoo:odoo vendor/it-projects/*   /opt/odoo/addons/010
-# COPY  --chown=odoo:odoo vendor/xoe/*           /opt/odoo/addons/020
-# COPY  --chown=odoo:odoo vendor/c2c/*           /opt/odoo/addons/030
-
-## Example of extending your project with custom libraries
-USER root
-# RUN pip install python-telegram-bot pandas numpy
-USER odoo
+$ git submodule add -b "${DEFAULT_BRANCH}" git@github.com:odoo/enterprise.git vendor/odoo/ee
 ```
 '''
     # url = "#"
@@ -79,24 +55,14 @@ USER odoo
     title = "Your project environment"
     description = '''
 ```shell
-$ cat << EOF > .env
-# Your Docker Repo (magic file for docker-compose)
-# Otherwise: "source" wherever needed:
-# export $(egrep -v '^#' .env | xargs)
+$ sed -i "s/{{PROJECT}}/${PROJECT}/" ./Dockerfile ./.env && \
+  sed -i "s/{{DEFAULT_BRANCH}}/${DEFAULT_BRANCH}/" ./Dockerfile ./.env
 
-# The final image with your code
-IMAGE=myregistry.com/my-project/image
+## Review and customize your Dockerfile
+$ nano ./Dockerfile
 
-# The collaborative base image(s) (eg. XOE's)
-FROM=xoelabs/dockery-odoo
-
-# The build contexts for auxiliary images
-FROMREPO=https://github.com/xoe-labs/dockery-odoo.git
-
-# The odoo version
-ODOO_VERSION=11.0
-
-EOF
+## Review and customize your .env file
+$ nano ./.env
 ```
 '''
     # url = "#"
