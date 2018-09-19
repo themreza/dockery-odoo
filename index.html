@@ -189,7 +189,14 @@ $ chmod -R +x ./scripts
 # Build the images
 $ ./scripts/run-images.sh --pull
 
-# Start local development server
+# Initialize db server (first run)
+$ docker-compose up odoo
+
+
+# IMPORTANT: Place at least one module in the src folder.
+# Or: Jump over to scaffolding before launching.
+
+# Launch your dev instance, Odoo is served on port 80
 $ docker-compose up odoo
 </code></pre>
 </p>
