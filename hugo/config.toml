@@ -172,6 +172,7 @@ There are *two main* usage scenarios.
 * `src` is used for custom development.
 * It is best practice to version control configuration and meta-data.
 * Such `custom_config` module satisfies the min. module condition.
+* Uses the migration controller for orchestrated module upgrades.
 
 <sup>1</sup> Use `sparse-checkout` to only get the modules you need.
 """
@@ -187,6 +188,7 @@ There are *two main* usage scenarios.
 * The team uses feature branches to develop new modules.
 * After beta acceptance, the module is published in a vendored repo. <sup>2</sup>
 * Further maintenance is done on that target repo.
+* Uses the migration controller for migration script validation.
 
 <sup>1</sup> **Nice:** `src` modules override their namesakes in vendored repos, as they are placed into `.../090`, the last (-> first) addon path.
 
