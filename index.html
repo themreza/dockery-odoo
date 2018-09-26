@@ -83,6 +83,8 @@
                     <li class="active"><a href="#" data-nav-section="intro"><span><i class='icon-home'></i>Install</span></a></li>
 
                     
+                    <li><a href="#" data-nav-section="work"><span><i class='icon-camera'></i>Usage Scenarios</span></a></li>
+                    
 
                     
 
@@ -253,6 +255,95 @@ $ sudo chown -R 9001 _testlogs
 	</section>
 
 		
+       			<section id="fh5co-work" data-section="work">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 section-heading text-center">
+					<h2 class="to-animate">Usage Scenarios</h2>
+					<div class="row">
+						<div class="col-md-8 col-md-offset-2 subtext to-animate">
+							<h3>There are <em>two main</em> usage scenarios.</h3>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row row-bottom-padded-sm">
+			
+				<div class="col-md-6 col-sm-6 col-xxs-12">
+					<a href="images/" class="fh5co-project-item image-popup to-animate">
+						<img src="images/" alt="" class="img-responsive">
+						<div class="fh5co-text"><br/>
+						<h2>Client Project</h2><br/>
+						<span><p><strong>Characteristics:</strong></p>
+
+<ul>
+<li>Module dependencies are vendored in <code>vendor/&lt;ORG&gt;/&lt;REPO&gt;/&lt;MODULE&gt;</code><sup>1</sup>.</li>
+<li><code>src</code> is used for custom development.</li>
+<li>It is best practice to version control configuration and meta-data.</li>
+<li>Such <code>custom_config</code> module satisfies the min. module condition.</li>
+</ul>
+
+<p><sup>1</sup> Use <code>sparse-checkout</code> to only get the modules you need.</p>
+</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="clearfix visible-sm-block"></div>
+			
+				<div class="col-md-6 col-sm-6 col-xxs-12">
+					<a href="images/" class="fh5co-project-item image-popup to-animate">
+						<img src="images/" alt="" class="img-responsive">
+						<div class="fh5co-text"><br/>
+						<h2>Odoo Dev Team</h2><br/>
+						<span><p><strong>Characteristics:</strong></p>
+
+<ul>
+<li>Stable repos are vendored in <code>vendor/&lt;MYORG&gt;/&lt;REPO&gt;</code>.</li>
+<li>Module dependencies, if any, same as for Client Projects.</li>
+<li><code>src</code> is used for pre-release module development.</li>
+<li><code>src</code> is a shared workdir of the team.</li>
+<li>The team uses feature branches to develop new modules.</li>
+<li>After beta acceptance, the module is moved to it&rsquo;s vendored repo <sup>1</sup>.</li>
+<li>Further maintenance is done on that target repo.</li>
+</ul>
+
+<p><sup>1</sup> Use &ldquo;Initial commit&rdquo; to squash development history <strong>or</strong> <code>git subtree</code> commands to preserve it <strong>or</strong>, to get fancy, adopt a <code>git subrepo</code> workflow to keep disconnected histories in sync during beta phase.</p>
+</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="clearfix visible-sm-block"></div>
+			
+			</div>
+			<div class="row">
+				<div class="col-md-12 text-left to-animate">
+					<p><p><strong>Remember:</strong></p>
+
+<ul>
+<li>Best use a <code>git submodule</code> workflow for your vendored repositories.</li>
+<li>For <code>sparse-checkout</code> on submodules, start with <a href="https://stackoverflow.com/a/11778551">this stackoverflow answer</a>.</li>
+</ul>
+
+<p><strong>Next Steps:</strong></p>
+
+<ul>
+<li>Set up your Deployment Infrastructure.<sup>1</sup></li>
+<li>Customize your CI/CD pipeline.<sup>2</sup></li>
+<li>Join our growing <a href="https://t.me/joinchat/ILnVJw7s3ZvKL3mI7AACsw">Telegram Community</a> to get help from other early birds.</li>
+<li>Submit a blog post of your journey to be chosen and linked as reference implementation of either scenario.</li>
+</ul>
+
+<p><sup>1</sup> <a href="https://xoe-labs.github.io/odoo-operator">Odoo-Operator</a> will do canary deployments and operate review apps.<br/>
+<sup>2</sup> We recomend <a href="https://about.gitlab.com/">GitLab</a> as the best available development lifecycle companion.</p>
+</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+       	
 
 		
 
