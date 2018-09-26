@@ -13,6 +13,7 @@ theme = "elate"
   [params.navigation]
     brand = "Dockery-Odoo"
     status = "beta"
+    work = "<i class='icon-camera'></i>Usage Scenarios"
 
   # Hero section
   [params.hero]
@@ -141,6 +142,54 @@ $ sudo chown -R 9001 _testlogs
   #  icon = "icon-play2"
   #  url = "https://vimeo.com/channels/staffpicks/93951774"
 
+
+  # Usege Scenario Section
+  [params.work]
+    enable = true
+    title = "Usage Scenarios"
+    description = '''
+There are *two main* usage scenarios.
+'''
+    footertext = """
+**Remember:**\n
+* Best use a `git submodule` workflow for your vendored repositories.
+* For `sparse-checkout` on submodules, start with [this stackoverflow answer](https\\://stackoverflow.com/a/11778551).
+
+**Next Steps:**\n
+- Set up your Deployment Infrastructure.<sup>1</sup>
+- Customize your CI/CD pipeline.<sup>2</sup>
+- Join our growing [Telegram Community](https://t.me/joinchat/ILnVJw7s3ZvKL3mI7AACsw) to get help from other early birds.
+- Submit a blog post of your journey to be chosen and linked as reference implementation of either scenario.
+
+<sup>1</sup> [Odoo-Operator](https://xoe-labs.github.io/odoo-operator) will do canary deployments and operate review apps.<br/>
+<sup>2</sup> We recomend [GitLab](https://about.gitlab.com/) as the best available development lifecycle companion.
+"""
+    [[params.work.row]]
+      title = "Client Project"
+      subtitle = """
+**Characteristics:**\n
+* Module dependencies are vendored in `vendor/<ORG>/<REPO>/<MODULE>`<sup>1</sup>.
+* `src` is used for custom development.
+* It is best practice to version control configuration and meta-data.
+* Such `custom_config` module satisfies the min. module condition.
+
+<sup>1</sup> Use `sparse-checkout` to only get the modules you need.
+"""
+
+    [[params.work.row]]
+      title = "Odoo Dev Team"
+      subtitle = """
+**Characteristics:**\n
+* Stable repos are vendored in `vendor/<MYORG>/<REPO>`.
+* Module dependencies, if any, same as for Client Projects.
+* `src` is used for pre-release module development.
+* `src` is a shared workdir of the team.
+* The team uses feature branches to develop new modules.
+* After beta acceptance, the module is moved to it's vendored repo <sup>1</sup>.
+* Further maintenance is done on that target repo.
+
+<sup>1</sup> Use "Initial commit" to squash development history **or** `git subtree` commands to preserve it **or**, to get fancy, adopt a `git subrepo` workflow to keep disconnected histories in sync during beta phase.
+"""
 
   # Services section
   [params.services]
