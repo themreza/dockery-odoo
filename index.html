@@ -281,6 +281,7 @@ $ sudo chown -R 9001 _testlogs
 <li><code>src</code> is used for custom development.</li>
 <li>It is best practice to version control configuration and meta-data.</li>
 <li>Such <code>custom_config</code> module satisfies the min. module condition.</li>
+<li>Uses the migration controller for orchestrated module upgrades.</li>
 </ul>
 
 <p><sup>1</sup> Use <code>sparse-checkout</code> to only get the modules you need.</p>
@@ -306,6 +307,7 @@ $ sudo chown -R 9001 _testlogs
 <li>The team uses feature branches to develop new modules.</li>
 <li>After beta acceptance, the module is published in a vendored repo. <sup>2</sup></li>
 <li>Further maintenance is done on that target repo.</li>
+<li>Uses the migration controller for migration script validation.</li>
 </ul>
 
 <p><sup>1</sup> <strong>Nice:</strong> <code>src</code> modules override their namesakes in vendored repos, as they are placed into <code>.../090</code>, the last (-&gt; first) addon path.</p>
