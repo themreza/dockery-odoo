@@ -183,7 +183,7 @@ There are *two main* usage scenarios.
 * Stable repos are vendored in `vendor/<MYORG>/<REPO>`.
 * Module dependencies, if any, same as for Client Projects.
 * `src` is used for pre-release module development.
-* `src` is a shared workdir of the team.
+* `src` is a shared workdir on the team's remote repo.
 * The team uses feature branches to develop new modules.
 * After beta acceptance, the module is moved to it's vendored repo <sup>1</sup>.
 * Further maintenance is done on that target repo.
