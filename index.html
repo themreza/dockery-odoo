@@ -302,13 +302,15 @@ $ sudo chown -R 9001 _testlogs
 <li>Stable repos are vendored in <code>vendor/&lt;MYORG&gt;/&lt;REPO&gt;</code>.</li>
 <li>Module dependencies, if any, same as for Client Projects.</li>
 <li><code>src</code> is used for pre-release module development.</li>
-<li><code>src</code> is a shared workdir on the team&rsquo;s remote repo.</li>
+<li><code>src</code> is a shared workdir on the team&rsquo;s remote repo.<sup>1</sup></li>
 <li>The team uses feature branches to develop new modules.</li>
-<li>After beta acceptance, the module is moved to it&rsquo;s vendored repo <sup>1</sup>.</li>
+<li>After beta acceptance, the module is moved to it&rsquo;s vendored repo <sup>2</sup>.</li>
 <li>Further maintenance is done on that target repo.</li>
 </ul>
 
-<p><sup>1</sup> Use &ldquo;Initial commit&rdquo; to squash development history <strong>or</strong> <code>git subtree</code> commands to preserve it <strong>or</strong>, to get fancy, adopt a <code>git subrepo</code> workflow to keep disconnected histories in sync during beta phase.</p>
+<p><sup>1</sup> <strong>Nice:</strong> <code>src</code> modules override their namesakes in vendored repos, as they are placed into <code>.../090</code>, the last (-&gt; first) addon path.</p>
+
+<p><sup>2</sup> Use &ldquo;Initial commit&rdquo; to squash development history <strong>or</strong> <code>git subtree</code> commands to preserve it <strong>or</strong>, to get fancy, adopt a <code>git subrepo</code> workflow to keep disconnected histories in sync during beta phase.</p>
 </span>
 						</div>
 					</a>
