@@ -13,6 +13,7 @@ export ODOO_PASSFILE=${ODOO_PASSFILE:="/run/secrets/adminpwd"}  # Odoo Passfile 
 
 export PGPASSFILE=${PGPASSFILE:="/run/secrets/pgpass"}
 export PGHOST=${PGHOST:="db"}
+export PGUSER=${PGUSER:="odoo"}
 
 
 
