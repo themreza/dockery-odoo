@@ -46,6 +46,19 @@ if [ "$1" = 'run' ]; then
 		)
 fi
 
+if [ "$1" = 'gevent' ]; then
+	# shellcheck disable=SC1091
+	source /entrypoint.appenv.sh
+	needs_entrypoint_d=yes
+	CMD=(
+			"${ODOO_CMD}"
+			"gevent"
+			"--addons-path"
+			"${ODOO_ADDONSPATH}"
+			"${CMD[@]:1}"
+		)
+fi
+
 if [ "$1" = 'shell' ]; then
 	database="$1"
 	# shellcheck disable=SC1091
