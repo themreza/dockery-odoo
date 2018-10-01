@@ -59,6 +59,9 @@ $ git submodule add -b "${DEFAULT_BRANCH}" git@github.com:odoo/enterprise.git ve
 $ sed -i "s/{{PROJECT}}/${PROJECT}/" ./Dockerfile ./.env && \
   sed -i "s/{{DEFAULT_BRANCH}}/${DEFAULT_BRANCH}/" ./Dockerfile ./.env
 
+# Provide handy impersonation for docker-compose, where necesary.
+$ echo "export COMPOSE_IMPERSONATION='$(id -u):$(id -g)'" > ~/.bashrc && source ~/.bashrc
+
 ## Review and customize your Dockerfile
 $ nano ./Dockerfile
 
@@ -103,10 +106,10 @@ $ cat .adminpwd
     description = '''
 ```shell
 # Apply patches to your workdir
-$ ./scripts/run-patches.sh
+$ docker-compose run patches
 
 # Scaffold
-$ docker-compose run -u $UID scaffold "My next big module"
+$ docker-compose run scaffold "My next big module"
 ```
 '''
     # url = "#"

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# For a clean cat: before `set` command
-if [ "$1" = 'patches' ]; then
-	cat /patches
-	exit 0
-fi
-
 set -Eeuxo pipefail
 
 # -----------------------------------------------------------------------------
