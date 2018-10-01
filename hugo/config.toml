@@ -83,7 +83,7 @@ $ chmod -R +x ./scripts
 $ ./scripts/run-images.sh --pull
 
 # Initialize db server (first run)
-$ docker-compose up odoo
+$ docker-compose run db-node
 
 
 # IMPORTANT: Place at least one module in the src folder.
