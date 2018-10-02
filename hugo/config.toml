@@ -9,6 +9,8 @@ theme = "elate"
 
   # custom_css = ["css/custom1.css", "css/custom2.css"]
 
+  [params.sidebar]
+    avatar = "Dockery-Odoo-color.png"
   # Navigation
   [params.navigation]
     brand = "Dockery-Odoo"
