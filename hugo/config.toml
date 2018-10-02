@@ -9,6 +9,9 @@ theme = "elate"
 
   # custom_css = ["css/custom1.css", "css/custom2.css"]
 
+  # Meta
+  description = "A nastily lean Odoo dev workflow: for client projects and dev teams alike."
+
   [params.sidebar]
     avatar = "Dockery-Odoo-color.png"
   # Navigation
