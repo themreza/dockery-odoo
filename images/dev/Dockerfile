@@ -1,4 +1,4 @@
-ARG  FROM_IMAGE=xoelabs/dockery-odoo
+ARG  FROM_IMAGE
 FROM ${FROM_IMAGE}
 
 
