@@ -14,9 +14,15 @@ set -Eeuxo pipefail
 
 set +x
 
-# shellcheck disable=SC1091
-source /entrypoint.sourced.sh
+function sourceScriptsInFolder {
+	for file in $(find "$1" -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
+	    echo Sourcing "$file"
 
+		# shellcheck disable=SC1091
+		# shellcheck source=entrypoint.d/
+	    source "$file"
+	done
+}
 
 # Implemented command options
 if [ "$#" -eq 0 ] || [ "${1:0:1}" = '-' ]; then

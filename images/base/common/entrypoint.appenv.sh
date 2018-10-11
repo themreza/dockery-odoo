@@ -11,14 +11,8 @@ set -Eeuxo pipefail
 export ODOO_RC=${ODOO_RC:="${ODOO_BASEPATH}/.odoorc.d"}  # Bind-mount a folder (Patch tools/0001)
 export ODOO_PASSFILE=${ODOO_PASSFILE:="/run/secrets/adminpwd"}  # Odoo Passfile (Patch tools/0002)
 
-export PGPASSFILE=${PGPASSFILE:="/run/secrets/pgpass"}
-export PGHOST=${PGHOST:="db"}
-export PGUSER=${PGUSER:="odoo"}
-
-
-
 addonspath=""
-# Sort reverse alfanumerically first, then do realpath 
+# Sort reverse alfanumerically first, then do realpath
 # so we can freely reorder loading by symlinking for
 # exemple in a CI environment directly from a git clone.
 for dir in $(find "${ODOO_ADDONS_BASEPATH}" -maxdepth 1 -mindepth 1 -xtype d | sort -r | xargs realpath); do

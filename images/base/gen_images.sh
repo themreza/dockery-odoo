@@ -4,7 +4,7 @@
 # Walkes folders matching'v*' and builds their respectiv docker context.
 # Before that, calls gen_context in order the build contexts
 
-set -Eeuxo pipefail
+set -Eeuo pipefail
 
 
 set +u
@@ -25,5 +25,5 @@ source "${DIR}"/gen_contexts.sh
 for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
 	name=$(basename "${path}")
 	version=${name#"v-"}
-	docker build --tag "${1}:${version}" "${name}"
+	docker build --tag "${1}:${version}" "${name}/out"
 done
