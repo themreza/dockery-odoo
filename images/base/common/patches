@@ -9,9 +9,5 @@ if [[ $# == 1 ]]; then apply_dir=${1}; else apply_dir=${APPLY_DIR}; fi
 rPatch () { eval "echo ${1} && curl ${1} | git apply --unsafe-paths --directory=${apply_dir} && echo"; }
 fPatch () { eval "echo ${1} && git apply --unsafe-paths --directory=${apply_dir} ${1} && echo"; }
 
-echo -e "\n\n${RED}To view Dockery Odoo Framework patches:${NC}"
-echo -e "${GREEN}   docker-compose run patches${NC}"
-echo -e "${RED}To apply Dockery Odoo Framework patches to your local workdir:${NC}"
-echo -e "${GREEN}   ./scripts/run-patches.sh${NC}"
 echo -e "\nApplying patches to ${apply_dir} ...\n"
 
