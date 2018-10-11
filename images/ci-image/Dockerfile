@@ -28,7 +28,8 @@ RUN cd /tmp && \
     	mv ./kubectl /usr/local/bin && \
     rm -rf /tmp/*
 
+COPY ci-*.sh /usr/local/bin/
 RUN chmod -R +x /usr/local/bin
 
 # Some pip libraries for interacting with apis
-RUN pip install click hammock odoorpc websocket-client
+RUN pip install websocket-client
