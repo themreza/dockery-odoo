@@ -4,7 +4,7 @@
 # Besides app consumed env variables, it also creates
 # the environment for entrypoint and startup scripts (eg. ODOO_ADDONSPATH)
 
-set -Eeuxo pipefail
+set -Eeuo pipefail
 
 
 # Runtime Env
