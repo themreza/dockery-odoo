@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 # Connection provided by pgpass file
-until psql -h "${PGHOST}" postgres -c '\q'; do
+until psql -h "${PGHOST}" ${PGUSER} -c '\q'; do
   >&2 echo "Postgres is unavailable - sleeping"
   sleep 1
 done
