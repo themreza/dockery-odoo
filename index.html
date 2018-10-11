@@ -143,41 +143,13 @@
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon icon-wrench"></i>
 						<h2>Bootstrap your project</h2>
-						<p><pre><code class="language-shell">$ WORKDIR=$(pwd)/dev/
-$ PROJECT=my-project
-$ DEFAULT_BRANCH=11.0
+						<p><pre><code class="language-shell">$ export PROJECTNAME=my-project
 
-$ mkdir -p &quot;${WORKDIR}&quot; &amp;&amp; \
-  cd &quot;${WORKDIR}&quot; &amp;&amp; \
-  git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git &quot;${PROJECT}&quot;  &amp;&amp; \
-  cd  &quot;${PROJECT}&quot; &amp;&amp; \
-  git submodule add -b &quot;${DEFAULT_BRANCH}&quot; https://github.com/odoo/odoo.git vendor/odoo/cc
+$ git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git \
+  &quot;${PROJECTNAME}&quot; &amp;&amp; cd  &quot;${PROJECTNAME}&quot;
 
-# If you have access to enterprise code
-$ git submodule add -b &quot;${DEFAULT_BRANCH}&quot; git@github.com:odoo/enterprise.git vendor/odoo/ee
-</code></pre>
-</p>
-						
-					</div>
-				</div>
-				
-				<div class="fh5co-block to-animate" style="background-image: url(images/);">
-					<div class="overlay-darker"></div>
-					<div class="overlay"></div>
-					<div class="fh5co-text">
-						<i class="fh5co-intro-icon "></i>
-						<h2>Your project environment</h2>
-						<p><pre><code class="language-shell">$ sed -i &quot;s/{{PROJECT}}/${PROJECT}/&quot; ./Dockerfile ./.env &amp;&amp; \
-  sed -i &quot;s/{{DEFAULT_BRANCH}}/${DEFAULT_BRANCH}/&quot; ./Dockerfile ./.env
+$ make init
 
-# Provide handy impersonation for docker-compose, where necesary.
-$ echo &quot;export COMPOSE_IMPERSONATION='$(id -u):$(id -g)'&quot; &gt; ~/.bashrc &amp;&amp; source ~/.bashrc
-
-## Review and customize your Dockerfile
-$ nano ./Dockerfile
-
-## Review and customize your .env file
-$ nano ./.env
 </code></pre>
 </p>
 						
@@ -189,42 +161,15 @@ $ nano ./.env
 					<div class="overlay"></div>
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon icon-rocket"></i>
-						<h2>Launch using docker-compose</h2>
-						<p><pre><code class="language-shell"># Make use of the provided scripts
-$ chmod -R +x ./scripts
+						<h2>Build &amp; Launch</h2>
+						<p><pre><code class="language-shell">$ make create
 
-# Build the images
-$ ./scripts/run-images.sh --pull
+$ make patch
 
-# Initialize db server (first run)
-$ docker-compose run db-node
+$ docker-compose run scaffold &quot;My First Module&quot;
 
-
-# IMPORTANT: Place at least one module in the src folder.
-# Or: Jump over to scaffolding before launching.
-
-# Launch your dev instance, Odoo is served on port 80
 $ docker-compose up odoo
 
-# Get the admin password
-$ cat .adminpwd
-</code></pre>
-</p>
-						
-					</div>
-				</div>
-				
-				<div class="fh5co-block to-animate" style="background-image: url(images/);">
-					<div class="overlay-darker"></div>
-					<div class="overlay"></div>
-					<div class="fh5co-text">
-						<i class="fh5co-intro-icon icon-frame"></i>
-						<h2>Scaffold your first module</h2>
-						<p><pre><code class="language-shell"># Apply patches to your workdir
-$ docker-compose run patches
-
-# Scaffold
-$ docker-compose run scaffold &quot;My next big module&quot;
 </code></pre>
 </p>
 						
@@ -237,16 +182,9 @@ $ docker-compose run scaffold &quot;My next big module&quot;
 					<div class="fh5co-text">
 						<i class="fh5co-intro-icon icon-magnifier"></i>
 						<h2>Poke arround, test and explore</h2>
-						<p><pre><code class="language-shell"># Run a Odoo shell
-$ docker-compose run shell -d &lt;DATABASE&gt;
+						<p><pre><code class="language-shell">$ docker-compose run shell -d &lt;DATABASE&gt;
 
-# Test a module
 $ docker-compose run tests -d &lt;DATABASE&gt; -i &lt;MODULE&gt;
-
-# Version 12.0 and above:
-# View screenshots taken from the js tests
-# Just own the output folder by the &quot;magic&quot; id
-$ sudo chown -R 9001 _testlogs
 
 </code></pre>
 </p>
