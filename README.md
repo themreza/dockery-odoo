@@ -17,8 +17,7 @@
 
 ```bash
 your-project/
- ├── cfg/           # Odoo config files, reloaded.
- ├── scripts/       # Your life gets easier (TM)
+ ├── hack/       	# Your life gets easier (TM)
  ├── vendor/
  │   ├── odoo/
  │   │   ├── cc/    # A plain git@github.com:odoo/odoo.git
@@ -28,12 +27,13 @@ your-project/
  ├── src/           # *Your* folder, develop in here.
  │   ├── module_1/
  │   └── .../
- ├── ...            # The general suspects (gitignore, etc.)
- ├── .adminpwd		# ... no prod passwords in git, please!
- ├── .pgpass		# ... no prod passwords in git, please!
- ├── .marabunta.yml # Single source of truth for migrations
- ├── .env           # Single source of truth for environment
- ├── Dockerfile     # Single source of truth for image
+ ├── ...            	# The general suspects (gitignore, etc.)
+ ├── .cfg-default.ini	# ... managed at team level, under vcs!
+ ├── .cfg-custom.ini	# ... gitignored local config switches!
+ ├── .adminpwd			# ... no prod passwords in git, please!
+ ├── .marabunta.yml 	# Single source of truth for migrations
+ ├── .env           	# Single source of truth for environment
+ ├── Dockerfile     	# Single source of truth for image
  ├── docker-compose.yml             # Production akin version
  └── docker-compose.override.yml    # Development akin version
 ```
@@ -56,7 +56,7 @@ You are supposed to have started [here](https://github.com/xoe-labs/dockery-odoo
 
 ## Next Steps
 - Scrutinize the [scaffolding repo](https://github.com/xoe-labs/dockery-odoo-scaffold)
-- Check what [`./scripts`](https://github.com/xoe-labs/dockery-odoo-scaffold/tree/master/scripts) can do for you
+- Check what [`Makefile`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/Makefile) can do for you
 - Learn about the [`./.marabunta.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.marabunta.yml) file, a camptocamp [project](https://github.com/camptocamp/marabunta) that has been [tuned](https://github.com/xoe-labs/marabunta) by folks at [XOE Labs](https://github.com/xoe-labs)
 - Get a free, pre-configured CI/CD with [`.gitlab-ci.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.gitlab-ci.yaml)
 - Check the environment "options" in handy [`.env`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.env) file
