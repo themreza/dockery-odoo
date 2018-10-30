@@ -24,7 +24,7 @@ USER root
 
 
 # Library versions
-ENV ODOO_VERSION         11.0
+ENV ODOO_VERSION         master
 ENV PSQL_VERSION         10
 ENV WKHTMLTOX_VERSION    0.12.5
 ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb
@@ -32,6 +32,8 @@ ENV NODE_VERSION         6
 
 # Build-time env
 ENV ODOO_BASEPATH        "/opt/odoo"
+ENV ODOO_RC              "${ODOO_BASEPATH}/cfg.d"
+ENV ODOO_MIG             "${ODOO_BASEPATH}/migration.yaml"
 ENV ODOO_CMD             "${ODOO_BASEPATH}/odoo-bin"
 ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
 ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"

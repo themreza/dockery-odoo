@@ -1,9 +1,0 @@
-#!/bin/bash
-
-shopt -s dotglob
-chmod +x /patches
-chmod +x /entrypoint.sh
-chmod +x /entrypoint*.sh
-chmod +x /usr/local/bin/*
-chmod +x /entrypoint.d/*
-shopt -u dotglob

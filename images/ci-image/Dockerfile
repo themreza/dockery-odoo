@@ -8,7 +8,8 @@ ENV KUBECTL_VERSION v1.10.2
 
 ENV ETCDCTL_API 3
 
-RUN apk add --no-cache py-pip ca-certificates openssl git unzip wget
+RUN apk add --no-cache python3 ca-certificates openssl git unzip wget
+RUN python3 -m ensurepip --upgrade
 RUN update-ca-certificates
 
 # Docker Compose

@@ -8,7 +8,7 @@ USER root
 RUN apt-get -qq update && apt-get -qq install -y \
        autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
        git-core > /dev/null \
-    && git clone https://github.com/uber/pyflame.git \
+    && git clone https://github.com/uber/pyflame.git > /dev/null \
     && cd pyflame \
     && ./autogen.sh > /dev/null \
     && ./configure > /dev/null \
@@ -24,12 +24,11 @@ USER root
 
 
 # Library versions
-ENV ODOO_VERSION         11.0
+ENV ODOO_VERSION         12.0
 ENV PSQL_VERSION         10
 ENV WKHTMLTOX_VERSION    0.12.5
 ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb
 ENV NODE_VERSION         6
-ENV BOOTSTRAP_VERSION    3.3.7
 
 # Build-time env
 ENV ODOO_BASEPATH        "/opt/odoo"
@@ -130,7 +129,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     > /dev/null \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
     && npm install --quiet --global less \
-    && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}" \
     && rm -Rf ~/.gem /var/lib/gems/*/cache/ \
     && rm -Rf ~/.npm /tmp/*
 
@@ -138,66 +136,3 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
 COPY --from=pyflame-build /pyflame/src/pyflame /usr/local/bin/
 RUN chmod +x /usr/local/bin/pyflame
 
-
-# Grab latest geoip DB       //-- to enable IP based geo-referncing
-RUN wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz \
-    && gunzip GeoLiteCity.dat.gz \
-    && mkdir -p /usr/share/GeoIP \
-    && mv GeoLiteCity.dat /usr/share/GeoIP/ \
-    && pip --quiet --quiet install GeoIP
-
-# Grab latest json logger    //-- for easier parsing (Patch 0001)
-RUN pip --quiet --quiet install python-json-logger
-
-# Create app user
-RUN addgroup --system --gid $APP_UID odoo
-RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
-
-# Copy from build env
-COPY entrypoint* /
-COPY entrypoint.d /entrypoint.d
-COPY entrypoint.db.d /entrypoint.db.d
-COPY patches /patches
-
-# Own folders                //-- where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
-RUN mkdir -p "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"
-RUN chown -R odoo:odoo "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"
-
-ENTRYPOINT ["/entrypoint.sh"]
-VOLUME ["${ODOO_PRST_DIR}", "${ODOO_BCKP_DIR}"]
-
-# Fix locale                 //-- for some tests that depend on locale (babel python-lib)
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-
-RUN /bin/bash -c 'shopt -s dotglob \
- && chmod +x /patches \
- && chmod +x /entrypoint.sh \
- && chmod +x /usr/local/bin/* \
- && chmod +x /entrypoint.d/* \
- && chmod +x /entrypoint.db.d/* \
- && shopt -u dotglob'
-
-USER odoo
-
-# Grab newer werkzeug        //-- for right IP in logs https://git.io/fNu6v
-RUN pip --quiet --quiet install --user Werkzeug==0.14.1
-
-# ============================================================
-# Forward enforce minimal naming scheme on secondary build
-# ============================================================
-
-FROM base-build
-ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo-bin     "${ODOO_CMD}"
-ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo         "${ODOO_FRM}"
-ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/addons       "${ODOO_ADDONS_BASEPATH}"/000
-ONBUILD COPY --chown=odoo:odoo  vendor/odoo/ee              "${ODOO_ADDONS_BASEPATH}"/001
-ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_ADDONS_BASEPATH}"/090
-ONBUILD COPY --chown=odoo:odoo  .migration.yml              "${ODOO_BASEPATH}"/.migration.yml
-ONBUILD RUN ./patches ${ODOO_BASEPATH} || true
-
-# ============================================================
