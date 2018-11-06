@@ -15,6 +15,7 @@ set -Eeuo pipefail
 # set +x
 
 function sourceScriptsInFolder {
+	echo -e "\n\n"
 	for file in $(find "$1" -maxdepth 1 -mindepth 1 -xtype f -exec realpath {} + | sort); do
 	    echo -e "==>  Sourcing ${file}"
 
@@ -22,6 +23,7 @@ function sourceScriptsInFolder {
 		# shellcheck source=entrypoint.d/
 	    source "$file"
 	done
+	echo -e "\n\n"
 }
 
 # Implemented command options
