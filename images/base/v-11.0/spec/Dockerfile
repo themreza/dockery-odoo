@@ -33,6 +33,8 @@ ENV BOOTSTRAP_VERSION    3.3.7
 
 # Build-time env
 ENV ODOO_BASEPATH        "/opt/odoo"
+ENV ODOO_RC              "${ODOO_BASEPATH}/cfg.d"
+ENV ODOO_MIG             "${ODOO_BASEPATH}/migration.yaml"
 ENV ODOO_CMD             "${ODOO_BASEPATH}/odoo-bin"
 ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
 ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"

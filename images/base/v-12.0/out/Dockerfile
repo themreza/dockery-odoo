@@ -8,7 +8,7 @@ USER root
 RUN apt-get -qq update && apt-get -qq install -y \
        autoconf automake autotools-dev g++ pkg-config python-dev python3-dev libtool make \
        git-core > /dev/null \
-    && git clone https://github.com/uber/pyflame.git \
+    && git clone https://github.com/uber/pyflame.git > /dev/null \
     && cd pyflame \
     && ./autogen.sh > /dev/null \
     && ./configure > /dev/null \
@@ -24,12 +24,11 @@ USER root
 
 
 # Library versions
-ENV ODOO_VERSION         11.0
+ENV ODOO_VERSION         12.0
 ENV PSQL_VERSION         10
 ENV WKHTMLTOX_VERSION    0.12.5
 ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb
 ENV NODE_VERSION         6
-ENV BOOTSTRAP_VERSION    3.3.7
 
 # Build-time env
 ENV ODOO_BASEPATH        "/opt/odoo"
@@ -130,7 +129,6 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends \
     > /dev/null \
     && ln -s /usr/bin/nodejs /usr/local/bin/node \
     && npm install --quiet --global less \
-    && gem install --no-rdoc --no-ri --no-update-sources bootstrap-sass --version "${BOOTSTRAP_VERSION}" \
     && rm -Rf ~/.gem /var/lib/gems/*/cache/ \
     && rm -Rf ~/.npm /tmp/*
 

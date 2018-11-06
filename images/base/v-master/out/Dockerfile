@@ -24,7 +24,7 @@ USER root
 
 
 # Library versions
-ENV ODOO_VERSION         11.0
+ENV ODOO_VERSION         master
 ENV PSQL_VERSION         10
 ENV WKHTMLTOX_VERSION    0.12.5
 ENV WKHTMLTOPDF_CHECKSUM 1140b0ab02aa6e17346af2f14ed0de807376de475ba90e1db3975f112fbd20bb
@@ -32,6 +32,8 @@ ENV NODE_VERSION         6
 
 # Build-time env
 ENV ODOO_BASEPATH        "/opt/odoo"
+ENV ODOO_RC              "${ODOO_BASEPATH}/cfg.d"
+ENV ODOO_MIG             "${ODOO_BASEPATH}/migration.yaml"
 ENV ODOO_CMD             "${ODOO_BASEPATH}/odoo-bin"
 ENV ODOO_FRM             "${ODOO_BASEPATH}/odoo"
 ENV ODOO_ADDONS_BASEPATH "${ODOO_BASEPATH}/addons"
@@ -142,11 +144,7 @@ RUN wget --quiet http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.
     && mv GeoLiteCity.dat /usr/share/GeoIP/ \
     && pip --quiet --quiet install GeoIP
 
-# Grab latest ptpython       //-- to improve Odoo shell, in case we need it once
-RUN pip --quiet --quiet install ptpython
-
-
-# Grab latest json logger    //-- for easier parsing in non-tty use (Patch 0001)
+# Grab latest json logger    //-- for easier parsing (Patch 0001)
 RUN pip --quiet --quiet install python-json-logger
 
 # Create app user
@@ -154,15 +152,14 @@ RUN addgroup --system --gid $APP_UID odoo
 RUN adduser --system --uid $APP_GID --ingroup odoo --home /opt/odoo --disabled-login --shell /sbin/nologin odoo
 
 # Copy from build env
-COPY bin/* /usr/local/bin/
 COPY entrypoint* /
 COPY entrypoint.d /entrypoint.d
+COPY entrypoint.db.d /entrypoint.db.d
 COPY patches /patches
 
-# Own folders                //-- for hacky indirections where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
-# TODO: Move partly to dev docker once indirection for configmaps no more needed
-RUN mkdir -p "${ODOO_PRST_DIR}" /run/secrets "${ODOO_BCKP_DIR}"
-RUN chown -R odoo:odoo "${ODOO_PRST_DIR}" /run/secrets "${ODOO_BCKP_DIR}"
+# Own folders                //-- where pure bind mounting during dev in docker-compose doesn't yield correct file permissions
+RUN mkdir -p "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"
+RUN chown -R odoo:odoo "${ODOO_PRST_DIR}" "${ODOO_BCKP_DIR}"
 
 ENTRYPOINT ["/entrypoint.sh"]
 VOLUME ["${ODOO_PRST_DIR}", "${ODOO_BCKP_DIR}"]
@@ -175,7 +172,13 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-RUN chmod +x /usr/local/bin/set-all-execute-bits && set-all-execute-bits
+RUN /bin/bash -c 'shopt -s dotglob \
+ && chmod +x /patches \
+ && chmod +x /entrypoint.sh \
+ && chmod +x /usr/local/bin/* \
+ && chmod +x /entrypoint.d/* \
+ && chmod +x /entrypoint.db.d/* \
+ && shopt -u dotglob'
 
 USER odoo
 
@@ -192,7 +195,7 @@ ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo         "${ODOO_FRM}"
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/addons       "${ODOO_ADDONS_BASEPATH}"/000
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/ee              "${ODOO_ADDONS_BASEPATH}"/001
 ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_ADDONS_BASEPATH}"/090
-ONBUILD COPY --chown=odoo:odoo  .marabunta.yml              "${ODOO_BASEPATH}"/.marabunta.yml
+ONBUILD COPY --chown=odoo:odoo  .migration.yml              "${ODOO_BASEPATH}"/.migration.yml
 ONBUILD RUN ./patches ${ODOO_BASEPATH} || true
 
 # ============================================================
