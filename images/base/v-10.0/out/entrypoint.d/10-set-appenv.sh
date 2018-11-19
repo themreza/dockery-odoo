@@ -23,7 +23,7 @@ addonspath=""
 for dir in $(find "${ODOO_ADDONS_BASEPATH}" -maxdepth 1 -mindepth 1 -xtype d | sort -r | xargs realpath); do
 
 	# Prevent loading enterprise addons folder if switched on
-	if [[ $ODOO_ENTERPRISE != 'true' ]] && [[ $dir == "${ODOO_ADDONS_BASEPATH}"/001 ]]; then
+	if [[ $ODOO_ENTERPRISE != 'yes' ]] && [[ $dir == "${ODOO_ADDONS_BASEPATH}"/001 ]]; then
 		continue
 	fi
 
