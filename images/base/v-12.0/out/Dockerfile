@@ -196,6 +196,7 @@ ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/addons       "${ODOO_ADDONS_BASEP
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/ee              "${ODOO_ADDONS_BASEPATH}"/001
 ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_ADDONS_BASEPATH}"/090
 ONBUILD COPY --chown=odoo:odoo  .migration.yml              "${ODOO_BASEPATH}"/.migration.yml
+ONBUILD COPY --chown=odoo:odoo  .cfg-default.ini            "${ODOO_RC}"/01-default
 ONBUILD RUN ./patches ${ODOO_BASEPATH} || true
 
 # ============================================================
