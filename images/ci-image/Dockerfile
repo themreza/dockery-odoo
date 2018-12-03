@@ -13,7 +13,7 @@ RUN python3 -m ensurepip --upgrade
 RUN update-ca-certificates
 
 # Docker Compose
-RUN pip install docker-compose
+RUN pip3 install docker-compose
 
 # Grab Terraform, Consul, ETC & kubectl
 RUN cd /tmp && \
@@ -33,4 +33,4 @@ COPY ci-*.sh /usr/local/bin/
 RUN chmod -R +x /usr/local/bin
 
 # Some pip libraries for interacting with apis
-RUN pip install websocket-client
+RUN pip3 install websocket-client
