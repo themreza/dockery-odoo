@@ -2,18 +2,18 @@
 
 # Shows versions of some standard components present on a ci image
 
-if $(which docker); then
+if $(which docker) > /dev/null; then
 	docker version
 fi
-if $(which kubectl); then
+if $(which kubectl) > /dev/null; then
 	kubectl version --client
 fi
-if $(which terraform); then
+if $(which terraform) > /dev/null; then
 	terraform version
 fi
-if $(which consul); then
+if $(which consul) > /dev/null; then
 	consul version
 fi
-if $(which etcdctl); then
+if $(which etcdctl) > /dev/null; then
 	etcdctl version
 fi
