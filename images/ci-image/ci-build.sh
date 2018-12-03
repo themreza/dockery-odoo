@@ -8,7 +8,7 @@ set -eux
 options="base devops"
 validate() { echo "${options}" | grep -F -q -w "$1"; }
 
-if [ $# -eq 0 ] || [ $# -gt 2 ] || validate "${1}" ; then
+if [ $# -eq 0 ] || [ $# -gt 2 ] || ! validate "${1}" ; then
 	echo "Usage: ci-build.sh [base|devops] <HASH>"
  	exit 1
 fi
