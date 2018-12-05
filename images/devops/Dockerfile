@@ -19,8 +19,7 @@ RUN pip install git+https://github.com/xoe-labs/click-odoo.git@2.0.0
 RUN pip install \
     # dodoo-scaffolder \
     # dodoo-translator \
-    # dodoo-tester \
-    git+https://github.com/xoe-labs/dodoo-tester.git \
+    dodoo-tester \
     dodoo-initializer \
     dodoo-loader \
     dodoo-migrator
