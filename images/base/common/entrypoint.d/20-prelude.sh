@@ -55,6 +55,7 @@ ${LYELLOW}| Peristence Dir:   ${ODOO_PRST_DIR}${NC}
 ${LYELLOW}| Addons Basepath:  ${ODOO_ADDONS_BASEPATH}${NC}
 ${LYELLOW}| Addons Path:      ${ODOO_ADDONS_PATH//"${ODOO_ADDONS_BASEPATH}/"}${NC}
 ${LYELLOW}| Migration Spec:   ${ODOO_MIG}${NC}
+${LYELLOW}| Config Folder:    ${ODOO_RC}${NC}
 ${LYELLOW}| -------------------------------- Environment${NC}
 ${LYELLOW}| App UID:          ${APP_UID}${NC}
 ${LYELLOW}| App GID:          ${APP_GID}${NC}
