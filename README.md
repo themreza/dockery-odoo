@@ -56,8 +56,8 @@ You are supposed to have started [here](https://github.com/xoe-labs/dockery-odoo
 - Check the [environment foundation](https://github.com/xoe-labs/dockery-odoo-base)
 - Scrutinize the [scaffolding repo](https://github.com/xoe-labs/dockery-odoo-scaffold)
 - Check what [`Makefile`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/Makefile) can do for you
-- Learn about the [`./.marabunta.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.marabunta.yml) file, a camptocamp [project](https://github.com/camptocamp/marabunta) that has been [tuned](https://github.com/xoe-labs/marabunta) by folks at [XOE Labs](https://github.com/xoe-labs)
-- Get a free, pre-configured CI/CD with [`.gitlab-ci.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.gitlab-ci.yaml)
+- Learn about the [`./.migration.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.migration.yml) file, a  key piece of the [doodo-* suite](https://pypi.org/search/?q=dodoo) crafted by folks at [XOE Labs](https://github.com/xoe-labs)
+- Get a free, pre-configured CI/CD with [`.gitlab-ci.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.gitlab-ci.yml)
 - Check the environment "options" in handy [`.env`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.env) file
 
 # Credits & License
