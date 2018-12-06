@@ -13,29 +13,18 @@ if [ $# -eq 0 ] || [ $# -gt 2 ] || ! validate "${1}" ; then
  	exit 1
 fi
 
-fromimage="${FROM}:${ODOO_VERSION}"
 
 if [ $# -eq 1 ]; then
-    image="${IMAGE}:${1}-${ODOO_VERSION}"
-	base="${IMAGE}:base-${ODOO_VERSION}"
+    image="${IMAGE}:${ODOO_VERSION}-${1}"
 else
-    image="${IMAGE}:${1}-${ODOO_VERSION}-${2}"
-	base="${IMAGE}:base-${ODOO_VERSION}-${2}"
+    image="${IMAGE}:${ODOO_VERSION}-${1}-${2}"
 fi
 
-if [ "${1}" != "base" ]; then
+fromimage="${FROM}:${1}-${ODOO_VERSION}"
 
-	# Build non-base from base image
-	docker build --tag "${image}" \
-	    --build-arg FROM_IMAGE="${base}" \
-	    "${FROMREPO}#master:images/${1}"
-
-else
-
-	# Build base from remote "from" image
-	docker build --tag "${image}" \
-	    --build-arg FROM_IMAGE="${fromimage}" \
-	    .
-fi
+# Build from remote "from" image
+docker build --tag "${image}" \
+    --build-arg FROM_IMAGE="${fromimage}" \
+    .
 
 docker push "${image}" &> /dev/null

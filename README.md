@@ -40,10 +40,8 @@ your-project/
 
 ## Image Building Sequence
 
-1. Build your projects base image
-2. Build your projects helper images.
-    - Using remote github contexts *.
-    - Leveraging `--build-arg FROM_IMAGE` to "rebase" on your project
+1. Build your projects base image (`:base-*`)
+2. Build your projects devops image (`:devops-*`).
 
 \* Use this repo's contexts _or_ fork it and craft your own.
 
@@ -55,6 +53,7 @@ Don't complain about a short readme. :wink:
 You are supposed to have started [here](https://github.com/xoe-labs/dockery-odoo).
 
 ## Next Steps
+- Check the [environment foundation](https://github.com/xoe-labs/dockery-odoo-base)
 - Scrutinize the [scaffolding repo](https://github.com/xoe-labs/dockery-odoo-scaffold)
 - Check what [`Makefile`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/Makefile) can do for you
 - Learn about the [`./.marabunta.yml`](https://github.com/xoe-labs/dockery-odoo-scaffold/blob/master/.marabunta.yml) file, a camptocamp [project](https://github.com/camptocamp/marabunta) that has been [tuned](https://github.com/xoe-labs/marabunta) by folks at [XOE Labs](https://github.com/xoe-labs)
