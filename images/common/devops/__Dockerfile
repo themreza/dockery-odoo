@@ -67,15 +67,13 @@ RUN /bin/bash -c 'shopt -s dotglob \
 # Prepare odoo owned testlog folder for chrome screenshots
 RUN mkdir -p /testlogs && chown odoo:odoo /testlogs
 
-USER odoo
-
-# When you use scaffold, create new module in ./src aka 090
-WORKDIR ${ODOO_BASEPATH}/addons/090
-
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
 # ============================================================
+# When you use scaffold, create new module in ./src aka 090
+ONBUILD WORKDIR ${ODOO_BASEPATH}/addons/090
+ONBUILD USER odoo
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo-bin     "${ODOO_CMD}"
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/odoo         "${ODOO_FRM}"
 ONBUILD COPY --chown=odoo:odoo  vendor/odoo/cc/addons       "${ODOO_ADDONS_BASEPATH}"/000
