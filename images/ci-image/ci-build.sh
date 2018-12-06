@@ -15,12 +15,12 @@ fi
 
 
 if [ $# -eq 1 ]; then
-    image="${IMAGE}:${ODOO_VERSION}-${1}"
+    image="${IMAGE}:${1}-${ODOO_VERSION}"
 else
-    image="${IMAGE}:${ODOO_VERSION}-${1}-${2}"
+    image="${IMAGE}:${1}-${ODOO_VERSION}-${2}"
 fi
 
-fromimage="${FROM}:${1}-${ODOO_VERSION}"
+fromimage="${FROM}:${ODOO_VERSION}-${1}"
 
 # Build from remote "from" image
 docker build --tag "${image}" \
