@@ -5,7 +5,7 @@ FROM xoelabs/dockery-odoo-base:10.0
 USER root
 
 ENV PYTHONPATH=${PYTHONPATH}:${ODOO_BASEPATH}
-
+ENV DODOO_LOAD_OUT=/dodoo-loader/logs.json
 
 # --- WDB Configuration ---
 ENV WDB_NO_BROWSER_AUTO_OPEN=True \
@@ -66,6 +66,10 @@ RUN /bin/bash -c 'shopt -s dotglob \
 
 # Prepare odoo owned testlog folder for chrome screenshots
 RUN mkdir -p /testlogs && chown odoo:odoo /testlogs
+
+
+# Prepare odoo owned loading log folder for dodoo loader
+RUN mkdir -p /dodoo-loader && chown odoo:odoo /dodoo-loader
 
 
 # ============================================================
