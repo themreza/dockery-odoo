@@ -14,8 +14,7 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
     WDB_WEB_SERVER=localhost
 
 
-# Get click-odoo-* devops toolchain
-RUN pip install git+https://github.com/xoe-labs/click-odoo.git@2.0.0
+# Get dodoo-* devops toolchain
 RUN pip install \
     # dodoo-scaffolder \
     # dodoo-translator \
