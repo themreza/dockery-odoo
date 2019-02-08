@@ -57,6 +57,7 @@ RUN pip  --quiet --quiet install websocket-client
 
 COPY entrypoint.d/* /entrypoint.d/
 COPY templates /templates
+ENV ODOO_TEMPLATES_DIR="/templates"
 
 RUN /bin/bash -c 'shopt -s dotglob \
  && chmod +x /entrypoint.d/* \
