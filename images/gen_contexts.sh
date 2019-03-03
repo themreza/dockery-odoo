@@ -17,5 +17,5 @@ for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
 	cp -rp "${path}"/spec/*  "${path}/out/"
 	cat "$path/out/base/__Dockerfile" >> "$path/out/base/Dockerfile"
 	cat "$path/out/devops/__Dockerfile" >> "$path/out/devops/Dockerfile"
-	find "${path}/out/" -name "__*" -type f -exec rm {} \+
+	find "${path}/out/" \( -name "__*" -and ! -name "__init__.*" -and ! -name "__manifest__.*" \) -type f -exec rm {} \+
 done
