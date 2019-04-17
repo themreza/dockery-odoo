@@ -13,9 +13,16 @@ for path in $(find "${DIR}" -maxdepth 1 -type d -name 'v-*') ; do
 	name=$(basename "${path}")
 	version=${name#"v-"}
 	shopt -s extglob
+	rm -rf "${path}/out"
+	mkdir -p "${path}/out/"
 	cp -rp "${DIR}"/common/* "${path}/out/"
 	cp -rp "${path}"/spec/*  "${path}/out/"
-	cat "$path/out/base/__Dockerfile" >> "$path/out/base/Dockerfile"
-	cat "$path/out/devops/__Dockerfile" >> "$path/out/devops/Dockerfile"
-	find "${path}/out/" \( -name "__*" -and ! -name "__init__.*" -and ! -name "__manifest__.*" \) -type f -exec rm {} \+
+	for tmpl in $(find "${path}/out/base" -name "Dockerfile.*.tmpl" -xtype f | sort | xargs realpath --no-symlinks); do
+		cat ${tmpl} >> "${path}/out/base/Dockerfile"
+		rm -f "${tmpl}"
+	done
+	for tmpl in $(find "${path}/out/devops" -name "Dockerfile.*.tmpl" -xtype f | sort | xargs realpath --no-symlinks); do
+		cat ${tmpl} >> "${path}/out/devops/Dockerfile"
+		rm -f "${tmpl}"
+	done
 done

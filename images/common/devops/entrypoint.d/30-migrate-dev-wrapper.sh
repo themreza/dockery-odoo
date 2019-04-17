@@ -14,6 +14,6 @@ if [ "$2" = 'migrate-dev-wrapper' ]; then
 		echo "target:         Database copy name"
 		exit 1
 	else
-		CMD=(bash -c "dodoo copy --force-disconnect $3 $4 && dodoo migrate --file ${ODOO_BASEPATH}/.migration.yml --database $4")
+		CMD=(bash -c "dodoo copy --force-disconnect $3 $4 && dodoo migrate --file ${ODOO_MIG} --database $4")
 	fi
 fi
