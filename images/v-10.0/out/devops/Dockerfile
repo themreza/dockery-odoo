@@ -8,7 +8,7 @@ ENV ODOO_BASEPATH        "/opt/odoo"
 ENV ODOO_RC              "${ODOO_BASEPATH}/cfg.d"
 ENV ODOO_MIG             "${ODOO_BASEPATH}/migration.yaml"
 ENV ODOO_CMD             "${ODOO_BASEPATH}/vendor/odoo/cc/odoo-bin"
-ENV ODOO_FRM             "${ODOO_BASEPATH}/vendor/odoo/cc/odoo"
+ENV ODOO_FRM             "${ODOO_BASEPATH}/vendor/odoo/cc"
 ENV ODOO_VENDOR          "${ODOO_BASEPATH}/vendor"
 ENV ODOO_SRC             "${ODOO_BASEPATH}/src"
 ENV PATCHES_DIR          "${ODOO_BASEPATH}/patches.d"
@@ -35,7 +35,7 @@ ONBUILD RUN /patches ${ODOO_BASEPATH} || true
 
 USER root
 
-ENV PYTHONPATH=${PYTHONPATH}:${ODOO_BASEPATH}
+ENV PYTHONPATH=${PYTHONPATH}:${ODOO_FRM}
 ENV DODOO_LOAD_OUT=/dodoo-loader/logs.json
 
 # --- WDB Configuration ---
