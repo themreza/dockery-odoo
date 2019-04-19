@@ -32,6 +32,9 @@ ONBUILD RUN /patches ${ODOO_BASEPATH} || true
 
 # ============================================================
 
+WORKDIR ${ODOO_SRC}
+
+
 
 USER root
 

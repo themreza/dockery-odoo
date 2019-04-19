@@ -30,3 +30,5 @@ ONBUILD COPY --chown=odoo:odoo  patches.d/*            		"${PATCHES_DIR}"
 ONBUILD RUN /patches ${ODOO_BASEPATH} || true
 
 # ============================================================
+
+WORKDIR ${ODOO_SRC}
