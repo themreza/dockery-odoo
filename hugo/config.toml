@@ -24,7 +24,7 @@ theme = "elate"
   [params.hero]
     title = "![Dockery-Odoo](images/Dockery-Odoo-mixed.svg)"
     subtitle = '''
-Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> development workflow with complete, standard & cloud native tooling which is easy to integrate with CI/CD and ready to deploy.
+Join our growing community!
 
 [![GitHub stars](https://img.shields.io/github/stars/xoe-labs/dockery-odoo.svg?longCache=true&style=flat-square&logo=github&label=Stars)](https://github.com/xoe-labs/dockery-odoo)
 [![Docker Pulls](https://img.shields.io/docker/pulls/xoelabs/dockery-odoo.svg?longCache=true&style=flat-square)](https://hub.docker.com/r/xoelabs/dockery-odoo/)
@@ -36,61 +36,24 @@ Empower your <a href="https://odoo.com/" target="_blank">Odoo</a> development wo
   [params.intro]
 
   [[params.intro.item]]
-    title = "Bootstrap your project"
-    icon = "icon-wrench"
+    title = "Beyond simplicity"
     description = '''
+<strong>We made a tool.</strong><br/>
+It's called [OdooUp](https://pypi.org/project/odooup).
 ```shell
-$ export PROJECTNAME=my-project
-
-$ git clone https://github.com/xoe-labs/dockery-odoo-scaffold.git \
-  "${PROJECTNAME}" && cd  "${PROJECTNAME}"
-
-$ make init
-
+$ sudo pip install odooup
+$ odooup init <PROJECTNAME>
 ```
+
+From there, just keep watching.<br/>
+<strong>It will unveil it's beauty all by itself.</strong>
 '''
-    # url = "#"
-    # button = "Copy"
 
-  [[params.intro.item]]
-    title = "Build & Launch"
-    description = '''
-```shell
-$ make create
-
-$ make patch
-
-$ docker-compose run scaffold "My First Module"
-
-$ docker-compose up odoo
-
-```
-'''
-    # url = "#"
-    # button = "Copy"
-    icon = "icon-rocket"
-  #  img = "img_10.jpg"
-
-  [[params.intro.item]]
-    title = "Poke arround, test and explore"
-    description = '''
-```shell
-$ docker-compose run shell -d <DATABASE>
-
-$ docker-compose run tests -d <DATABASE> -i <MODULE>
-
-```
-'''
-    # url = "#"
-    # button = "Copy"
-    icon = "icon-magnifier"
-  #  img = "img_10.jpg"
-
-  #[params.intro.video]
-  #  enable = true
-  #  title = "Watch the video"
-  #  icon = "icon-play2"
-  #  url = "https://vimeo.com/channels/staffpicks/93951774"
+  [params.intro.video]
+    enable = true
+    title = "Watch it in action"
+    url = "https://asciinema.org/a/tNel89kiA1T4IRoeguljgx3mF.js"
+    id = "asciicast-tNel89kiA1T4IRoeguljgx3mF"
 
 
   # Usege Scenario Section
@@ -184,26 +147,5 @@ There are *two main* usage scenarios.
   # About section
   [params.about]
     enable = true
-    title = "Other projects"
-    description = "We are commited to excellence in community-driven development at XOE.<br /> Here is a list of some of our most useful tools"
-
-    [[params.about.item]]
-      name = "Odoo Operator"
-      position = "Deploy Odoo instances reliably at scale with k8s"
-      description = ""
-      img = "Odoo-Operator-color.svg"
-      alt = "Odoo Operator"
-      social = [
-        ["icon-globe", "https://xoe-labs.github.io/odoo-operator"],
-        ["icon-github", "https://github.com/xoe-labs/odoo-operator"]
-      ]
-
-    [[params.about.item]]
-      name = "Dockery-Odoo Scaffold"
-      position = "Bootstrap your project with useful template files."
-      description = ""
-      img = "Dockery-Odoo-Scaffold-color.svg"
-      alt = "Dockery-Odoo Scaffold"
-      social = [
-        ["icon-github", "https://github.com/xoe-labs/dockery-odoo-scaffold"]
-      ]
+    title = "Driven by you"
+    description = "For a <strong>fun and joyful</strong> community experience!<br /> We have all been waiting too long.<br/><br/><br/><strong>[Join the conversation!](https://riot.im/app/#/group/+odooonmoby:matrix.org)</strong><br/><br/><br/>[... also on Telegram.](https://t.me/joinchat/ILnVJw7s3ZvKL3mI7AACsw)"
