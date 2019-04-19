@@ -17,7 +17,6 @@
 
 ```bash
 your-project/
- ├── hack/       	# Your life gets easier (TM)
  ├── vendor/
  │   ├── odoo/
  │   │   ├── cc/    # A plain git@github.com:odoo/odoo.git
@@ -31,7 +30,7 @@ your-project/
  ├── .cfg-default.ini	# ... managed at team level, under vcs!
  ├── .cfg-custom.ini	# ... gitignored local config switches!
  ├── .adminpwd			# ... no prod passwords in git, please!
- ├── .marabunta.yml 	# Single source of truth for migrations
+ ├── .migration.yml 	# Single source of truth for migrations
  ├── .env           	# Single source of truth for environment
  ├── Dockerfile     	# Single source of truth for image
  ├── docker-compose.yml             # Production akin version
