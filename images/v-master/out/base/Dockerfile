@@ -1,4 +1,11 @@
 FROM xoelabs/dockery-odoo-base:master
+# ============================================================
+# Convention about required libraries
+# ============================================================
+
+USER root
+
+RUN pip install redis
 
 # ============================================================
 # Convention about environment variables
