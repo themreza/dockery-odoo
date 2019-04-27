@@ -5,7 +5,7 @@ FROM xoelabs/dockery-odoo-base:11.0
 
 USER root
 
-RUN pip install redis
+RUN pip --quiet --quiet install redis
 
 # ============================================================
 # Convention about environment variables
