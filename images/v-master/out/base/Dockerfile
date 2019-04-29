@@ -5,7 +5,7 @@ FROM xoelabs/dockery-odoo-base:master
 
 USER root
 
-RUN pip --quiet --quiet install redis
+RUN pip --quiet --quiet install redis prometheus_client
 
 # ============================================================
 # Convention about environment variables
