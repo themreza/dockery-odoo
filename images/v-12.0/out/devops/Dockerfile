@@ -30,11 +30,11 @@ COPY patches.d "${PATCHES_DIR}"
 # Forward enforce minimal naming scheme on secondary build
 # ============================================================
 
-ONBUILD COPY --chown=odoo:odoo  vendor    					"${ODOO_VENDOR}"
+ONBUILD COPY --chown=odoo:odoo  vendor                      "${ODOO_VENDOR}"
 ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_SRC}"
-ONBUILD COPY --chown=odoo:odoo  .migration.yml              "${ODOO_MIG}"
-ONBUILD COPY --chown=odoo:odoo  config           			"${ODOO_RC}"
-ONBUILD COPY --chown=odoo:odoo  patches.d/*            		"${PATCHES_DIR}/"
+ONBUILD COPY --chown=odoo:odoo  migration.yml               "${ODOO_MIG}"
+ONBUILD COPY --chown=odoo:odoo  cfg.d                       "${ODOO_RC}"
+ONBUILD COPY --chown=odoo:odoo  patches.d/*                 "${PATCHES_DIR}/"
 ONBUILD RUN /patches ${ODOO_BASEPATH} || true
 
 # ============================================================
@@ -87,8 +87,8 @@ RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends jq  > /
 
 # local browser testing
 RUN wget --quiet -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-	&& echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
-	&& apt-get -qq update && apt-get -qq install -y --no-install-recommends google-chrome-stable > /dev/null
+    && echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get -qq update && apt-get -qq install -y --no-install-recommends google-chrome-stable > /dev/null
 # For js test recordings
 # Not avaialble in jessie
 RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends ffmpeg  > /dev/null || true

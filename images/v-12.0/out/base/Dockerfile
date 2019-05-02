@@ -30,11 +30,11 @@ COPY patches.d "${PATCHES_DIR}"
 # Forward enforce minimal naming scheme on secondary build
 # ============================================================
 
-ONBUILD COPY --chown=odoo:odoo  vendor    					"${ODOO_VENDOR}"
+ONBUILD COPY --chown=odoo:odoo  vendor                      "${ODOO_VENDOR}"
 ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_SRC}"
-ONBUILD COPY --chown=odoo:odoo  .migration.yml              "${ODOO_MIG}"
-ONBUILD COPY --chown=odoo:odoo  config           			"${ODOO_RC}"
-ONBUILD COPY --chown=odoo:odoo  patches.d/*            		"${PATCHES_DIR}/"
+ONBUILD COPY --chown=odoo:odoo  migration.yml               "${ODOO_MIG}"
+ONBUILD COPY --chown=odoo:odoo  cfg.d                       "${ODOO_RC}"
+ONBUILD COPY --chown=odoo:odoo  patches.d/*                 "${PATCHES_DIR}/"
 ONBUILD RUN /patches ${ODOO_BASEPATH} || true
 
 # ============================================================
