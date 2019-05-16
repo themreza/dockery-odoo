@@ -4,7 +4,7 @@
 USER root
 
 ENV PYTHONPATH=${PYTHONPATH}:${ODOO_FRM}
-ENV DODOO_LOAD_OUT=/dodoo-loader/logs.json
+ENV DODOO_LOAD_OUT=/var/lib/dodoo-loader/logs.json
 
 # --- WDB Configuration ---
 ENV WDB_NO_BROWSER_AUTO_OPEN=True \
@@ -65,8 +65,8 @@ RUN /bin/bash -c 'shopt -s dotglob \
 
 
 # Prepare odoo owned testlog folder for chrome screenshots
-RUN mkdir -p /testlogs && chown odoo:odoo /testlogs
+RUN mkdir -p /var/lib/odoo-testlogs && chown odoo:odoo /var/lib/odoo-testlogs
 
 
 # Prepare odoo owned loading log folder for dodoo loader
-RUN mkdir -p /dodoo-loader && chown odoo:odoo /dodoo-loader
+RUN mkdir -p /var/lib/dodoo-loader && chown odoo:odoo /var/lib/dodoo-loader
