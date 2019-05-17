@@ -5,7 +5,7 @@
 
 set -Eeuo pipefail
 
-if [ -z "${CI+x}" ]; then
+if [ ! -z "${CI+x}" ]; then
     echo "==>  Setting up paths in CI env"
 	export ODOO_RC="${ODOO_BASEPATH}/cfg.d"
 	export ODOO_MIG="${ODOO_BASEPATH}/migration.yaml"
