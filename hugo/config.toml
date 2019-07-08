@@ -38,7 +38,7 @@ Join our growing community!
   [[params.intro.item]]
     title = "Beyond simplicity"
     description = '''
-<strong>We made a tool.</strong><br/>
+<strong>We made a tool for DockeryOdoo.</strong><br/>
 It's called [OdooUp](https://pypi.org/project/odooup).
 ```shell
 $ sudo pip install odooup
@@ -47,6 +47,21 @@ $ odooup init <PROJECTNAME>
 
 From there, just keep watching.<br/>
 <strong>It will unveil it's beauty all by itself.</strong>
+'''
+
+  [[params.intro.item]]
+    title = "Clone"
+    description = '''
+<strong>Join an existing project on DockeryOdoo.</strong><br/>
+Wrapping submodule clones and sparse checkouts for you.
+```shell
+$ sudo pip install odooup
+$ version=12.0
+$ odooup clone ${version} <REPO>
+```
+
+Sparse checkouts effectively filter on omnium gatherum repos.<br/>
+<strong>All git native.</strong>
 '''
 
   [params.intro.video]
