@@ -114,3 +114,8 @@ RUN mkdir -p /var/lib/odoo-testlogs && chown odoo:odoo /var/lib/odoo-testlogs
 
 # Prepare odoo owned loading log folder for dodoo loader
 RUN mkdir -p /var/lib/dodoo-loader && chown odoo:odoo /var/lib/dodoo-loader
+RUN mkdir /tmp/phantomjs && \
+    cd /tmp/phantomjs && \
+    wget -q https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+    tar xf phantomjs-2.1.1-linux-x86_64.tar.bz2 && \
+    cp phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
