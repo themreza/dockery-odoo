@@ -58,7 +58,6 @@ ENV WDB_NO_BROWSER_AUTO_OPEN=True \
 
 # Get dodoo-* devops toolchain
 RUN pip install \
-    pytest-odoo \
     # dodoo-scaffolder \
     # dodoo-translator \
     dodoo-tester \
