@@ -8,9 +8,9 @@
 
 
 # @tagged('post_install', '-at_install')
-# class Test{{MyTest}}(TransactionCase):
+# class TestMyTest(TransactionCase):
 #     def setUp(self):
-#         super(Test{{MyTest}}, self).setUp()
+#         super(TestMyTest, self).setUp()
 
-#     def test_{{my_test}}(self):
+#     def test_my_test(self):
 #         pass
