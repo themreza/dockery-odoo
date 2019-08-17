@@ -5,7 +5,13 @@ FROM xoelabs/dockery-odoo-base:11.0
 
 USER root
 
-RUN pip --quiet --quiet install redis prometheus_client
+RUN pip --quiet --quiet install --no-cache-dir redis prometheus_client; \
+    find /usr/local -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests \) \) \
+            -o \
+            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+        \) -exec rm -rf '{}' +;
 
 # ============================================================
 # Convention about environment variables
