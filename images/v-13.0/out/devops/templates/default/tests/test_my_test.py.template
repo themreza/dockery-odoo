@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+# Copyright 2017, XOE Corp.
+# XOE Enterprise Edition License v1.0.
+
+
+# from odoo.tests.common import TransactionCase
+# from odoo.tests import tagged
+
+
+# @tagged('post_install', '-at_install')
+# class TestMyTest(TransactionCase):
+#     def setUp(self):
+#         super(TestMyTest, self).setUp()
+
+#     def test_my_test(self):
+#         pass
