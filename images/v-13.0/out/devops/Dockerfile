@@ -1,4 +1,4 @@
-FROM xoelabs/dockery-odoo-base:master
+FROM xoelabs/dockery-odoo-base:13.0
 # ============================================================
 # Convention about required libraries
 # ============================================================
