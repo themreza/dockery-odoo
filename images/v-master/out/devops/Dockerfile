@@ -127,3 +127,12 @@ RUN mkdir -p /var/lib/odoo-testlogs; \
     chown odoo:odoo /var/lib/odoo-testlogs; \
     mkdir -p /var/lib/dodoo-loader; \
     chown odoo:odoo /var/lib/dodoo-loader
+
+# Add odoo-migrate code transformation library
+RUN pip --quiet --quiet install --no-cache-dir odoo-migrate; \
+    find /usr/local -depth \
+        \( \
+            \( -type d -a \( -name test -o -name tests \) \) \
+            -o \
+            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+        \) -exec rm -rf '{}' +;
