@@ -1,0 +1,29 @@
+RELBASE: ./vendor/odoo/cc
+
+# odoo/tests/common.py - [PATCH] [FIX] tests: run chrome within containers
+https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26456.patch
+
+From 2e9eb28924df85b68b32f8cff08d64afa47c2c61 Mon Sep 17 00:00:00 2001
+From: David Arnold <dar@xoe.solutions>
+Date: Sun, 19 Aug 2018 19:34:46 -0500
+Subject: [PATCH] [FIX] tests:  run chrome within containers
+
+Closes #26455
+Based on:
+https://github.com/SeleniumHQ/docker-selenium/issues/520#issuecomment-384156465
+---
+ odoo/tests/common.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/odoo/tests/common.py b/odoo/tests/common.py
+index 19b77942de0a7..60fdd82e8dd9d 100644
+--- a/odoo/tests/common.py
++++ b/odoo/tests/common.py
+@@ -477,6 +477,7 @@ def _chrome_start(self):
+             return
+         switches = {
+             '--headless': '',
++            '--no-sandbox': '',
+             '--enable-logging': 'stderr',
+             '--no-default-browser-check': '',
+             '--no-first-run': '',

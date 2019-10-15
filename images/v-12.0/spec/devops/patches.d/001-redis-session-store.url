@@ -1,5 +1,0 @@
-RELBASE: ./vendor/odoo/cc
-
-# odoo/tools/http.py - [PATCH] [IMP] add-odoo-redis-session-store
-# included file session.py
-https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-BACKPORT-BRANCH-add-odoo-redis-session-store.patch

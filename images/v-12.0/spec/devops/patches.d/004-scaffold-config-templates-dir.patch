@@ -1,0 +1,35 @@
+RELBASE: ./vendor/odoo/cc
+
+
+# odoo/cli/scaffold.py - [PATCH] [IMP] scaffold: config templates dir by env var
+https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26480.patch
+
+From a232083a620b1a1c03ce831f78428edb4afa15c1 Mon Sep 17 00:00:00 2001
+From: David Arnold <dar@xoe.solutions>
+Date: Mon, 20 Aug 2018 13:49:50 -0500
+Subject: [PATCH] [IMP] scaffold: config templates dir by env var
+
+Access different template collections, eg. sourced from a shared repo, Set a
+`ODOO_TEMPALTES_DIR` env variable to the folder where your templates collection
+lives.
+
+This is superior to manual selection as it helps standardize the DevOps flow by
+the DevOps department and let the developper focuse on creating modules.
+---
+ odoo/cli/scaffold.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/odoo/cli/scaffold.py b/odoo/cli/scaffold.py
+index 53d3b8df85af3..b5874d4be5078 100644
+--- a/odoo/cli/scaffold.py
++++ b/odoo/cli/scaffold.py
+@@ -45,8 +45,7 @@ def epilog(self):
+         )
+
+ builtins = lambda *args: os.path.join(
+-    os.path.abspath(os.path.dirname(__file__)),
+-    'templates',
++    os.environ.get('ODOO_TEMPLATES_DIR') or os.path.join(os.path.abspath(os.path.dirname(__file__)), 'templates'),
+     *args)
+
+ def snake(s):

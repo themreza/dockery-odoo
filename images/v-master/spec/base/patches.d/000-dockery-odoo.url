@@ -10,9 +10,6 @@ https://github.com/xoe-labs/odoo-dev/compare/master...xoe-labs:master-NOPR-bind-
 # odoo/tools/config.py - [PATCH] [IMP] config: support config folders
 https://github.com/xoe-labs/odoo-dev/compare/master...xoe-labs:master-NOPR-support-config-folder.patch
 
-# odoo/service/db.py - [PATCH] [IMP] db: set default user tz through country code
-https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26365.patch
-
 # odoo/tests/common.py - [PATCH] [FIX] tests: run chrome within containers
 https://patch-diff.githubusercontent.com/raw/odoo/odoo/pull/26456.patch
 

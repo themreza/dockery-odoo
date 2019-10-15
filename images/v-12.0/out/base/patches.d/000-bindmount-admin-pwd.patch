@@ -1,0 +1,69 @@
+RELBASE: ./vendor/odoo/cc
+
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
+https://github.com/xoe-labs/odoo-dev/compare/12.0...xoe-labs:12.0-NOPR-bind-mount-adminpwd-secret.patch
+
+From ba0ae1bead326384fb9522da1fa0afd73282924b Mon Sep 17 00:00:00 2001
+From: David Arnold <dar@xoe.solutions>
+Date: Mon, 20 Aug 2018 12:54:30 -0500
+Subject: [PATCH] [IMP] config: support bind-mounted secrets
+
+Secrets have a diverging workflow and life cycle from conventional configuration
+values. For example an external secrets inventory is usually encrypted and
+multiplexing and injecting those values into the runtime must happen at the
+latest possible point in time.
+
+A secure method of injecting secrets into the runtime is through bind mounting
+files from an external (secured) source.
+
+Therefore, this commit enables the possibility to opt for a secure channel for
+secrets injection leveraging the mentioned technique.
+
+Signed-off-by: "David Arnold" <"dar@xoe.solutions">
+---
+ odoo/tools/config.py | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/odoo/tools/config.py b/odoo/tools/config.py
+index e9a1d388e1f10..94ae35462a082 100644
+--- a/odoo/tools/config.py
++++ b/odoo/tools/config.py
+@@ -70,10 +70,24 @@ def __init__(self, fname=None):
+                       from Python code without resorting to environment
+                       variable
+         """
++        # Check for bind-mounted secret files
++        try:
++            admin_passwd = open(os.environ.get('ODOO_ADMINPASSWORD_FILE', "/run/secrets/adminpasswd"),"r").read().splitlines()[0]
++        except:
++            admin_passwd = 'admin'
++        try:
++            pg_user = open(os.environ.get('PGUSER_FILE', "/run/secrets/pguser"),"r").read().splitlines()[0]
++        except:
++            pg_user = False
++        try:
++            pg_password= open(os.environ.get('PGPASSWORD_FILE', "/run/secrets/pgpassword"),"r").read().splitlines()[0]
++        except:
++            pg_password = False
++
+         # Options not exposed on the command line. Command line options will be added
+         # from optparse's parser.
+         self.options = {
+-            'admin_passwd': 'admin',
++            'admin_passwd': admin_passwd,
+             'csv_internal_sep': ',',
+             'publisher_warranty_url': 'http://services.openerp.com/publisher-warranty/',
+             'reportgz': False,
+@@ -207,9 +221,9 @@ def __init__(self, fname=None):
+         group = optparse.OptionGroup(parser, "Database related options")
+         group.add_option("-d", "--database", dest="db_name", my_default=False,
+                          help="specify the database name")
+-        group.add_option("-r", "--db_user", dest="db_user", my_default=False,
++        group.add_option("-r", "--db_user", dest="db_user", my_default=pg_user,
+                          help="specify the database user name")
+-        group.add_option("-w", "--db_password", dest="db_password", my_default=False,
++        group.add_option("-w", "--db_password", dest="db_password", my_default=pg_password,
+                          help="specify the database password")
+         group.add_option("--pg_path", dest="pg_path", help="specify the pg executable path")
+         group.add_option("--db_host", dest="db_host", my_default=False,

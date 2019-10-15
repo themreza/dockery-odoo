@@ -1,0 +1,230 @@
+RELBASE: ./vendor/odoo/cc
+
+# odoo/tools/http.py - [PATCH] [IMP] add-odoo-redis-session-store
+# included file session.py
+https://github.com/xoe-labs/odoo-dev/compare/11.0...xoe-labs:11.0-BACKPORT-BRANCH-add-odoo-redis-session-store.patch
+
+From 3233e2e6efad214b071cf637c19bd09b142e0ada Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Deiber=20Rinc=C3=B3n?= <dri@xoe.solutions>
+Date: Fri, 26 Apr 2019 11:14:56 -0500
+Subject: [PATCH] [IMP] redis-session-store
+
+Added redis session store as optional
+---
+ odoo/http.py         |  13 ++++-
+ odoo/session.py      | 135 +++++++++++++++++++++++++++++++++++++++++++
+ odoo/tools/config.py |   5 +-
+ 3 files changed, 151 insertions(+), 2 deletions(-)
+ create mode 100644 odoo/session.py
+
+diff --git a/odoo/http.py b/odoo/http.py
+index 62551947865ce..ab68066971c3b 100644
+--- a/odoo/http.py
++++ b/odoo/http.py
+@@ -43,6 +43,9 @@
+ except ImportError:
+     psutil = None
+
++from .session import RedisSessionStore
++
++
+ import odoo
+ from .service.server import memory_info
+ from .service import security, model as service_model
+@@ -58,6 +61,8 @@
+ # 1 week cache for statics as advised by Google Page Speed
+ STATIC_CACHE = 60 * 60 * 24 * 7
+
++DEFAULT_SESSION_TIMEOUT = 60 * 60 * 24 * 7  # 7 days in seconds
++
+ # To remove when corrected in Babel
+ babel.core.LOCALE_ALIASES['nb'] = 'nb_NO'
+
+@@ -1190,9 +1195,11 @@ def load_request_data(self):
+
+
+ def session_gc(session_store):
++    if odoo.tools.config.get('redis_session_store', None):
++        return
+     if random.random() < 0.001:
+         # we keep session one week
+-        last_week = time.time() - 60*60*24*7
++        last_week = time.time() - DEFAULT_SESSION_TIMEOUT
+         for fname in os.listdir(session_store.path):
+             path = os.path.join(session_store.path, fname)
+             try:
+@@ -1300,6 +1307,10 @@ def __init__(self):
+
+     @lazy_property
+     def session_store(self):
++        # Returns redis session class
++        if odoo.tools.config.get('redis_session_store', None):
++            return RedisSessionStore(session_class=OpenERPSession)
++
+         # Setup http sessions
+         path = odoo.tools.config.session_dir
+         _logger.debug('HTTP sessions stored in: %s', path)
+diff --git a/odoo/session.py b/odoo/session.py
+new file mode 100644
+index 0000000000000..5cb615d7631d8
+--- /dev/null
++++ b/odoo/session.py
+@@ -0,0 +1,135 @@
++# -*- coding: utf-8 -*-
++import json
++import logging
++
++from werkzeug.contrib.sessions import SessionStore
++import odoo
++
++_logger = logging.getLogger(__name__)
++
++"""
++Title: Odoo-clopud Platform
++Autor: Camptocamp
++Date: 2018
++Code Version: 12
++Availability: https://github.com/camptocamp/odoo-cloud-platform/blob/12.0/session_redis/http.py
++License: https://github.com/camptocamp/odoo-cloud-platform/blob/12.0/LICENSE
++"""
++
++# Importing redis and Sentinel
++try:
++    import redis
++    from redis.sentinel import Sentinel
++except ImportError:
++    redis = None # noqa
++    _logger.debug("Cannot import redis")
++
++
++def _get_redis():
++    # Fix circular import module
++    from .http import DEFAULT_SESSION_TIMEOUT
++
++    # loading redis config
++    sentinel_host = odoo.tools.config.get_misc('redis_config', 'redis_sentinel_host', None)
++    sentinel_master_name = odoo.tools.config.get_misc('redis_config', 'redis_sentinel_master_name', None)
++    if sentinel_host and not sentinel_master_name:
++        raise Exception("redis_sentinel_master_name must be defined when using session_redis")
++
++    sentinel_port = odoo.tools.config.get_misc('redis_config', 'redis_sentinel_port', None)
++    host = odoo.tools.config.get_misc('redis_config', 'redis_host', None)
++    port = int(odoo.tools.config.get_misc('redis_config', 'redis_port', None))
++    password = odoo.tools.config.get_misc('redis_config', 'redis_pass', None)
++    redis_instance = redis.Redis(host=host, port=port, password=password)
++
++    if sentinel_host:
++        sentinel = Sentinel([(sentinel_host, sentinel_port)], password=password)
++        redis_instance = sentinel.master_for(sentinel_master_name)
++
++    expiration = odoo.tools.config.get_misc('redis_config', 'redis_session_expiration', DEFAULT_SESSION_TIMEOUT)
++    return redis_instance, expiration
++
++
++class RedisSessionStore(SessionStore):
++    """
++    Saves session to redis
++    """
++    def __init__(self, prefix='', session_class=None):
++        super(RedisSessionStore, self).__init__(session_class=session_class)
++        self.redis, self.expiration = _get_redis()
++        self.prefix = prefix
++        self._healthcheck()
++
++    def _healthcheck(self):
++        try:
++            self.redis.ping()
++        except redis.ConnectionError:
++            raise redis.ConnectionError('Redis server is not responding')
++
++    def build_key(self, session_id):
++        return "{prefix}{session_id}".format(
++        prefix=self.prefix, session_id=session_id)
++
++    def save(self, session):
++        key = self.build_key(session.sid)
++
++        # allow to set a custom expiration for a session
++        # such as a very short one for monitoring requests
++        expiration = session.expiration or self.expiration
++        if _logger.isEnabledFor(logging.DEBUG):
++            if session.uid:
++                user_msg = "user '{user}' (id: {uid})".format(
++                    user=session.login, uid=session.uid)
++            else:
++                user_msg = "anonymous user"
++            _logger.debug(
++                "saving session with key '{key}' and expiration of {expiration}"
++                " seconds for {user_msg}".format(
++                    key=key, expiration=expiration, user_msg=user_msg))
++
++        data = json.dumps(dict(session)).encode('utf-8')
++        if self.redis.set(key, data):
++            return self.redis.expire(key, expiration)
++
++    def delete(self, session):
++        key = self.build_key(session.sid)
++        _logger.debug("deleting session with key {key}".format(key=key))
++
++        return self.redis.delete(key)
++
++    def get(self, session_id):
++        """
++        Returns a new session class if session id is invalid or
++        is not in redis, in otherwise, returns session class
++        with session content or without
++        """
++        if not self.is_valid_key(session_id):
++            _logger.debug(
++                "session with invalid session_id '{session_id}' has been asked,"
++                " returning a new one".format(session_id=session_id))
++
++            return self.new()
++
++        key = self.build_key(session_id)
++        saved = self.redis.get(key)
++        if not saved:
++            _logger.debug("session with non-existent key '%s' has been asked, "
++                "returning a new one", key)
++            return self.new()
++        try:
++            data = json.loads(saved.decode("utf-8"))
++        except ValueError:
++            _logger.debug(
++                "session for key '{key}' has been asked but its json "
++                "content could not be read, it has been reset".format(key=key))
++            data = {}
++
++        return self.session_class(data, session_id, False)
++
++    def list(self):
++        """
++        returns the list of called keys
++        """
++        keys = self.redis.keys("{prefix}*".format(prefix=self.prefix))
++        _logger.debug("a listing redis keys has been called")
++
++        return [key[len(self.prefix):] for key in keys]
+diff --git a/odoo/tools/config.py b/odoo/tools/config.py
+index 12730a53972af..130379672af5f 100644
+--- a/odoo/tools/config.py
++++ b/odoo/tools/config.py
+@@ -142,6 +142,9 @@ def __init__(self, fname=None):
+         group.add_option("--proxy-mode", dest="proxy_mode", action="store_true", my_default=False,
+                          help="Activate reverse proxy WSGI wrappers (headers rewriting) "
+                               "Only enable this when running behind a trusted web proxy!")
++        group.add_option("--redis", dest="redis_session_store", my_default=False,
++                             help="Enable/No enable redis session store")
++
+         # HTTP: hidden backwards-compatibility for "*xmlrpc*" options
+         hidden = optparse.SUPPRESS_HELP
+         group.add_option("--xmlrpc-interface", dest="http_interface", help=hidden)
+@@ -411,7 +414,7 @@ def die(cond, msg):
+                 'db_maxconn', 'import_partial', 'addons_path',
+                 'syslog', 'without_demo',
+                 'dbfilter', 'log_level', 'log_db',
+-                'log_db_level', 'geoip_database', 'dev_mode', 'shell_interface'
++                'log_db_level', 'geoip_database', 'dev_mode', 'shell_interface', 'redis_session_store',
+         ]
+
+         for arg in keys:

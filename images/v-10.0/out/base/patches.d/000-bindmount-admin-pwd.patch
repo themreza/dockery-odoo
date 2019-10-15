@@ -1,0 +1,37 @@
+RELBASE: ./vendor/odoo/cc
+
+
+# odoo/tools/config.py - [PATCH] [IMP] config: support bind-mounted admin secret
+https://github.com/xoe-labs/odoo-dev/compare/10.0...xoe-labs:10.0-NOPR-bind-mount-adminpwd-secret.patch
+
+From 68fccb33f2e318e24a3659c0c9bd00bac22ac951 Mon Sep 17 00:00:00 2001
+From: David Arnold <dar@xoe.solutions>
+Date: Mon, 20 Aug 2018 12:54:30 -0500
+Subject: [PATCH] [IMP] config: support bind-mounted admin secret
+
+---
+ odoo/tools/config.py | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/odoo/tools/config.py b/odoo/tools/config.py
+index be62f7c8b5a85..8e23a8d2d0907 100644
+--- a/odoo/tools/config.py
++++ b/odoo/tools/config.py
+@@ -64,10 +64,16 @@ def __init__(self, fname=None):
+                       from Python code without resorting to environment
+                       variable
+         """
++        # Check for a bind-mounted secrets file
++        try:
++            admin_pwd_file = open(os.environ.get('ODOO_PASSFILE', "/run/secrets/adminpwd"),"r").read().splitlines()[0]
++        except:
++            admin_pwd_file = None
++
+         # Options not exposed on the command line. Command line options will be added
+         # from optparse's parser.
+         self.options = {
+-            'admin_passwd': 'admin',
++            'admin_passwd': admin_pwd_file and admin_pwd_file or 'admin',
+             'csv_internal_sep': ',',
+             'publisher_warranty_url': 'http://services.openerp.com/publisher-warranty/',
+             'reportgz': False,
