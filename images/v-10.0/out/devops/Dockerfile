@@ -122,18 +122,20 @@ RUN set -ex; \
     rm -rf /var/lib/apt/lists/*;
 
 COPY entrypoint.d/* /entrypoint.d/
+COPY bin/* /usr/local/bin/
 COPY templates /templates
 
 RUN /bin/bash -c 'shopt -s dotglob \
  && chmod +x /entrypoint.d/* \
+ && chmod +x /usr/local/bin/* \
  && shopt -u dotglob'
 
 # Prepare odoo owned testlog folder for chrome screenshots
 # Prepare odoo owned loading log folder for dodoo loader
-RUN mkdir -p /var/lib/odoo-testlogs; \
-    chown odoo:odoo /var/lib/odoo-testlogs; \
-    mkdir -p /var/lib/dodoo-loader; \
-    chown odoo:odoo /var/lib/dodoo-loader
+RUN mkdir -p /var/log/dodoo/tests; \
+    chown odoo:odoo /var/log/dodoo/tests; \
+    mkdir -p /var/log/dodoo/loader; \
+    chown odoo:odoo /var/log/dodoo/loader
 # Phantom for older odoo version
 # Size: ca. 68MB
 RUN export DOWNLOAD_DIR="$(mktemp -d)"; \
