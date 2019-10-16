@@ -53,10 +53,6 @@ ONBUILD COPY --chown=odoo:odoo  migration.d                 "${ODOO_MIG_DIR}"
 ONBUILD COPY --chown=odoo:odoo  patches.d/*                 "${PATCHES_DIR}/"
 ONBUILD COPY --chown=odoo:odoo  vendor                      "${ODOO_BASEPATH}/vendor"
 ONBUILD COPY --chown=odoo:odoo  src                         "${ODOO_BASEPATH}/src"
-ONBUILD RUN /patches ${ODOO_BASEPATH} || true; \
-			mv "${ODOO_BASEPATH}/vendor" "${ODOO_BASEPATH}/vendor${LAYER_SUFFIX}"; \
-			mv "${ODOO_BASEPATH}/src" "${ODOO_BASEPATH}/src${LAYER_SUFFIX}";
-
 # ============================================================
 
 WORKDIR ${ODOO_BASEPATH}/src
