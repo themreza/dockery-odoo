@@ -28,10 +28,16 @@ ENV ODOO_SRC             "${ODOO_BASEPATH}/src"
 ENV PATCHES_DIR          "${ODOO_BASEPATH}/patches.d"
 
 # ============================================================
-# Ship with conventional odoo patches
+# Ship with conventional files (patches, entrypoints, bin)
 # ============================================================
 
 COPY patches.d "${PATCHES_DIR}"
+COPY entrypoint.d/* /entrypoint.d/
+COPY bin/* /usr/local/bin/
+RUN /bin/bash -c 'shopt -s dotglob \
+ && chmod +x /entrypoint.d/* \
+ && chmod +x /usr/local/bin/* \
+ && shopt -u dotglob'
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
@@ -121,14 +127,7 @@ RUN set -ex; \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
     rm -rf /var/lib/apt/lists/*;
 
-COPY entrypoint.d/* /entrypoint.d/
-COPY bin/* /usr/local/bin/
 COPY templates /templates
-
-RUN /bin/bash -c 'shopt -s dotglob \
- && chmod +x /entrypoint.d/* \
- && chmod +x /usr/local/bin/* \
- && shopt -u dotglob'
 
 # Prepare odoo owned testlog folder for chrome screenshots
 # Prepare odoo owned loading log folder for dodoo loader
