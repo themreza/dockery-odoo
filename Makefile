@@ -2,7 +2,7 @@
 gen:
 	./images/gen_contexts.sh
 
-build: build-10 build-11 build-12 build-master
+build: build-10 build-11 build-12 build-13 build-master
 
 build-10: gen
 	docker build --tag "xoelabs/dockery-odoo:edge-10.0" "./images/v-10.0/out/base"
@@ -17,8 +17,8 @@ build-12: gen
 	docker build --tag "xoelabs/dockery-odoo:edge-12.0-devops" "./images/v-12.0/out/devops"
 
 build-13: gen
-	docker build --tag "xoelabs/dockery-odoo:edge-13.0" "./images/v-12.0/out/base"
-	docker build --tag "xoelabs/dockery-odoo:edge-13.0-devops" "./images/v-12.0/out/devops"
+	docker build --tag "xoelabs/dockery-odoo:edge-13.0" "./images/v-13.0/out/base"
+	docker build --tag "xoelabs/dockery-odoo:edge-13.0-devops" "./images/v-13.0/out/devops"
 
 build-master: gen
 	docker build --tag "xoelabs/dockery-odoo:edge-master" "./images/v-master/out/base"
