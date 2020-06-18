@@ -5,13 +5,13 @@ FROM xoelabs/dockery-odoo-base:11.0
 
 USER root
 
-RUN pip --quiet --quiet install --no-cache-dir redis prometheus_client; \
-    find /usr/local -depth \
-        \( \
-            \( -type d -a \( -name test -o -name tests \) \) \
-            -o \
-            \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
-        \) -exec rm -rf '{}' +;
+## RUN pip --quiet --quiet install --no-cache-dir redis prometheus_client; \
+##     find /usr/local -depth \
+##         \( \
+##             \( -type d -a \( -name test -o -name tests \) \) \
+##             -o \
+##             \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+##         \) -exec rm -rf '{}' +;
 
 # ============================================================
 # Convention about environment variables
@@ -38,7 +38,6 @@ RUN /bin/bash -c 'shopt -s dotglob \
  && chmod +x /entrypoint.d/* \
  && chmod +x /usr/local/bin/* \
  && shopt -u dotglob'
-
 
 # ============================================================
 # Forward enforce minimal naming scheme on secondary build
