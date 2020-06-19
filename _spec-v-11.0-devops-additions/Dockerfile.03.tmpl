@@ -1,6 +1,6 @@
 
 # Add odoo-migrate code transformation library
-RUN pip --quiet --quiet install --no-cache-dir odoo-migrate; \
+RUN pip --quiet --quiet install --no-cache-dir odoo-module-migrator; \
     find /usr/local -depth \
         \( \
             \( -type d -a \( -name test -o -name tests \) \) \
