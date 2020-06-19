@@ -82,10 +82,21 @@ The `justfile` contains a series of convenience receipes: discover the current a
 - Scuritinze those [`dockery-odoo-base` images](https://github.com/OdooOps/dockery-odoo-base)
 - Make concrete use of `dockery-odoo` images with the [scaffolding repo](https://github.com/OdooOps/dockery-odoo-scaffold)
 
+## See also:
+
+- [Changelog](./CHANGELOG.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+
 # Credits & License
 
-Based on stewardship by:
+Based on stewardship and contributions by:
  - [@blaggacao](https://github.com/blaggacao)
+ - [@kurkop](https://github.com/kurkop)
  - [@ygol](https://github.com/ygol)
+ - [@acl](https://github.com/acl2358)
+ - [@em230418](https://github.com/em230418)
+ - [@yelizariev](https://github.com/yelizariev)
+ - [@yanpierchirino](https://github.com/yanpierchirino)
+ - [@ychirino](https://github.com/ychirino)
 
 License: [LGPL-3](https://www.gnu.org/licenses/lgpl-3.0.en.html)
