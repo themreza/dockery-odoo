@@ -1,5 +1,6 @@
 # use with https://github.com/casey/just
 
+IMAGE := "odooops/dockery-odoo"
 
 # generate dockerfiles
 generate:
@@ -51,33 +52,34 @@ generate:
 		echo -e "\033[00;32mFiles for verion ${version} generated.\033[0m\n"
 	done
 
-# generate dockerfiles, then build images
-build IMAGE="odooops/dockery-odoo": generate
+
+# generate dockerfiles & build images
+build: generate
 	#!/bin/bash
 
 	# Generates base images per version.
-	# Walkes folders matching 'v*' and builds their respective docker context.
+	# Walkes `docker` folder and builds respective docker context.
 
 	set -Eeuo pipefail
 
-	for path in $(find "$(pwd)" -maxdepth 1 -type d -name 'v-*') ; do
-		name=$(basename "${path}")
-		version=${name#"v-"}
-		docker build --tag "{{ IMAGE }}:${version}" "${name}/out"
+	for path in $(find docker -maxdepth 1 -mindepth 1 -type d | sort) ; do
+		version=$(basename "${path}")
+		docker build --tag "{{ IMAGE }}:${version}"        "docker/${version}/prod"
+		docker build --tag "{{ IMAGE }}:${version}-devops" "docker/${version}/devops"
 	done
 
 
-# generate dockeriles, build, then push images
-push IMAGE="odooops/dockery-odoo": build
+# generate dockeriles, build & push images
+push: build
 	#!/bin/bash
 
 	# Pushes base images per version.
-	# Walkes folders matching 'v*' and pushes the respective verion.
+	# Detects versions from `docker` folder and pushes.
 
 	set -Eeuo pipefail
 
-	for path in $(find "$(pwd)" -maxdepth 1 -type d -name 'v-*') ; do
-		name=$(basename "${path}")
-		version=${name#"v-"}
+	for path in $(find docker -maxdepth 1 -mindepth 1 -type d | sort) ; do
+		version=$(basename "${path}")
 		docker push "{{ IMAGE }}:${version}"
+		docker push "{{ IMAGE }}:${version}-devops"
 	done
