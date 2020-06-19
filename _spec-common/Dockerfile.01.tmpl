@@ -28,17 +28,16 @@ ENV ODOO_CMD             "${ODOO_BASEPATH}/odoo/odoo-bin"
 ENV ODOO_VENDOR          "${ODOO_BASEPATH}/vendor"
 ENV ODOO_SRC             "${ODOO_BASEPATH}/src"
 
-ENV PATCH_DIR            "${ODOO_BASEPATH}/patch.d"
-ENV MIG_DIR              "${ODOO_BASEPATH}/mig.d"
-ENV MIG_YAML             "${ODOO_BASEPATH}/mig.yaml"
+ENV PATCH_DIR            "${ODOO_BASEPATH}/_patch.d"
+ENV MIG_DIR              "${ODOO_BASEPATH}/_mig.d"
+ENV MIG_YAML             "${ODOO_BASEPATH}/_mig.d/mig.yaml"
 
 ONBUILD COPY --chown=odoo:odoo  vendor    "${ODOO_VENDOR}"
 ONBUILD COPY --chown=odoo:odoo  odoo      "${ODOO_FRM}"
 ONBUILD COPY --chown=odoo:odoo  src       "${ODOO_SRC}"
 
-ONBUILD COPY --chown=odoo:odoo  patch.d   "${PATCH_DIR}"
-ONBUILD COPY --chown=odoo:odoo  mig.d     "${MIG_DIR}"
-ONBUILD COPY --chown=odoo:odoo  mig.yaml  "${MIG_YAML}"
+ONBUILD COPY --chown=odoo:odoo  _patch.d   "${PATCH_DIR}"
+ONBUILD COPY --chown=odoo:odoo  _mig.d     "${MIG_DIR}"
 
 
 # ============================================================
